@@ -90,6 +90,7 @@ int main()
         move_to(0, 0);
         // Si possible, il faudra éviter d'appeler clear_screen, ça fait clignoter l'écran, mieux vaut écrire par dessus. -> quand les mises a jour sont rapides (~1/10s pour réécrire la totalité de l'écran)
         clear_screen();
+        get_terminal_size(&width, &height);
 
         for (int y = 0; y < height - 5; y++)
         {
