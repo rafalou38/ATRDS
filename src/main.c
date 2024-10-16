@@ -71,7 +71,7 @@ int main()
         get_terminal_size(&width, &height);
 
         move_to(width / 2 - 20, height / 2 - 1);
-        printf("Merci d'agrandir le terminal ou de dézoomer");
+        printf("Merci d'agrandir le terminal ou de dézoomer avec la commande \"ctrl -\"");
         move_to(width / 2 - 7, height / 2);
         printf("Colones: %d/%d", width, MIN_TERMINAL_WIDTH);
         move_to(width / 2 - 7, height / 2 + 1);
@@ -104,7 +104,7 @@ int main()
                 else
                 {
                     if (x % ((grid_width + 1) * 2) < grid_width + 1)
-                        printf("🮘");
+                        printf("╄");
                     else
                         printf("█");
                 }
