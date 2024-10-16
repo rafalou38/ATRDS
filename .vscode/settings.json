@@ -8,6 +8,9 @@
         "*.uss": "css",
         "*.uxml": "xml",
         "ioctl.h": "c",
-        "sstream": "c"
+        "sstream": "c",
+        "stdbool.h": "c",
+        "time.h": "c",
+        "unistd.h": "c"
     }
 }
