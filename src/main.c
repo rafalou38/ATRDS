@@ -5,44 +5,51 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define MIN_TERMINAL_WIDTH 150
-#define MIN_TERMINAL_HEIGHT 50
+#include "IO.h"
+
+#define MIN_TERMINAL_WIDTH 140
+#define MIN_TERMINAL_HEIGHT 30
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-// Liste des codes: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
-void move_to(int x, int y)
+enum CellType
 {
-    printf("\033[%d;%dH", y, x);
-}
-void clear_screen()
-{
-    printf("\033[2J");
-}
-void hide_cursor()
-{
-    printf("\033[?25l");
-}
-void show_cursor()
-{
-    printf("\033[?25h");
-}
+    CHEMIN,
+    TERRAIN
+};
 
-void get_terminal_size(int *width, int *height)
+struct Cell
 {
-    struct winsize w;
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    int x;
+    int y;
+    enum CellType type;
+};
 
-    *width = w.ws_col;
-    *height = w.ws_row;
-}
+#define CELL_WIDTH 6
+#define CELL_HEIGHT 3
+#define GAP 2
 
-void cleanup()
+void drawCell(struct Cell cell)
 {
-    // move_to(0, 0);
-    // clear_screen();
-    show_cursor();
+    if (cell.type == TERRAIN)
+    {
+        for (int y = 0; y < CELL_HEIGHT; y++)
+        {
+            // printf("%d")
+            int cx = cell.x * (CELL_WIDTH + GAP);
+            if (cell.x != 0)
+                cx++;
+            move_to(cx, cell.y * (CELL_HEIGHT + GAP/2) + y + 1);
+
+            printf("\033[42m");
+            for (int x = 0; x < CELL_WIDTH; x++)
+            {
+                printf(" ");
+            }
+            printf("\033[0m");
+        }
+    }
 }
 
 int main()
@@ -81,48 +88,65 @@ int main()
 
         usleep(100 * 1000);
     }
-
-    int grid_width = 9;
-    int grid_height = 5;
-
-    while (true)
+    int gridheight = 7;
+    int gridwidth = 7;
+    struct Cell grid[gridheight][gridwidth];
+    for (int x = 0; x < gridheight; x++)
     {
-        move_to(0, 0);
-        // Si possible, il faudra éviter d'appeler clear_screen, ça fait clignoter l'écran, mieux vaut écrire par dessus. -> quand les mises a jour sont rapides (~1/10s pour réécrire la totalité de l'écran)
-        clear_screen();
-        get_terminal_size(&width, &height);
-
-        for (int y = 0; y < height - 5; y++)
+        for (int y = 0; y < gridwidth; y++)
         {
-            for (int x = 0; x < (grid_width+1)*(width/(grid_width+1)); x++)
-            {
-                // +1 pour l’espace; <= 1 pour un espace de 2
-                if (x % (grid_width + 1) <= 1 || y % grid_height == 0)
-                {
-                    printf(" ");
-                }
-                else
-                {
-                    if (x % ((grid_width + 1) * 2) < grid_width + 1)
-                        printf("╄");
-                    else
-                        printf("█");
-                }
-            }
-            printf("\n");
+            grid[x][y].x = x;
+            grid[x][y].y = y;
+            grid[x][y].type = TERRAIN;
         }
-
-        printf("Ctrl+C pour quitter\ntaille de la grille: %dx%d  carrées: 7x4 9x5 11x6 13x7...\n", grid_width, grid_height);
-        printf("Nouvelle taille ? (nxn): ");
-        fflush(stdout);
-
-        scanf("%dx%d", &grid_width, &grid_height);
-        grid_width = MAX(1, MIN(grid_width, 20));
-        grid_height = MAX(1, MIN(grid_height, 20));
-
-        // usleep((1.0f / 60) * 1000 * 1000); // limite a  fps < 60Hz (ne prends pas en compte le delay réel)
     }
 
-    usleep(1000 * 1000);
+    for (int x = 0; x < gridheight; x++)
+    {
+        for (int y = 0; y < gridwidth; y++)
+        {
+            drawCell(grid[x][y]);
+        }
+    }
+    fflush(stdout);
+
+    // while (true)
+    // {
+    //     move_to(0, 0);
+    //     // Si possible, il faudra éviter d'appeler clear_screen, ça fait clignoter l'écran, mieux vaut écrire par dessus. -> quand les mises a jour sont rapides (~1/10s pour réécrire la totalité de l'écran)
+    //     clear_screen();
+    //     get_terminal_size(&width, &height);
+
+    //     for (int y = 0; y < height - 5; y++)
+    //     {
+    //         for (int x = 0; x < (grid_width + 2) * (width / (grid_width + 2)); x++)
+    //         {
+    //             // +2 pour l’espace;
+    //             if (x % (grid_width + 2) <= 1 || y % grid_height == 0)
+    //             {
+    //                 printf(" ");
+    //             }
+    //             else
+    //             {
+    //                 // if (x % ((grid_width+2) * 2) < grid_width+2)
+    //                 //     printf("🮘");
+    //                 // else
+    //                 printf("X");
+    //             }
+    //         }
+    //         printf("\n");
+    //     }
+
+    //     printf("Ctrl+C pour quitter\ntaille de la grille: %dx%d  carrées: 7x4 9x5 11x6 13x7...\n", grid_width, grid_height);
+    //     printf("Nouvelle taille ? (nxn): ");
+    //     fflush(stdout);
+
+    //     scanf("%dx%d", &grid_width, &grid_height);
+    //     grid_width = MAX(1, MIN(grid_width, 20));
+    //     grid_height = MAX(1, MIN(grid_height, 20));
+
+    //     // usleep((1.0f / 60) * 1000 * 1000); // limite a  fps < 60Hz (ne prends pas en compte le delay réel)
+    // }
+
     return 0;
 }
