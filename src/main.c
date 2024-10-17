@@ -15,7 +15,8 @@
 
 enum CellType
 {
-    CHEMIN,
+    CHEMIN_GAUCHE,
+    CHEMIN_DROITE,
     TERRAIN
 };
 
@@ -47,6 +48,45 @@ void drawCell(struct Cell cell)
             {
                 printf(" ");
             }
+            printf("\033[0m");
+        }
+    }
+    if (cell.type == CHEMIN_DROITE)
+    {
+        for (int y = 0; y < CELL_HEIGHT; y++)
+        {
+            // printf("%d")
+            int cx = cell.x * (CELL_WIDTH + GAP);
+            if (cell.x != 0)
+                cx++;
+            move_to(cx, cell.y * (CELL_HEIGHT + GAP/2) + y + 1);
+
+            printf("\033[42m");
+            move_to(cx + (CELL_WIDTH/2), cell.y * (CELL_HEIGHT + GAP/2) + y + 1);
+            for (int x = (CELL_WIDTH/2); x < (CELL_WIDTH); x++)
+            {
+                printf(" ");
+            }
+
+            printf("\033[0m");
+        }
+    }
+    if (cell.type == CHEMIN_GAUCHE)
+    {
+        for (int y = 0; y < CELL_HEIGHT; y++)
+        {
+            // printf("%d")
+            int cx = cell.x * (CELL_WIDTH + GAP);
+            if (cell.x != 0)
+                cx++;
+            move_to(cx, cell.y * (CELL_HEIGHT + GAP/2) + y + 1);
+
+            printf("\033[42m");
+            for (int x = 0; x < (CELL_WIDTH/2); x++)
+            {
+                printf(" ");
+            }
+
             printf("\033[0m");
         }
     }
@@ -97,7 +137,14 @@ int main()
         {
             grid[x][y].x = x;
             grid[x][y].y = y;
-            grid[x][y].type = TERRAIN;
+            if (x%2==1)
+            {
+                grid[x][y].type = CHEMIN_DROITE;
+            }
+            else
+            {
+                grid[x][y].type = CHEMIN_GAUCHE;
+            }
         }
     }
 
