@@ -124,7 +124,7 @@ void drawCell(struct Cell cell)
                 }
             }
 
-            move_to(terminal_x + CELL_WIDTH / 2, terminal_y + CELL_HEIGHT / 2);
+            move_to(terminal_x + CELL_WIDTH / 2 - 1, terminal_y + CELL_HEIGHT / 2);
             printf("🐧");
         }
     }
@@ -183,32 +183,69 @@ int main()
         {
             grid[x][y].x = x;
             grid[x][y].y = y;
-            if (rand() % 4 >= 2)
-                grid[x][y].type = TERRAIN;
-            else
-                grid[x][y].type = CHEMIN;
+            grid[x][y].type = TERRAIN;
         }
     }
+    // Prototype de création automatique du chemin
+    int variable_arret1 = 0;
+    int chemin_x = 1;
+    int chemin_y = (rand()% (gridheight));
+    if (chemin_y==gridheight-1)   //Rectifications du random pour pas la 1ere ni la derniere ligne
+    {
+        chemin_y=chemin_y-1;
+    }
+    if (chemin_y==0)
+    {
+        chemin_y=chemin_y+1;
+    }
 
-    // grid[3][1].type = CHEMIN;
-    // grid[3][2].type = CHEMIN;
-    // grid[3][3].type = CHEMIN;
-    // grid[3][4].type = CHEMIN;
-    // grid[4][4].type = CHEMIN;
-    // grid[5][4].type = CHEMIN;
-    // grid[2][4].type = CHEMIN;
-    // grid[1][4].type = CHEMIN;
-    // grid[1][3].type = CHEMIN;
-    // grid[1][2].type = CHEMIN;
-    // grid[2][2].type = CHEMIN;
-    // grid[5][5].type = CHEMIN;
-    // grid[4][3].type = CHEMIN;
+    grid [0][chemin_y].type = CHEMIN;          //2 premieres cases sans les autres options, fixées à une hauteur aléatoire
+    grid [chemin_x][chemin_y].type = CHEMIN;
+    while (variable_arret1==0) 
+    {
+        int ran_chemin = (rand()%10);            // triples conditions pour le chemin + randomisation de la verticalité (?)
+        if (ran_chemin<3 && chemin_y+1<gridheight-1 && grid[chemin_x-1][chemin_y+1].type!=CHEMIN && grid[chemin_x][chemin_y+1].type!=CHEMIN && grid[chemin_x+1][chemin_y+1].type!=CHEMIN)
+        {
+            chemin_y = chemin_y+1;
+        }
+        else 
+        {
+            if (ran_chemin>6 && chemin_y-1>1 && grid[chemin_x-1][chemin_y-1].type!=CHEMIN && grid[chemin_x][chemin_y-1].type!=CHEMIN && grid[chemin_x+1][chemin_y-1].type!=CHEMIN)
+            {
+                chemin_y = chemin_y-1;
+            }
+            else 
+            {
+                if ((ran_chemin==3 || ran_chemin==4) && chemin_x-1>1 && grid[chemin_x-1][chemin_y].type!=CHEMIN && grid[chemin_x-1][chemin_y-1].type!=CHEMIN && grid[chemin_x-1][chemin_y+1].type!=CHEMIN)
+                {
+                    chemin_x=chemin_x-1;
+                }
+                else
+                {
+                    if (grid[chemin_x+1][chemin_y+1].type!=CHEMIN && grid[chemin_x+1][chemin_y-1].type!=CHEMIN && grid[chemin_x+1][chemin_y].type!=CHEMIN) 
+                    {
+                        chemin_x=chemin_x+1;
+                    }
+                    else 
+                    {
+                        
+                    }
+                }        
+            }
+            
+        } 
 
-    // grid[3][0].type = CHEMIN;
-    // grid[4][0].type = CHEMIN;
-    // grid[5][0].type = CHEMIN;
-    // grid[5][1].type = CHEMIN;
-    // grid[6][1].type = CHEMIN;
+        grid [chemin_x][chemin_y].type=CHEMIN;
+        if (chemin_x==gridwidth-1)
+        {
+            variable_arret1=69;
+        }
+        drawCell(grid[chemin_x][chemin_y]);
+        usleep(100000);
+        fflush(stdout);
+    }  //FIN  Génération de CHEMIN
+    
+
 
     for (int x = 0; x < gridheight; x++)
     {
