@@ -43,8 +43,8 @@ CONFIGURATION
 ÉTAT DU PROGRAMME
 #################
 */
-int gridheight = 10;
-int gridwidth = 10;
+int gridheight = 15;
+int gridwidth = 15;
 struct Cell **grid;
 
 void drawCell(struct Cell cell)
@@ -75,8 +75,8 @@ void drawCell(struct Cell cell)
             }
             printf("\033[0m");
 
-            move_to(terminal_x + CELL_WIDTH / 2 - 1, terminal_y + CELL_HEIGHT / 2+1);
-            printf("%d %d", cell.x, cell.y);
+            // move_to(terminal_x + CELL_WIDTH / 2 - 1, terminal_y + CELL_HEIGHT / 2+1);
+            // printf("%d %d", cell.x, cell.y);
         }
     }
     if (cell.type == CHEMIN)
@@ -139,17 +139,17 @@ void drawCell(struct Cell cell)
             }
 
             move_to(terminal_x + CELL_WIDTH / 2 - 1, terminal_y + CELL_HEIGHT / 2);
-            printf("%d", cell.index);
-            move_to(terminal_x + CELL_WIDTH / 2 - 1, terminal_y + CELL_HEIGHT / 2+1);
-            printf("%d %d", cell.x, cell.y);
-            // printf("🐧");
+            // printf("%d", cell.index);
+            // move_to(terminal_x + CELL_WIDTH / 2 - 1, terminal_y + CELL_HEIGHT / 2+1);
+            // printf("%d %d", cell.x, cell.y);
+            printf("🐧");
         }
     }
 }
 
 int main()
 {
-    // SEEDS FUN: 1729285683
+    // SEEDS FUN: énorme jaune: 1729285683    /    problème ? 1729285706
     unsigned int seed = time(NULL);
     printf("seed: %d\n", seed);
     srand(seed);
@@ -229,7 +229,8 @@ int main()
 
     while (variable_arret1 == 0)
     {
-        // conditions pour le chemin + randomisation de la verticalité (?)
+        // TODO: Rajouter Gauche gauche, droite droite, bas bas, haut haut ? pour éviter contact indirect
+
         bool posible_bas = chemin_y + 1 < gridheight - 1                      //
                            && grid[chemin_x - 1][chemin_y + 1].type != CHEMIN // bas gauche
                            && grid[chemin_x + 1][chemin_y + 1].type != CHEMIN // bas droite
@@ -278,25 +279,25 @@ int main()
 
         while (true)
         {
-            int random_chemin = rand() % 4;
-            if (random_chemin == 0 && posible_bas)
+            int random_chemin = rand() % 7;
+            if (random_chemin <= 1 && posible_bas)
             {
                 chemin_y++;
                 break;
             }
-            if (random_chemin == 1 && possible_haut)
+            else if (random_chemin <= 3 && possible_haut)
             {
                 chemin_y--;
                 break;
             }
-            if (random_chemin == 2 && possible_droite)
-            {
-                chemin_x++;
-                break;
-            }
-            if (random_chemin == 3 && possible_gauche)
+            else if (random_chemin <= 5 && possible_gauche)
             {
                 chemin_x--;
+                break;
+            }
+            else if (random_chemin == 6 && possible_droite)
+            {
+                chemin_x++;
                 break;
             }
         }
