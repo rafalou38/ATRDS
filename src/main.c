@@ -7,16 +7,12 @@
 
 #include "IO.h"
 
-#define MIN_TERMINAL_WIDTH 140
-#define MIN_TERMINAL_HEIGHT 30
-
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 enum CellType
 {
-    CHEMIN_GAUCHE,
-    CHEMIN_DROITE,
+    CHEMIN,
     TERRAIN
 };
 
@@ -27,9 +23,27 @@ struct Cell
     enum CellType type;
 };
 
+/*
+#############
+CONFIGURATION
+#############
+*/
+#define MIN_TERMINAL_WIDTH 140
+#define MIN_TERMINAL_HEIGHT 30
+
 #define CELL_WIDTH 6
 #define CELL_HEIGHT 3
+
 #define GAP 2
+
+/*
+#################
+ÉTAT DU PROGRAMME
+#################
+*/
+int gridheight = 15;
+int gridwidth = 15;
+struct Cell **grid;
 
 void drawCell(struct Cell cell)
 {
@@ -38,10 +52,10 @@ void drawCell(struct Cell cell)
         for (int y = 0; y < CELL_HEIGHT; y++)
         {
             // printf("%d")
-            int cx = cell.x * (CELL_WIDTH + GAP);
-            if (cell.x != 0)
-                cx++;
-            move_to(cx, cell.y * (CELL_HEIGHT + GAP/2) + y + 1);
+            int terminal_x = cell.x * (CELL_WIDTH + GAP) + 3;
+            int terminal_y = cell.y * (CELL_HEIGHT + GAP / 2) + y + 2;
+
+            move_to(terminal_x, terminal_y);
 
             printf("\033[42m");
             for (int x = 0; x < CELL_WIDTH; x++)
@@ -51,49 +65,74 @@ void drawCell(struct Cell cell)
             printf("\033[0m");
         }
     }
-    if (cell.type == CHEMIN_DROITE)
+    if (cell.type == CHEMIN)
     {
-        for (int y = 0; y < CELL_HEIGHT; y++)
-        {
-            // printf("%d")
-            int cx = cell.x * (CELL_WIDTH + GAP);
-            if (cell.x != 0)
-                cx++;
-            move_to(cx, cell.y * (CELL_HEIGHT + GAP/2) + y + 1);
+        // Détermination du type de chemin
+        bool chemin_vers_haut = cell.y - 1 >= 0 && grid[cell.x][cell.y - 1].type == CHEMIN;
+        bool chemin_vers_droite = cell.x + 1 < gridwidth && grid[cell.x + 1][cell.y].type == CHEMIN;
+        bool chemin_vers_bas = cell.y + 1 < gridheight && grid[cell.x][cell.y + 1].type == CHEMIN;
+        bool chemin_vers_gauche = cell.x - 1 >= 0 && grid[cell.x - 1][cell.y].type == CHEMIN;
 
-            printf("\033[42m");
-            move_to(cx + (CELL_WIDTH/2), cell.y * (CELL_HEIGHT + GAP/2) + y + 1);
-            for (int x = (CELL_WIDTH/2); x < (CELL_WIDTH); x++)
+        bool chemin_vers_haut_gauche = cell.x - 1 >= 0 && cell.y - 1 >= 0 && grid[cell.x - 1][cell.y - 1].type == CHEMIN;
+        bool chemin_vers_haut_droit = cell.x + 1 < gridwidth && cell.y - 1 >= 0 && grid[cell.x + 1][cell.y - 1].type == CHEMIN;
+
+        for (int y = 0; y < CELL_HEIGHT + 2; y++)
+        {
+            int terminal_x = (cell.x * (CELL_WIDTH + GAP) + 3);
+            int terminal_y = (cell.y * (CELL_HEIGHT + GAP / 2) + 2);
+
+            move_to(terminal_x - 1, terminal_y + y - 1);
+
+            for (int x = 0; x < CELL_WIDTH + 2; x++)
             {
-                printf(" ");
+                if (
+                    x == 0 && y == 0 && !chemin_vers_gauche && !chemin_vers_haut                                             //
+                    || (x == CELL_WIDTH + 1 && y == CELL_HEIGHT + 1 && chemin_vers_bas && chemin_vers_droite)                //
+                    || (x == CELL_WIDTH + 1 && y == 0 && chemin_vers_haut_droit && chemin_vers_haut && !chemin_vers_droite)) //
+                    //
+                    printf("╭");
+                else if ((x == CELL_WIDTH + 1 && y == 0 && !chemin_vers_droite && !chemin_vers_haut)  //
+                         || (x == 0 && y == CELL_HEIGHT + 1 && chemin_vers_gauche && chemin_vers_bas) //
+                         || (x == 0 && y == 0 && chemin_vers_haut && chemin_vers_haut_gauche && !chemin_vers_gauche))
+                    //
+                    printf("╮");
+                else if (x == CELL_WIDTH + 1 && y == CELL_HEIGHT + 1 && !chemin_vers_droite && !chemin_vers_bas //
+                         || (x == 0 && y == 0 && chemin_vers_haut && chemin_vers_gauche && !chemin_vers_haut_gauche))
+                    //
+                    printf("╯");
+                else if (x == 0 && y == CELL_HEIGHT + 1 && !chemin_vers_gauche && !chemin_vers_bas //
+                         || (y == 0 && x == CELL_WIDTH + 1 && chemin_vers_haut && chemin_vers_droite && !chemin_vers_haut_droit))
+                    //
+                    printf("╰");
+                else if (((x == 0 && !chemin_vers_gauche) //
+                          || (x == CELL_WIDTH + 1 && !chemin_vers_droite)))
+                    //
+                    printf("│");
+                else if (((y == 0 && !chemin_vers_haut) //
+                          || (y == CELL_HEIGHT + 1 && !chemin_vers_bas)))
+                    //
+                    printf("─");
+                else if (x >= 1 && x <= CELL_WIDTH && y >= 1 && y <= CELL_HEIGHT)
+                {
+                    printf("\033[104m");
+                    printf(" ");
+                    printf("\033[0m");
+                }
+                else
+                {
+                    printf(" ");
+                }
             }
 
-            printf("\033[0m");
-        }
-    }
-    if (cell.type == CHEMIN_GAUCHE)
-    {
-        for (int y = 0; y < CELL_HEIGHT; y++)
-        {
-            // printf("%d")
-            int cx = cell.x * (CELL_WIDTH + GAP);
-            if (cell.x != 0)
-                cx++;
-            move_to(cx, cell.y * (CELL_HEIGHT + GAP/2) + y + 1);
-
-            printf("\033[42m");
-            for (int x = 0; x < (CELL_WIDTH/2); x++)
-            {
-                printf(" ");
-            }
-
-            printf("\033[0m");
+            move_to(terminal_x + CELL_WIDTH / 2, terminal_y + CELL_HEIGHT / 2);
+            printf("🐧");
         }
     }
 }
 
 int main()
 {
+    srand( time( NULL ) );
     // Cette fonction si on l'active n'affichera pas le résultat des printf en direct mais tout d'un coup apres avoir appelé fflush(stdout); (meilleures performances)
     // https://en.cppreference.com/w/c/io/setvbuf
     setvbuf(stdout, NULL, _IOFBF, (MIN_TERMINAL_WIDTH + 5) * (MIN_TERMINAL_HEIGHT + 5));
@@ -126,74 +165,62 @@ int main()
 
         fflush(stdout);
 
-        usleep(100 * 1000);
+        // usleep(1000);
     }
-    int gridheight = 7;
-    int gridwidth = 7;
-    struct Cell grid[gridheight][gridwidth];
+
+    /*
+        ###########################
+        INITIALISATION DE LA GRILLE
+        ###########################
+    */
+    grid = malloc(sizeof(struct Cell *) * gridwidth); // Première coordonnée: x / largeur
     for (int x = 0; x < gridheight; x++)
     {
+
+        grid[x] = malloc(sizeof(struct Cell) * gridheight); // deuxième coordonnée: y / hauteur
+
         for (int y = 0; y < gridwidth; y++)
         {
             grid[x][y].x = x;
             grid[x][y].y = y;
-            if (x%2==1)
-            {
-                grid[x][y].type = CHEMIN_DROITE;
-            }
+            if (rand() % 4 >= 2)
+                grid[x][y].type = TERRAIN;
             else
-            {
-                grid[x][y].type = CHEMIN_GAUCHE;
-            }
+                grid[x][y].type = CHEMIN;
         }
     }
+
+    // grid[3][1].type = CHEMIN;
+    // grid[3][2].type = CHEMIN;
+    // grid[3][3].type = CHEMIN;
+    // grid[3][4].type = CHEMIN;
+    // grid[4][4].type = CHEMIN;
+    // grid[5][4].type = CHEMIN;
+    // grid[2][4].type = CHEMIN;
+    // grid[1][4].type = CHEMIN;
+    // grid[1][3].type = CHEMIN;
+    // grid[1][2].type = CHEMIN;
+    // grid[2][2].type = CHEMIN;
+    // grid[5][5].type = CHEMIN;
+    // grid[4][3].type = CHEMIN;
+
+    // grid[3][0].type = CHEMIN;
+    // grid[4][0].type = CHEMIN;
+    // grid[5][0].type = CHEMIN;
+    // grid[5][1].type = CHEMIN;
+    // grid[6][1].type = CHEMIN;
 
     for (int x = 0; x < gridheight; x++)
     {
         for (int y = 0; y < gridwidth; y++)
         {
             drawCell(grid[x][y]);
+            fflush(stdout);
+            // usleep(200* 1000);
         }
     }
-    fflush(stdout);
 
-    // while (true)
-    // {
-    //     move_to(0, 0);
-    //     // Si possible, il faudra éviter d'appeler clear_screen, ça fait clignoter l'écran, mieux vaut écrire par dessus. -> quand les mises a jour sont rapides (~1/10s pour réécrire la totalité de l'écran)
-    //     clear_screen();
-    //     get_terminal_size(&width, &height);
-
-    //     for (int y = 0; y < height - 5; y++)
-    //     {
-    //         for (int x = 0; x < (grid_width + 2) * (width / (grid_width + 2)); x++)
-    //         {
-    //             // +2 pour l’espace;
-    //             if (x % (grid_width + 2) <= 1 || y % grid_height == 0)
-    //             {
-    //                 printf(" ");
-    //             }
-    //             else
-    //             {
-    //                 // if (x % ((grid_width+2) * 2) < grid_width+2)
-    //                 //     printf("🮘");
-    //                 // else
-    //                 printf("X");
-    //             }
-    //         }
-    //         printf("\n");
-    //     }
-
-    //     printf("Ctrl+C pour quitter\ntaille de la grille: %dx%d  carrées: 7x4 9x5 11x6 13x7...\n", grid_width, grid_height);
-    //     printf("Nouvelle taille ? (nxn): ");
-    //     fflush(stdout);
-
-    //     scanf("%dx%d", &grid_width, &grid_height);
-    //     grid_width = MAX(1, MIN(grid_width, 20));
-    //     grid_height = MAX(1, MIN(grid_height, 20));
-
-    //     // usleep((1.0f / 60) * 1000 * 1000); // limite a  fps < 60Hz (ne prends pas en compte le delay réel)
-    // }
+    printf("\n\n\n\n");
 
     return 0;
 }
