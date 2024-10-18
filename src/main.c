@@ -20,6 +20,7 @@ struct Cell
 {
     int x;
     int y;
+    int index;
     enum CellType type;
     bool visited;
 };
@@ -54,9 +55,9 @@ void drawCell(struct Cell cell)
         {
             // printf("%d")
             int terminal_x = cell.x * (CELL_WIDTH + GAP) + 3;
-            int terminal_y = cell.y * (CELL_HEIGHT + GAP / 2) + y + 2;
+            int terminal_y = cell.y * (CELL_HEIGHT + GAP / 2) + 2;
 
-            move_to(terminal_x, terminal_y);
+            move_to(terminal_x, terminal_y+y);
 
             if (cell.visited)
             {
@@ -73,6 +74,9 @@ void drawCell(struct Cell cell)
                 printf(" ");
             }
             printf("\033[0m");
+
+            move_to(terminal_x + CELL_WIDTH / 2 - 1, terminal_y + CELL_HEIGHT / 2+1);
+            printf("%d %d", cell.x, cell.y);
         }
     }
     if (cell.type == CHEMIN)
@@ -135,14 +139,20 @@ void drawCell(struct Cell cell)
             }
 
             move_to(terminal_x + CELL_WIDTH / 2 - 1, terminal_y + CELL_HEIGHT / 2);
-            printf("🐧");
+            printf("%d", cell.index);
+            move_to(terminal_x + CELL_WIDTH / 2 - 1, terminal_y + CELL_HEIGHT / 2+1);
+            printf("%d %d", cell.x, cell.y);
+            // printf("🐧");
         }
     }
 }
 
 int main()
 {
-    srand(8);
+    // SEEDS FUN: 1729285683
+    unsigned int seed = time(NULL);
+    printf("seed: %d\n", seed);
+    srand(seed);
     // Cette fonction si on l'active n'affichera pas le résultat des printf en direct mais tout d'un coup apres avoir appelé fflush(stdout); (meilleures performances)
     // https://en.cppreference.com/w/c/io/setvbuf
     setvbuf(stdout, NULL, _IOFBF, (MIN_TERMINAL_WIDTH + 5) * (MIN_TERMINAL_HEIGHT + 5));
@@ -235,7 +245,7 @@ int main()
         bool possible_droite = grid[chemin_x + 1][chemin_y + 1].type != CHEMIN    // droite bas
                                && grid[chemin_x + 1][chemin_y - 1].type != CHEMIN // droite haut
                                && grid[chemin_x + 1][chemin_y].type != CHEMIN     // droite
-                               && !grid[chemin_x + 1][chemin_y + 1].visited;
+                               && !grid[chemin_x + 1][chemin_y].visited;
 
         bool possible_gauche = chemin_x - 1 > 1                                   //
                                && grid[chemin_x - 1][chemin_y + 1].type != CHEMIN // gauche bas
@@ -246,9 +256,12 @@ int main()
         if (!posible_bas && !possible_haut && !possible_droite && !possible_gauche)
         {
             grid[chemin_x][chemin_y].type = TERRAIN;
-            history_index--;
+            history_index-=1;
             chemin_x = historique[history_index][0];
             chemin_y = historique[history_index][1];
+            grid[chemin_x][chemin_y].index = history_index;
+            
+            // grid[chemin_x][chemin_y].type = TERRAIN;
             for (int x = 0; x < gridheight; x++)
             {
                 for (int y = 0; y < gridwidth; y++)
@@ -258,7 +271,7 @@ int main()
                     // usleep(200* 1000);
                 }
             }
-            usleep(100000);
+            usleep(10 * 1000);
             fflush(stdout);
             continue;
         }
@@ -288,12 +301,16 @@ int main()
             }
         }
 
+        history_index++;
+
         historique[history_index][0] = chemin_x;
         historique[history_index][1] = chemin_y;
-        history_index++;
 
         grid[chemin_x][chemin_y].type = CHEMIN;
         grid[chemin_x][chemin_y].visited = true;
+        grid[chemin_x][chemin_y].index = history_index;
+
+        
 
         if (chemin_x == gridwidth - 1)
         {
@@ -309,7 +326,7 @@ int main()
                 // usleep(200* 1000);
             }
         }
-        usleep(100000);
+        usleep(10 * 1000);
         fflush(stdout);
     } // FIN  Génération de CHEMIN
 
