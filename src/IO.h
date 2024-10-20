@@ -32,10 +32,3 @@ void get_terminal_size(int *width, int *height)
     *width = w.ws_col;
     *height = w.ws_row;
 }
-
-void cleanup()
-{
-    // move_to(0, 0);
-    // clear_screen();
-    show_cursor();
-}

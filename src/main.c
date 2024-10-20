@@ -4,6 +4,7 @@
 #include <time.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "IO.h"
 
@@ -30,11 +31,15 @@ struct Cell
 CONFIGURATION
 #############
 */
+#define HISTORY_SIZE 500
+
 #define MIN_TERMINAL_WIDTH 120
 #define MIN_TERMINAL_HEIGHT 20
 
-#define CELL_WIDTH 6
-#define CELL_HEIGHT 3
+// TODO: add max size
+
+#define CELL_WIDTH 10
+#define CELL_HEIGHT 5
 
 #define GAP 2
 
@@ -44,7 +49,7 @@ CONFIGURATION
 #################
 */
 int gridheight = 8;
-int gridwidth = 8;
+int gridwidth = 20;
 struct Cell **grid;
 
 void drawCell(struct Cell cell)
@@ -131,9 +136,9 @@ void drawCell(struct Cell cell)
                     printf("─");
                 else if (x >= 1 && x <= CELL_WIDTH && y >= 1 && y <= CELL_HEIGHT)
                 {
-                    printf("\033[104m");
+                    // printf("\033[104m");
                     printf(" ");
-                    printf("\033[0m");
+                    // printf("\033[0m");
                 }
                 else
                 {
@@ -145,6 +150,15 @@ void drawCell(struct Cell cell)
             printf("🐧");
         }
     }
+}
+
+void cleanup()
+{
+    // move_to(0, 0);
+    // clear_screen();
+    show_cursor();
+    printf("Bye.\n");
+    fflush(stdout);
 }
 
 int main()
@@ -188,18 +202,21 @@ int main()
         // usleep(1000);
     }
 
+    gridwidth = (width - 2) / (CELL_WIDTH + 2);
+    gridheight = (height - 2) / (CELL_HEIGHT + 1);
+
     /*
         ###########################
         INITIALISATION DE LA GRILLE
         ###########################
     */
     grid = malloc(sizeof(struct Cell *) * gridwidth); // Première coordonnée: x / largeur
-    for (int x = 0; x < gridheight; x++)
+    for (int x = 0; x < gridwidth; x++)
     {
 
         grid[x] = malloc(sizeof(struct Cell) * gridheight); // deuxième coordonnée: y / hauteur
 
-        for (int y = 0; y < gridwidth; y++)
+        for (int y = 0; y < gridheight; y++)
         {
             grid[x][y].x = x;
             grid[x][y].y = y;
@@ -224,7 +241,14 @@ int main()
     grid[0][chemin_y].type = CHEMIN; // 2 premieres cases sans les autres options, fixées à une hauteur aléatoire
     grid[chemin_x][chemin_y].type = CHEMIN;
 
-    int historique[100][2];
+    // int historique[100][2];
+    int **historique;
+    historique = malloc(HISTORY_SIZE * (sizeof(int*)));
+    for (size_t i = 0; i < HISTORY_SIZE; i++)
+    {
+        historique[i] = malloc(2 * sizeof(int));
+    }
+
     int history_index = 0;
 
     while (variable_arret1 == 0)
@@ -268,16 +292,16 @@ int main()
             chemin_y = historique[history_index][1];
             grid[chemin_x][chemin_y].index = history_index;
 
-            for (int x = 0; x < gridheight; x++)
+            for (int x = 0; x < gridwidth; x++)
             {
-                for (int y = 0; y < gridwidth; y++)
+                for (int y = 0; y < gridheight; y++)
                 {
                     drawCell(grid[x][y]);
-                    fflush(stdout);
+                    // fflush(stdout);
                 }
             }
-            usleep(10 * 1000);
-            fflush(stdout);
+            // usleep(0.1 * 1000);
+            // fflush(stdout);
             continue;
         }
 
@@ -307,6 +331,7 @@ int main()
         }
 
         history_index++;
+        assert(history_index < HISTORY_SIZE);
 
         historique[history_index][0] = chemin_x;
         historique[history_index][1] = chemin_y;
@@ -319,31 +344,44 @@ int main()
         {
             variable_arret1 = 69;
         }
-        drawCell(grid[chemin_x][chemin_y]);
-        for (int x = 0; x < gridheight; x++)
-        {
-            for (int y = 0; y < gridwidth; y++)
-            {
-                drawCell(grid[x][y]);
-                fflush(stdout);
-            }
-        }
-        usleep(10 * 1000);
-        fflush(stdout);
+        // drawCell(grid[chemin_x][chemin_y]);
+        // for (int x = 0; x < gridwidth; x++)
+        // {
+        //     for (int y = 0; y < gridheight; y++)
+        //     {
+        //         // drawCell(grid[x][y]);
+        //         // fflush(stdout);
+        //     }
+        // }
+        // usleep(0.1 * 1000);
+        // fflush(stdout);
     } // FIN  Génération de CHEMIN
 
     clear_screen();
 
-    for (int x = 0; x < gridheight; x++)
+    for (int x = 0; x < gridwidth; x++)
     {
-        for (int y = 0; y < gridwidth; y++)
+        for (int y = 0; y < gridheight; y++)
         {
             drawCell(grid[x][y]);
             fflush(stdout);
         }
     }
 
+    usleep(5 * 1000 * 1000);
     printf("\n\n\n\n");
+
+    for (int x = 0; x < gridwidth; x++)
+    {
+        free(grid[x]);
+    }
+    free(grid);
+
+    for (size_t i = 0; i < HISTORY_SIZE; i++)
+    {
+        free(historique[i]);
+    }
+    free(historique);
 
     return 0;
 }
