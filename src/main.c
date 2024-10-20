@@ -43,14 +43,30 @@ CONFIGURATION
 ÉTAT DU PROGRAMME
 #################
 */
-int gridheight = 15;
-int gridwidth = 15;
+int gridheight = 8;
+int gridwidth = 8;
 struct Cell **grid;
 
 void drawCell(struct Cell cell)
 {
     if (cell.type == TERRAIN)
     {
+        bool neighbor = false;
+        for (int dx = -1; dx <= 1; dx++)
+        {
+            for (int dy = -1; dy <= 1; dy++)
+            {
+                if (cell.x + dx >= 0 && cell.y + dy >= 0 && cell.x + dx < gridwidth && cell.y + dy < gridheight && grid[cell.x + dx][cell.y + dy].type == CHEMIN)
+                {
+                    neighbor = true;
+                }
+            }
+        }
+
+        if (neighbor)
+        {
+            printf("\033[100m");
+        }
         for (int y = 0; y < CELL_HEIGHT; y++)
         {
             int terminal_x = cell.x * (CELL_WIDTH + GAP) + 3;
@@ -63,6 +79,7 @@ void drawCell(struct Cell cell)
                 printf(" ");
             }
         }
+        printf("\033[0m");
     }
     if (cell.type == CHEMIN)
     {
@@ -325,8 +342,6 @@ int main()
             fflush(stdout);
         }
     }
-
-
 
     printf("\n\n\n\n");
 
