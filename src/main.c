@@ -53,30 +53,15 @@ void drawCell(struct Cell cell)
     {
         for (int y = 0; y < CELL_HEIGHT; y++)
         {
-            // printf("%d")
             int terminal_x = cell.x * (CELL_WIDTH + GAP) + 3;
             int terminal_y = cell.y * (CELL_HEIGHT + GAP / 2) + 2;
 
-            move_to(terminal_x, terminal_y+y);
+            move_to(terminal_x, terminal_y + y);
 
-            if (cell.visited)
-            {
-
-                printf("\033[43m");
-            }
-            else
-            {
-
-                printf("\033[42m");
-            }
             for (int x = 0; x < CELL_WIDTH; x++)
             {
                 printf(" ");
             }
-            printf("\033[0m");
-
-            // move_to(terminal_x + CELL_WIDTH / 2 - 1, terminal_y + CELL_HEIGHT / 2+1);
-            // printf("%d %d", cell.x, cell.y);
         }
     }
     if (cell.type == CHEMIN)
@@ -99,27 +84,28 @@ void drawCell(struct Cell cell)
 
             for (int x = 0; x < CELL_WIDTH + 2; x++)
             {
+                bool side = (cell.x == 0 && x == 0) || (cell.x == gridwidth - 1 && x == CELL_WIDTH + 1);
                 if (
-                    x == 0 && y == 0 && !chemin_vers_gauche && !chemin_vers_haut                                             //
-                    || (x == CELL_WIDTH + 1 && y == CELL_HEIGHT + 1 && chemin_vers_bas && chemin_vers_droite)                //
-                    || (x == CELL_WIDTH + 1 && y == 0 && chemin_vers_haut_droit && chemin_vers_haut && !chemin_vers_droite)) //
+                    !side && (x == 0 && y == 0 && !chemin_vers_gauche && !chemin_vers_haut                                              //
+                              || (x == CELL_WIDTH + 1 && y == CELL_HEIGHT + 1 && chemin_vers_bas && chemin_vers_droite)                 //
+                              || (x == CELL_WIDTH + 1 && y == 0 && chemin_vers_haut_droit && chemin_vers_haut && !chemin_vers_droite))) //
                     //
                     printf("╭");
-                else if ((x == CELL_WIDTH + 1 && y == 0 && !chemin_vers_droite && !chemin_vers_haut)  //
-                         || (x == 0 && y == CELL_HEIGHT + 1 && chemin_vers_gauche && chemin_vers_bas) //
-                         || (x == 0 && y == 0 && chemin_vers_haut && chemin_vers_haut_gauche && !chemin_vers_gauche))
+                else if (!side && ((x == CELL_WIDTH + 1 && y == 0 && !chemin_vers_droite && !chemin_vers_haut)  //
+                                   || (x == 0 && y == CELL_HEIGHT + 1 && chemin_vers_gauche && chemin_vers_bas) //
+                                   || (x == 0 && y == 0 && chemin_vers_haut && chemin_vers_haut_gauche && !chemin_vers_gauche)))
                     //
                     printf("╮");
-                else if (x == CELL_WIDTH + 1 && y == CELL_HEIGHT + 1 && !chemin_vers_droite && !chemin_vers_bas //
-                         || (x == 0 && y == 0 && chemin_vers_haut && chemin_vers_gauche && !chemin_vers_haut_gauche))
+                else if (!side && (x == CELL_WIDTH + 1 && y == CELL_HEIGHT + 1 && !chemin_vers_droite && !chemin_vers_bas //
+                                   || (x == 0 && y == 0 && chemin_vers_haut && chemin_vers_gauche && !chemin_vers_haut_gauche)))
                     //
                     printf("╯");
-                else if (x == 0 && y == CELL_HEIGHT + 1 && !chemin_vers_gauche && !chemin_vers_bas //
-                         || (y == 0 && x == CELL_WIDTH + 1 && chemin_vers_haut && chemin_vers_droite && !chemin_vers_haut_droit))
+                else if (!side && (x == 0 && y == CELL_HEIGHT + 1 && !chemin_vers_gauche && !chemin_vers_bas //
+                                   || (y == 0 && x == CELL_WIDTH + 1 && chemin_vers_haut && chemin_vers_droite && !chemin_vers_haut_droit)))
                     //
                     printf("╰");
-                else if (((x == 0 && !chemin_vers_gauche) //
-                          || (x == CELL_WIDTH + 1 && !chemin_vers_droite)))
+                else if (!((cell.x == 0 && x == 0) || (cell.x == gridwidth - 1 && x == CELL_WIDTH + 1)) && ((x == 0 && !chemin_vers_gauche) //
+                                                                                                            || (x == CELL_WIDTH + 1 && !chemin_vers_droite)))
                     //
                     printf("│");
                 else if (((y == 0 && !chemin_vers_haut) //
@@ -139,9 +125,6 @@ void drawCell(struct Cell cell)
             }
 
             move_to(terminal_x + CELL_WIDTH / 2 - 1, terminal_y + CELL_HEIGHT / 2);
-            // printf("%d", cell.index);
-            // move_to(terminal_x + CELL_WIDTH / 2 - 1, terminal_y + CELL_HEIGHT / 2+1);
-            // printf("%d %d", cell.x, cell.y);
             printf("🐧");
         }
     }
@@ -229,47 +212,51 @@ int main()
 
     while (variable_arret1 == 0)
     {
-        // TODO: Rajouter Gauche gauche, droite droite, bas bas, haut haut ? pour éviter contact indirect
-
-        bool posible_bas = chemin_y + 1 < gridheight - 1                      //
+        bool posible_bas = chemin_y < gridheight - 2                          //
                            && grid[chemin_x - 1][chemin_y + 1].type != CHEMIN // bas gauche
                            && grid[chemin_x + 1][chemin_y + 1].type != CHEMIN // bas droite
                            && grid[chemin_x][chemin_y + 1].type != CHEMIN     // bas
+                           && grid[chemin_x - 1][chemin_y + 2].type != CHEMIN // bas bas gauche
+                           && grid[chemin_x][chemin_y + 2].type != CHEMIN     // bas bas
                            && !grid[chemin_x][chemin_y + 1].visited;
 
-        bool possible_haut = chemin_y - 1 > 1                                   //
+        bool possible_haut = chemin_y > 1                                       //
                              && grid[chemin_x - 1][chemin_y - 1].type != CHEMIN // haut gauche
                              && grid[chemin_x + 1][chemin_y - 1].type != CHEMIN // haut droit
                              && grid[chemin_x][chemin_y - 1].type != CHEMIN     // haut
+                             && grid[chemin_x][chemin_y - 2].type != CHEMIN     // haut haut
+                             && grid[chemin_x - 1][chemin_y - 2].type != CHEMIN // haut haut gauche
                              && !grid[chemin_x][chemin_y - 1].visited;
 
-        bool possible_droite = grid[chemin_x + 1][chemin_y + 1].type != CHEMIN    // droite bas
-                               && grid[chemin_x + 1][chemin_y - 1].type != CHEMIN // droite haut
-                               && grid[chemin_x + 1][chemin_y].type != CHEMIN     // droite
+        bool possible_droite = grid[chemin_x + 1][chemin_y + 1].type != CHEMIN                               // droite bas
+                               && grid[chemin_x + 1][chemin_y - 1].type != CHEMIN                            // droite haut
+                               && grid[chemin_x + 1][chemin_y].type != CHEMIN                                // droite
+                               && (chemin_x == gridwidth - 2 || grid[chemin_x + 2][chemin_y].type != CHEMIN) // droite droite
                                && !grid[chemin_x + 1][chemin_y].visited;
 
-        bool possible_gauche = chemin_x - 1 > 1                                   //
+        bool possible_gauche = chemin_x > 1                                       //
                                && grid[chemin_x - 1][chemin_y + 1].type != CHEMIN // gauche bas
                                && grid[chemin_x - 1][chemin_y - 1].type != CHEMIN // gauche haut
                                && grid[chemin_x - 1][chemin_y].type != CHEMIN     // gauche
+                               && grid[chemin_x - 2][chemin_y].type != CHEMIN     // gauche gauche
+                               && grid[chemin_x - 2][chemin_y + 1].type != CHEMIN // gauche gauche haut
+                               && grid[chemin_x - 2][chemin_y - 1].type != CHEMIN // gauche gauche bas
                                && !grid[chemin_x - 1][chemin_y].visited;
 
         if (!posible_bas && !possible_haut && !possible_droite && !possible_gauche)
         {
             grid[chemin_x][chemin_y].type = TERRAIN;
-            history_index-=1;
+            history_index -= 1;
             chemin_x = historique[history_index][0];
             chemin_y = historique[history_index][1];
             grid[chemin_x][chemin_y].index = history_index;
-            
-            // grid[chemin_x][chemin_y].type = TERRAIN;
+
             for (int x = 0; x < gridheight; x++)
             {
                 for (int y = 0; y < gridwidth; y++)
                 {
                     drawCell(grid[x][y]);
                     fflush(stdout);
-                    // usleep(200* 1000);
                 }
             }
             usleep(10 * 1000);
@@ -311,8 +298,6 @@ int main()
         grid[chemin_x][chemin_y].visited = true;
         grid[chemin_x][chemin_y].index = history_index;
 
-        
-
         if (chemin_x == gridwidth - 1)
         {
             variable_arret1 = 69;
@@ -324,12 +309,13 @@ int main()
             {
                 drawCell(grid[x][y]);
                 fflush(stdout);
-                // usleep(200* 1000);
             }
         }
         usleep(10 * 1000);
         fflush(stdout);
     } // FIN  Génération de CHEMIN
+
+    clear_screen();
 
     for (int x = 0; x < gridheight; x++)
     {
@@ -337,9 +323,10 @@ int main()
         {
             drawCell(grid[x][y]);
             fflush(stdout);
-            // usleep(200* 1000);
         }
     }
+
+
 
     printf("\n\n\n\n");
 
