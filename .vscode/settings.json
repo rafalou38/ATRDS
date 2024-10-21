@@ -12,5 +12,9 @@
     "format": "cpp",
     "any": "cpp",
     "complex": "cpp"
-  }
+  },
+  "explorer.fileNesting.enabled": true,
+	"explorer.fileNesting.patterns": {
+		"*.c": "${capture}.h"
+	},
 }

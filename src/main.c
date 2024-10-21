@@ -1,6 +1,5 @@
 #include "shared.h"
 
-#include "IO.h"
 #include "grid.h"
 #include "enemies.h"
 
@@ -23,7 +22,7 @@ void cleanup()
 int main()
 {
     // SEEDS FUN: énorme jaune: 1729285683    /    problème ? 1729285706
-    unsigned int seed = time(NULL);
+    unsigned int seed = 1729518567 ;//time(NULL);
     printf("seed: %d\n", seed);
     srand(seed);
     // Cette fonction si on l'active n'affichera pas le résultat des printf en direct mais tout d'un coup apres avoir appelé fflush(stdout); (meilleures performances)
@@ -47,10 +46,30 @@ int main()
     allocateGridCells(&grid);
 
     enemyPool = AllocEnemyPool();
-    genBasicPath(grid);
+    genBasicPath(&grid);
 
     clear_screen();
     drawFullGrid(grid);
+
+    addEnemy(grid, &enemyPool, ENEMY_TUX, grid.start_x, grid.start_y);
+
+    while (true)
+    {
+        /* code */
+        if (rand() % 200 == 0)
+            addEnemy(grid, &enemyPool, ENEMY_TUX, grid.start_x, grid.start_y);
+
+        updateEnemies(&enemyPool, grid);
+        clearPath(grid);
+        drawEnemies(enemyPool, grid);
+
+        move_to(0,0);
+        printf("Enemy count %d/%d", enemyPool.count, enemyPool.length);
+
+        fflush(stdout);
+        msleep(10);
+    }
+
 
     printf("\n");
     printf("\n");
@@ -62,3 +81,5 @@ int main()
 
     return 0;
 }
+
+// 1729518567
