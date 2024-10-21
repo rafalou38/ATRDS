@@ -33,14 +33,20 @@ CONFIGURATION
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define CLAMP(x, a,b) MIN(MAX(x,a),b)
-
+#define CLAMP(x, a, b) MIN(MAX(x, a), b)
 
 /*
 ##################
 ## Types custom ##
 ##################
 */
+
+typedef struct EnemyPool
+{
+    int length; // Taille du tableau
+    int count;  // Nombre d’ennemis dans le tableau
+    struct Enemy *enemies;
+} EnemyPool;
 
 enum CellType
 {

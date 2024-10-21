@@ -92,7 +92,8 @@ int main()
         }
 
         updateEnemies(&enemyPool, grid, delta_t);
-        clearPath(grid);
+        // clearPath(grid)
+        clearUsedPath(grid, enemyPool);
         drawEnemies(enemyPool, grid);
 
         move_to(0, 0);

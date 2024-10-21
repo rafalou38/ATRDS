@@ -1,4 +1,5 @@
 #include "grid.h"
+#include "enemies.h"
 
 void allocateGridCells(Grid *grid)
 {
@@ -73,7 +74,7 @@ void genBasicPath(Grid *grid)
 
     while (chemin_x != grid->width - 1)
     {
-        bool posible_bas = chemin_y < grid->height - 2                          //
+        bool posible_bas = chemin_y < grid->height - 2                         //
                            && cells[chemin_x - 1][chemin_y + 1].type != CHEMIN // bas gauche
                            && cells[chemin_x + 1][chemin_y + 1].type != CHEMIN // bas droite
                            && cells[chemin_x][chemin_y + 1].type != CHEMIN     // bas
@@ -89,9 +90,9 @@ void genBasicPath(Grid *grid)
                              && cells[chemin_x - 1][chemin_y - 2].type != CHEMIN // haut haut gauche
                              && !cells[chemin_x][chemin_y - 1].visited;
 
-        bool possible_droite = cells[chemin_x + 1][chemin_y + 1].type != CHEMIN                                // droite bas
-                               && cells[chemin_x + 1][chemin_y - 1].type != CHEMIN                             // droite haut
-                               && cells[chemin_x + 1][chemin_y].type != CHEMIN                                 // droite
+        bool possible_droite = cells[chemin_x + 1][chemin_y + 1].type != CHEMIN                                 // droite bas
+                               && cells[chemin_x + 1][chemin_y - 1].type != CHEMIN                              // droite haut
+                               && cells[chemin_x + 1][chemin_y].type != CHEMIN                                  // droite
                                && (chemin_x == grid->width - 2 || cells[chemin_x + 2][chemin_y].type != CHEMIN) // droite droite
                                && !cells[chemin_x + 1][chemin_y].visited;
 
@@ -277,6 +278,28 @@ void clearPath(Grid grid)
         {
             if (grid.cells[x][y].type == CHEMIN)
                 drawCell(grid.cells[x][y], grid);
+        }
+    }
+}
+
+void clearUsedPath(Grid grid, EnemyPool ep)
+{
+    for (int x = 0; x < grid.width; x++)
+    {
+        for (int y = 0; y < grid.height; y++)
+        {
+            if (grid.cells[x][y].type == CHEMIN)
+            {
+
+                for (int i = 0; i < ep.count; i++)
+                {
+                    if (((int)ep.enemies[i].grid_x == x && (int)ep.enemies[i].grid_y == y) || (ep.enemies[i].previous_cell.x == x && ep.enemies[i].previous_cell.y == y))
+                    {
+                        drawCell(grid.cells[x][y], grid);
+                        break;
+                    }
+                }
+            }
         }
     }
 }
