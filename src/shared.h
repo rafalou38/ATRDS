@@ -26,8 +26,8 @@ CONFIGURATION
 
 // TODO: add max size
 
-#define CELL_WIDTH 8
-#define CELL_HEIGHT 4
+#define CELL_WIDTH 10
+#define CELL_HEIGHT 5
 
 #define GAP 2
 

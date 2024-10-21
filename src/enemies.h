@@ -152,14 +152,43 @@ void drawEnemies(EnemyPool ep, Grid grid)
 
         int terminal_x = (cell.x * (CELL_WIDTH + GAP) + 3);
         int terminal_y = (cell.y * (CELL_HEIGHT + GAP / 2) + 2);
+        int px = terminal_x + (CELL_WIDTH + GAP) * (enemy->grid_x - (int)enemy->grid_x);
+        int py = terminal_y + (CELL_HEIGHT + GAP / 2) * (enemy->grid_y - (int)enemy->grid_y);
 
         if (enemy->type == ENEMY_TUX)
         {
-            move_to(
-                terminal_x + (CELL_WIDTH + GAP) * (enemy->grid_x - (int)enemy->grid_x),
-                terminal_y + (CELL_HEIGHT + GAP / 2) * (enemy->grid_y - (int)enemy->grid_y));
+            move_to(px, py);
             printf("🦍");
         }
+
+        move_to(px - 1, py - 1);
+        printf("\033[48;5;236m\033[38;5;160m");
+        for (int i = 0; i < 4; i++)
+        {
+            float ratio = enemy->hp / (float)enemy->maxHP;
+
+            float rest = ratio * 4 - i;
+
+            if (rest >= 1)
+                printf("█");
+            else if (rest >= 6.0f / 8.0f)
+                printf("▉");
+            else if (rest >= 3.0f / 4.0f)
+                printf("▊");
+            else if (rest >= 5.0f / 8.0f)
+                printf("▋");
+            else if (rest >= 1.0f / 2.0f)
+                printf("▌");
+            else if (rest >= 3.0f / 8.0f)
+                printf("▍");
+            else if (rest >= 1.0f / 4.0f)
+                printf("▎");
+            else if (rest >= 1.0f / 8.0f)
+                printf("▏");
+            else
+                printf(" ");
+        }
+        printf("\033[0m");
     }
 }
 
@@ -208,7 +237,7 @@ void updateEnemies(EnemyPool *ep, Grid grid, float dt_sec)
             enemy->previous_cell = cell;
         }
 
-        float rand_factor = 0.4;
+        float rand_factor = 0.5;
         // float rand_factor = 0.4 + ((float)rand() / RAND_MAX) * 0.2;
 
         // Le déplacement se fait dans le repère orthonormé de la grille, indépendant de la dimension du terminal.
@@ -237,6 +266,9 @@ void updateEnemies(EnemyPool *ep, Grid grid, float dt_sec)
             enemy->state = ENEMY_STATE_ARRIVED;
             defragNeeded = true;
         }
+
+        if (enemy->hp > 0)
+            enemy->hp -= (rand() % 100)/10000.0f;
     }
 
     if (defragNeeded)
