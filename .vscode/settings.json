@@ -1,3 +1,16 @@
 {
-  "C_Cpp_Runner.msvcBatchPath": ""
+  "C_Cpp_Runner.msvcBatchPath": "",
+  "files.associations": {
+    ".env": "ini",
+    ".postcssrc": "jsonc",
+    "*.svx": "mdx",
+    "*.css": "css",
+    "*.meta": "yaml",
+    "*.uss": "css",
+    "*.uxml": "xml",
+    "hash_map": "cpp",
+    "format": "cpp",
+    "any": "cpp",
+    "complex": "cpp"
+  }
 }
