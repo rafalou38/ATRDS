@@ -1,7 +1,8 @@
 #include "shared.h"
-#include "IO.h"
 
+#include "IO.h"
 #include "grid.h"
+#include "enemies.h"
 
 /*
 #################
@@ -11,7 +12,7 @@
 int gridheight = 8;
 int gridwidth = 20;
 struct Cell **grid;
-
+EnemyPool enemyPool;
 
 void cleanup()
 {
@@ -44,8 +45,8 @@ int main()
     gridwidth = (width - 2) / (CELL_WIDTH + 2);
     gridheight = (height - 2) / (CELL_HEIGHT + 1);
 
-
     grid = allocateGrid(gridwidth, gridheight);
+    enemyPool = AllocEnemyPool();
     genBasicPath(grid, gridwidth, gridheight);
 
     clear_screen();
@@ -58,8 +59,11 @@ int main()
     }
     fflush(stdout);
 
+    printf("\n");
+    printf("\n");
 
     freeGrid(grid, gridwidth);
+    freeEnemyPool(enemyPool);
 
     printf("\n");
 

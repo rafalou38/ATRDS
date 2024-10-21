@@ -19,6 +19,10 @@ void show_cursor()
     printf("\033[?25h");
 }
 
+void printCritical(char *errorMessage){
+    printf("\033[91;4mCRITICAL\033[24m: %s \033[0m\n", errorMessage);
+}
+
 
 void get_terminal_size(int *width, int *height)
 {

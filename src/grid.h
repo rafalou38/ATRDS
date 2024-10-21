@@ -4,10 +4,20 @@ struct Cell **allocateGrid(int width, int height)
 {
     struct Cell **grid;
     grid = (struct Cell **)malloc(sizeof(struct Cell *) * width); // Première coordonnée: x / largeur
+    if (grid == NULL)
+    {
+        printCritical("Failed to allocate grid");
+        exit(EXIT_FAILURE);
+    }
     for (int x = 0; x < width; x++)
     {
 
         grid[x] = (struct Cell *)malloc(sizeof(struct Cell) * height); // deuxième coordonnée: y / hauteur
+        if (grid[x] == NULL)
+        {
+            printCritical("Failed to allocate grid col");
+            exit(EXIT_FAILURE);
+        }
 
         for (int y = 0; y < height; y++)
         {
@@ -21,13 +31,16 @@ struct Cell **allocateGrid(int width, int height)
     return grid;
 }
 
-void freeGrid(struct Cell ** grid, int width)
+void freeGrid(struct Cell **grid, int width)
 {
+    printf("\033[38;5;243m $\033[0m Freeing \033[38;5;11;1m%d\033[0m grid cols:\t", width);
     for (int x = 0; x < width; x++)
     {
         free(grid[x]);
     }
     free(grid);
+
+    printf("\033[38;5;42m Done \033[0m\n");
 }
 
 void genBasicPath(struct Cell **grid, int width, int height)
