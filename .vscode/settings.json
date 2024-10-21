@@ -9,6 +9,8 @@
     "*.uss": "css",
     "*.uxml": "xml",
     "hash_map": "cpp",
-    "format": "cpp"
+    "format": "cpp",
+    "any": "cpp",
+    "complex": "cpp"
   }
 }

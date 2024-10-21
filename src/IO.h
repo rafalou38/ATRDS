@@ -1,5 +1,6 @@
 #pragma once
 #include "shared.h"
+#include "IO.h"
 
 // Liste des codes: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
 void move_to(int x, int y)
@@ -19,10 +20,10 @@ void show_cursor()
     printf("\033[?25h");
 }
 
-void printCritical(char *errorMessage){
+void printCritical(char *errorMessage)
+{
     printf("\033[91;4mCRITICAL\033[24m: %s \033[0m\n", errorMessage);
 }
-
 
 void get_terminal_size(int *width, int *height)
 {
@@ -44,7 +45,7 @@ void checkTerminalSize(int *width, int *height)
         move_to(*width / 2 - 20, *height / 2 - 1);
         printf("Merci d'agrandir le terminal ou de dézoomer avec la commande \"ctrl -\"");
         move_to(*width / 2 - 7, *height / 2);
-        printf("Colones: %d/%d", width, MIN_TERMINAL_WIDTH);
+        printf("Colones: %d/%d", *width, MIN_TERMINAL_WIDTH);
         move_to(*width / 2 - 7, *height / 2 + 1);
         printf("Rangées: %d/%d", *height, MIN_TERMINAL_HEIGHT);
 
@@ -52,11 +53,11 @@ void checkTerminalSize(int *width, int *height)
 
         fflush(stdout);
 
-        usleep(1000);
+        msleep(200);
     }
 }
 
-void drawCell(struct Cell cell, struct Cell** grid, int gridwidth, int gridheight)
+void drawCell(struct Cell cell, Grid grid)
 {
     if (cell.type == TERRAIN)
     {
@@ -65,7 +66,7 @@ void drawCell(struct Cell cell, struct Cell** grid, int gridwidth, int gridheigh
         {
             for (int dy = -1; dy <= 1; dy++)
             {
-                if (cell.x + dx >= 0 && cell.y + dy >= 0 && cell.x + dx < gridwidth && cell.y + dy < gridheight && grid[cell.x + dx][cell.y + dy].type == CHEMIN)
+                if (cell.x + dx >= 0 && cell.y + dy >= 0 && cell.x + dx < grid.width && cell.y + dy < grid.height && grid.cells[cell.x + dx][cell.y + dy].type == CHEMIN)
                 {
                     neighbor = true;
                 }
@@ -93,13 +94,13 @@ void drawCell(struct Cell cell, struct Cell** grid, int gridwidth, int gridheigh
     if (cell.type == CHEMIN)
     {
         // Détermination du type de chemin
-        bool chemin_vers_haut = cell.y - 1 >= 0 && grid[cell.x][cell.y - 1].type == CHEMIN;
-        bool chemin_vers_droite = cell.x + 1 < gridwidth && grid[cell.x + 1][cell.y].type == CHEMIN;
-        bool chemin_vers_bas = cell.y + 1 < gridheight && grid[cell.x][cell.y + 1].type == CHEMIN;
-        bool chemin_vers_gauche = cell.x - 1 >= 0 && grid[cell.x - 1][cell.y].type == CHEMIN;
+        bool chemin_vers_haut = cell.y - 1 >= 0 && grid.cells[cell.x][cell.y - 1].type == CHEMIN;
+        bool chemin_vers_droite = cell.x + 1 < grid.width && grid.cells[cell.x + 1][cell.y].type == CHEMIN;
+        bool chemin_vers_bas = cell.y + 1 < grid.height && grid.cells[cell.x][cell.y + 1].type == CHEMIN;
+        bool chemin_vers_gauche = cell.x - 1 >= 0 && grid.cells[cell.x - 1][cell.y].type == CHEMIN;
 
-        bool chemin_vers_haut_gauche = cell.x - 1 >= 0 && cell.y - 1 >= 0 && grid[cell.x - 1][cell.y - 1].type == CHEMIN;
-        bool chemin_vers_haut_droit = cell.x + 1 < gridwidth && cell.y - 1 >= 0 && grid[cell.x + 1][cell.y - 1].type == CHEMIN;
+        bool chemin_vers_haut_gauche = cell.x - 1 >= 0 && cell.y - 1 >= 0 && grid.cells[cell.x - 1][cell.y - 1].type == CHEMIN;
+        bool chemin_vers_haut_droit = cell.x + 1 < grid.width && cell.y - 1 >= 0 && grid.cells[cell.x + 1][cell.y - 1].type == CHEMIN;
 
         for (int y = 0; y < CELL_HEIGHT + 2; y++)
         {
@@ -110,9 +111,9 @@ void drawCell(struct Cell cell, struct Cell** grid, int gridwidth, int gridheigh
 
             for (int x = 0; x < CELL_WIDTH + 2; x++)
             {
-                bool side = (cell.x == 0 && x == 0) || (cell.x == gridwidth - 1 && x == CELL_WIDTH + 1);
+                bool side = (cell.x == 0 && x == 0) || (cell.x == grid.width - 1 && x == CELL_WIDTH + 1);
                 if (
-                    !side && (x == 0 && y == 0 && !chemin_vers_gauche && !chemin_vers_haut                                              //
+                    !side && ((x == 0 && y == 0 && !chemin_vers_gauche && !chemin_vers_haut)                                            //
                               || (x == CELL_WIDTH + 1 && y == CELL_HEIGHT + 1 && chemin_vers_bas && chemin_vers_droite)                 //
                               || (x == CELL_WIDTH + 1 && y == 0 && chemin_vers_haut_droit && chemin_vers_haut && !chemin_vers_droite))) //
                     //
@@ -122,16 +123,16 @@ void drawCell(struct Cell cell, struct Cell** grid, int gridwidth, int gridheigh
                                    || (x == 0 && y == 0 && chemin_vers_haut && chemin_vers_haut_gauche && !chemin_vers_gauche)))
                     //
                     printf("╮");
-                else if (!side && (x == CELL_WIDTH + 1 && y == CELL_HEIGHT + 1 && !chemin_vers_droite && !chemin_vers_bas //
+                else if (!side && ((x == CELL_WIDTH + 1 && y == CELL_HEIGHT + 1 && !chemin_vers_droite && !chemin_vers_bas) //
                                    || (x == 0 && y == 0 && chemin_vers_haut && chemin_vers_gauche && !chemin_vers_haut_gauche)))
                     //
                     printf("╯");
-                else if (!side && (x == 0 && y == CELL_HEIGHT + 1 && !chemin_vers_gauche && !chemin_vers_bas //
+                else if (!side && ((x == 0 && y == CELL_HEIGHT + 1 && !chemin_vers_gauche && !chemin_vers_bas) //
                                    || (y == 0 && x == CELL_WIDTH + 1 && chemin_vers_haut && chemin_vers_droite && !chemin_vers_haut_droit)))
                     //
                     printf("╰");
-                else if (!((cell.x == 0 && x == 0) || (cell.x == gridwidth - 1 && x == CELL_WIDTH + 1)) && ((x == 0 && !chemin_vers_gauche) //
-                                                                                                            || (x == CELL_WIDTH + 1 && !chemin_vers_droite)))
+                else if (!((cell.x == 0 && x == 0) || (cell.x == grid.width - 1 && x == CELL_WIDTH + 1)) && ((x == 0 && !chemin_vers_gauche) //
+                                                                                                             || (x == CELL_WIDTH + 1 && !chemin_vers_droite)))
                     //
                     printf("│");
                 else if (((y == 0 && !chemin_vers_haut) //

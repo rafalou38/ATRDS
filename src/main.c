@@ -9,9 +9,8 @@
 ÉTAT DU PROGRAMME
 #################
 */
-int gridheight = 8;
-int gridwidth = 20;
-struct Cell **grid;
+
+Grid grid;
 EnemyPool enemyPool;
 
 void cleanup()
@@ -42,27 +41,21 @@ int main()
 
     checkTerminalSize(&width, &height);
 
-    gridwidth = (width - 2) / (CELL_WIDTH + 2);
-    gridheight = (height - 2) / (CELL_HEIGHT + 1);
+    grid.width = (width - 2) / (CELL_WIDTH + 2);
+    grid.height = (height - 2) / (CELL_HEIGHT + 1);
 
-    grid = allocateGrid(gridwidth, gridheight);
+    allocateGridCells(&grid);
+
     enemyPool = AllocEnemyPool();
-    genBasicPath(grid, gridwidth, gridheight);
+    genBasicPath(grid);
 
     clear_screen();
-    for (int x = 0; x < gridwidth; x++)
-    {
-        for (int y = 0; y < gridheight; y++)
-        {
-            drawCell(grid[x][y], grid, gridwidth, gridheight);
-        }
-    }
-    fflush(stdout);
+    drawFullGrid(grid);
 
     printf("\n");
     printf("\n");
 
-    freeGrid(grid, gridwidth);
+    freeGrid(grid);
     freeEnemyPool(enemyPool);
 
     printf("\n");
