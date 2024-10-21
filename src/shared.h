@@ -10,6 +10,7 @@
 #include <errno.h>
 #include <time.h>
 #include <math.h>
+#include <signal.h>
 
 /*
 #############
@@ -21,10 +22,12 @@ CONFIGURATION
 #define MIN_TERMINAL_WIDTH 120
 #define MIN_TERMINAL_HEIGHT 20
 
+#define TARGET_FPS 45
+
 // TODO: add max size
 
-#define CELL_WIDTH 12
-#define CELL_HEIGHT 6
+#define CELL_WIDTH 8
+#define CELL_HEIGHT 4
 
 #define GAP 2
 

@@ -39,7 +39,7 @@ typedef struct EnemyPool
 {
     int length; // Taille du tableau
     int count;  // Nombre d’ennemis dans le tableau
-    struct Enemy **enemies;
+    struct Enemy *enemies;
 } EnemyPool;
 
 EnemyPool AllocEnemyPool()
@@ -47,7 +47,7 @@ EnemyPool AllocEnemyPool()
     EnemyPool ep;
     ep.length = 0x100; // 256
     ep.count = 0x0;
-    ep.enemies = (struct Enemy **)malloc(sizeof(struct Enemy *) * ep.length);
+    ep.enemies = (struct Enemy *)malloc(sizeof(struct Enemy) * ep.length);
     if (ep.enemies == NULL)
     {
         printCritical("Failed to allocate enemy pool");
@@ -60,11 +60,6 @@ EnemyPool AllocEnemyPool()
 void freeEnemyPool(EnemyPool ep)
 {
     printf("\033[38;5;243m $\033[0m Freeing \033[38;5;11;1m%d\033[0m enemies:\t", ep.count);
-    for (int i = 0; i < ep.count; i++)
-    {
-        free(ep.enemies[i]);
-    }
-
     free(ep.enemies);
     printf("\033[38;5;42m Done \033[0m\n");
 }
@@ -74,23 +69,24 @@ void addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int st
     if (ep->count < ep->length)
     {
 
-        struct Enemy *newEnemy = malloc(sizeof(struct Enemy));
+        struct Enemy newEnemy;
 
-        newEnemy->hp = 10;
-        newEnemy->maxHP = 10;
+        newEnemy.hp = 10;
+        newEnemy.maxHP = 10;
 
-        newEnemy->speed = 0.015;
+        newEnemy.speed = 0.5f;
 
-        newEnemy->state = ENEMY_STATE_ALIVE;
+        newEnemy.state = ENEMY_STATE_ALIVE;
 
-        newEnemy->type = type;
-        newEnemy->grid_x = (float)start_x;
-        newEnemy->grid_y = (float)start_y;
-        newEnemy->previous_cell = grid.cells[start_x][start_y];
-        newEnemy->next_cell = grid.cells[start_x][start_y];
-        newEnemy->on_last_cell = false;
+        newEnemy.type = type;
+        newEnemy.grid_x = (float)start_x;
+        newEnemy.grid_y = (float)start_y;
+        newEnemy.previous_cell = grid.cells[start_x][start_y];
+        newEnemy.next_cell = grid.cells[start_x][start_y];
+        newEnemy.on_last_cell = false;
 
         ep->enemies[ep->count] = newEnemy;
+
         ep->count++;
     }
     else
@@ -110,14 +106,12 @@ void defragEnemyPool(EnemyPool *ep)
 
     while (right < ep->count)
     {
-        if (ep->enemies[right]->state == ENEMY_STATE_ALIVE)
+        if (ep->enemies[right].state == ENEMY_STATE_ALIVE)
         {
-            if (right != -1)
+            if (left != -1)
             {
-                // The enemy being replaced is a dead one
-                if (ep->enemies[left]->state != ENEMY_STATE_ALIVE)
-                    free(ep->enemies[left]);
-                // Else, the enemy is already moved
+                assert(left >= 0);
+                assert(left < ep->length);
 
                 ep->enemies[left] = ep->enemies[right];
                 removed++;
@@ -140,7 +134,7 @@ void drawEnemies(EnemyPool ep, Grid grid)
 
     for (int i = 0; i < ep.count; i++)
     {
-        struct Enemy *enemy = ep.enemies[i];
+        struct Enemy *enemy = &(ep.enemies[i]);
         if (enemy->state != ENEMY_STATE_ALIVE)
         {
             continue;
@@ -161,19 +155,21 @@ void drawEnemies(EnemyPool ep, Grid grid)
 
         if (enemy->type == ENEMY_TUX)
         {
-            move_to(terminal_x + CELL_WIDTH * (enemy->grid_x - (int)enemy->grid_x), terminal_y + CELL_HEIGHT * (enemy->grid_y - (int)enemy->grid_y));
-            printf("🐧");
+            move_to(
+                terminal_x + (CELL_WIDTH + GAP) * (enemy->grid_x - (int)enemy->grid_x),
+                terminal_y + (CELL_HEIGHT + GAP / 2) * (enemy->grid_y - (int)enemy->grid_y));
+            printf("🦍");
         }
     }
 }
 
-void updateEnemies(EnemyPool *ep, Grid grid)
+void updateEnemies(EnemyPool *ep, Grid grid, float dt_sec)
 {
     bool defragNeeded = false;
     // Walk
     for (int i = 0; i < ep->count; i++)
     {
-        struct Enemy *enemy = ep->enemies[i];
+        struct Enemy *enemy = &(ep->enemies[i]);
         if (enemy->state != ENEMY_STATE_ALIVE)
         {
             continue;
@@ -212,8 +208,8 @@ void updateEnemies(EnemyPool *ep, Grid grid)
             enemy->previous_cell = cell;
         }
 
-        // float rand_factor = 0.5;
-        float rand_factor = 0.4 + ((float)rand() / RAND_MAX) * 0.3;
+        float rand_factor = 0.4;
+        // float rand_factor = 0.4 + ((float)rand() / RAND_MAX) * 0.2;
 
         // Le déplacement se fait dans le repère orthonormé de la grille, indépendant de la dimension du terminal.
         // L'écart est calculé sous forme de vecteur normalisé puis multiplié par la vitesse pour obtenir un déplacement convenable.
@@ -230,8 +226,8 @@ void updateEnemies(EnemyPool *ep, Grid grid)
         dx /= norme;
         dy /= norme;
 
-        dx *= enemy->speed;
-        dy *= enemy->speed;
+        dx *= enemy->speed * dt_sec;
+        dy *= enemy->speed * dt_sec;
 
         enemy->grid_x += dx;
         enemy->grid_y += dy;
