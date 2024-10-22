@@ -32,7 +32,7 @@ void addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int st
         newEnemy.hp = 10;
         newEnemy.maxHP = 10;
 
-        newEnemy.speed = 0.5f;
+        newEnemy.speed = 0.8f;
 
         newEnemy.state = ENEMY_STATE_ALIVE;
 
@@ -119,14 +119,19 @@ void drawEnemies(EnemyPool ep, Grid grid)
             printf("🦍");
         }
 
+        // move_to((enemy->next_cell.x * (CELL_WIDTH + GAP) + 3), (enemy->next_cell.y * (CELL_HEIGHT + GAP / 2) + 2));
+        // printf("N%d", i);
+        // move_to((enemy->previous_cell.x * (CELL_WIDTH + GAP) + 3), (enemy->previous_cell.y * (CELL_HEIGHT + GAP / 2) + 2));
+        // printf("P%d", i);
+
         move_to(px - 1, py - 1);
         printf("\033[48;5;236m");
         float ratio_tot = enemy->hp / (float)enemy->maxHP;
-        if (ratio_tot>=0.75)
+        if (ratio_tot >= 0.75)
             printf("\033[38;5;82m");
-        else if (ratio_tot>=0.5)
+        else if (ratio_tot >= 0.5)
             printf("\033[38;5;178m");
-        else if (ratio_tot>=0.25)
+        else if (ratio_tot >= 0.25)
             printf("\033[38;5;166m");
         else
             printf("\033[38;5;196m");

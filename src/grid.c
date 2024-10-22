@@ -205,6 +205,8 @@ void drawCell(struct Cell cell, Grid grid)
 
         bool chemin_vers_haut_gauche = cell.x - 1 >= 0 && cell.y - 1 >= 0 && grid.cells[cell.x - 1][cell.y - 1].type == CHEMIN;
         bool chemin_vers_haut_droit = cell.x + 1 < grid.width && cell.y - 1 >= 0 && grid.cells[cell.x + 1][cell.y - 1].type == CHEMIN;
+        bool chemin_vers_bas_droit = cell.x + 1 < grid.width && cell.y + 1 < grid.height && grid.cells[cell.x + 1][cell.y + 1].type == CHEMIN;
+        bool chemin_vers_bas_gauche = cell.x - 1 >= 0 && cell.y + 1 < grid.height && grid.cells[cell.x - 1][cell.y + 1].type == CHEMIN;
 
         for (int y = 0; y < CELL_HEIGHT + 2; y++)
         {
@@ -227,16 +229,25 @@ void drawCell(struct Cell cell, Grid grid)
                                    || (x == 0 && y == 0 && chemin_vers_haut && chemin_vers_haut_gauche && !chemin_vers_gauche)))
                     //
                     printf("╮");
-                else if (!side && ((x == CELL_WIDTH + 1 && y == CELL_HEIGHT + 1 && !chemin_vers_droite && !chemin_vers_bas) //
-                                   || (x == 0 && y == 0 && chemin_vers_haut && chemin_vers_gauche && !chemin_vers_haut_gauche)))
+                else if (!side                                                                                        //
+                         && ((x == CELL_WIDTH + 1 && y == CELL_HEIGHT + 1 && !chemin_vers_droite && !chemin_vers_bas) //
+                             || (x == 0 && y == 0 && chemin_vers_haut && chemin_vers_gauche && !chemin_vers_haut_gauche)
+                             || (x == 0 && y == CELL_HEIGHT + 1 && chemin_vers_bas && !chemin_vers_gauche && chemin_vers_bas_gauche)
+                             ))
                     //
                     printf("╯");
-                else if (!side && ((x == 0 && y == CELL_HEIGHT + 1 && !chemin_vers_gauche && !chemin_vers_bas) //
-                                   || (y == 0 && x == CELL_WIDTH + 1 && chemin_vers_haut && chemin_vers_droite && !chemin_vers_haut_droit)))
+                else if (
+                    !side                                                                                                       //
+                    && ((x == 0 && y == CELL_HEIGHT + 1 && !chemin_vers_gauche && !chemin_vers_bas)                             //
+                        || (y == 0 && x == CELL_WIDTH + 1 && chemin_vers_haut && chemin_vers_droite && !chemin_vers_haut_droit) //
+                        || (y == CELL_HEIGHT + 1 && x == CELL_WIDTH + 1 && chemin_vers_bas && !chemin_vers_droite && chemin_vers_bas_droit)))
                     //
                     printf("╰");
-                else if (!((cell.x == 0 && x == 0) || (cell.x == grid.width - 1 && x == CELL_WIDTH + 1)) && ((x == 0 && !chemin_vers_gauche) //
-                                                                                                             || (x == CELL_WIDTH + 1 && !chemin_vers_droite)))
+                else if (!(                                                        //
+                             (cell.x == 0 && x == 0)                               //
+                             || (cell.x == grid.width - 1 && x == CELL_WIDTH + 1)) //
+                         && ((x == 0 && !chemin_vers_gauche)                       //
+                             || (x == CELL_WIDTH + 1 && !chemin_vers_droite)))
                     //
                     printf("│");
                 else if (((y == 0 && !chemin_vers_haut) //
@@ -293,7 +304,9 @@ void clearUsedPath(Grid grid, EnemyPool ep)
 
                 for (int i = 0; i < ep.count; i++)
                 {
-                    if (((int)ep.enemies[i].grid_x == x && (int)ep.enemies[i].grid_y == y) || (ep.enemies[i].previous_cell.x == x && ep.enemies[i].previous_cell.y == y))
+                    if (
+                        (ep.enemies[i].previous_cell.x == x && ep.enemies[i].previous_cell.y == y) //
+                        || (ep.enemies[i].previous_cell.x + 1 == x && ep.enemies[i].previous_cell.y == y))
                     {
                         drawCell(grid.cells[x][y], grid);
                         break;
