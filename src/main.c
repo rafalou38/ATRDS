@@ -86,7 +86,10 @@ int main()
 
     clock_gettime(CLOCK_MONOTONIC, &prev_time);
 
+    time_t time_start = prev_time.tv_sec;
     float spawnTimer;
+
+    struct mallinfo2 info;
 
     for (int i = 0; i < 10000; i++)
     {
@@ -119,7 +122,13 @@ int main()
         {
             move_to(0, 0);
             printf(COLOR_STANDARD_BG);
-            printf("Enemy count %d/%d | (%.1f fps)", enemyPool.count, enemyPool.length, round(1.0f / delta_t * 10.0f) / 10.0);
+            info = mallinfo2();
+            printf("Enemy count %d/%d | (%.1f fps) | runtime: %lds | Heap: %zuKo",
+                   enemyPool.count,                      //
+                   enemyPool.length,                     //
+                   round(1.0f / delta_t * 10.0f) / 10.0, //
+                   current_time.tv_sec - time_start,     //
+                   info.uordblks/1000);
         }
 
         fflush(stdout);
@@ -170,7 +179,7 @@ int main()
     move_to(0, 0);
     freeGrid(grid);
     freeEnemyPool(enemyPool);
-
+    
     return 0;
 }
 

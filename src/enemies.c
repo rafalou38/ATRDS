@@ -3,7 +3,7 @@
 EnemyPool AllocEnemyPool()
 {
     EnemyPool ep;
-    ep.length = 0x100; // 256
+    ep.length = 0xff; // 256
     ep.count = 0x0;
     ep.enemies = (struct Enemy *)malloc(sizeof(struct Enemy) * ep.length);
     if (ep.enemies == NULL)
