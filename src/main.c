@@ -103,7 +103,8 @@ int main()
     }
 
     printf("\n");
-
+    clear_screen();
+    move_to(0, 0);
     freeGrid(grid);
     freeEnemyPool(enemyPool);
 

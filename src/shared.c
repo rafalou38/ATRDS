@@ -3,7 +3,7 @@
 int msleep(long ms)
 {
     struct timespec ts;
-    ts.tv_sec  = ms / 1000;
+    ts.tv_sec = ms / 1000;
     ts.tv_nsec = (ms % 1000) * 1000000;
     return nanosleep(&ts, &ts);
 }
@@ -33,7 +33,7 @@ void show_cursor()
 
 void printCritical(char *errorMessage)
 {
-    printf("\033[91;4mCRITICAL\033[24m: %s \033[0m\n", errorMessage);
+    printf("%s%sCRITICAL%s: %s %s %s\n", COLOR_RED, UNDERLINE, UNDERLINE_RST, BOLD, errorMessage, RESET);
 }
 
 void get_terminal_size(int *width, int *height)
