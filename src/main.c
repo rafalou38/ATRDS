@@ -20,29 +20,45 @@ void cleanup()
     exit(0);
 }
 
+void configTerminal()
+{
+    // Cette fonction si on l'active n'affichera pas le résultat des printf en direct mais tout d'un coup apres avoir appelé fflush(stdout); (meilleures performances)
+    // https://en.cppreference.com/w/c/io/setvbuf
+    setvbuf(stdout, NULL, _IOFBF, (MIN_TERMINAL_WIDTH + 5) * (MIN_TERMINAL_HEIGHT + 5) * 2);
+    setbuf(stdin, NULL);
+    hide_cursor();
+
+    // https://man7.org/linux/man-pages/man3/termios.3.html
+    static struct termios t_settings;
+    tcgetattr(STDIN_FILENO, &t_settings);
+
+    // Place le términal en mode non canonique (entrées envoyées sans enter) + sans echo, les touches pressés ne sont pas affichées.
+    t_settings.c_lflag &= ~(ICANON);
+    t_settings.c_lflag &= ~(ECHO);
+    t_settings.c_lflag &= ~(ECHOE);
+    t_settings.c_lflag &= ~(ECHOK);
+    t_settings.c_lflag &= ~(ECHONL);
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &t_settings);
+}
+
 int main()
 {
     // SEEDS FUN: énorme jaune: 1729285683    /    problème ? 1729285706
     unsigned int seed = 1729518567; // time(NULL);
     printf("seed: %d\n", seed);
     srand(seed);
-    // Cette fonction si on l'active n'affichera pas le résultat des printf en direct mais tout d'un coup apres avoir appelé fflush(stdout); (meilleures performances)
-    // https://en.cppreference.com/w/c/io/setvbuf
-    setvbuf(stdout, NULL, _IOFBF, (MIN_TERMINAL_WIDTH + 5) * (MIN_TERMINAL_HEIGHT + 5) * 2);
 
     // Enregistre la fonction cleanup pour qu'elle soit exécutée a la terminaison du programme.
     atexit(cleanup);
     struct sigaction act;
-    // Set all of the structure's bits to 0 to avoid errors
-    // relating to uninitialized variables...
-    // bzero(&act, sizeof(act));
     // Set the signal handler as the default action
     act.sa_handler = &cleanup;
     // Apply the action in the structure to the
     // SIGINT signal (ctrl-c)
     sigaction(SIGINT, &act, NULL);
 
-    hide_cursor();
+    configTerminal();
     clear_screen();
 
     int width = 0;
@@ -107,6 +123,46 @@ int main()
         }
 
         fflush(stdout);
+        // Get keystroke
+
+        int c = get_key_press();
+        if (c != 0)
+        {
+            if (c == 'q' || c == 'Q')
+            {
+                break;
+            }
+            else if (c == 27) // \033
+            {
+                getchar(); // [
+                c = getchar();
+                move_to(1, height);
+
+                if (c == 'A')
+                {
+                    printf("up   ");
+                }
+                else if (c == 'B')
+                {
+                    printf("down ");
+                }
+                else if (c == 'C')
+                {
+                    printf("right");
+                }
+                else if (c == 'D')
+                {
+                    printf("left");
+                }
+            }
+            else
+            {
+                move_to(1, height);
+                printf("%d ", c);
+            }
+
+            fflush(stdout);
+        }
     }
 
     printf("\n");

@@ -175,7 +175,6 @@ void fillBG(int xmin, int ymin, int xmax, int ymax)
             printf(" ");
         }
     }
-    fflush(stdout);
 }
 void drawCell(struct Cell cell, Grid grid)
 {
@@ -304,7 +303,6 @@ void drawFullGrid(Grid grid)
             drawCell(grid.cells[x][y], grid);
         }
     }
-    fflush(stdout);
 }
 void clearPath(Grid grid)
 {

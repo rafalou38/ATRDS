@@ -14,6 +14,18 @@ int msleep(long ms)
 #############
 */
 
+char get_key_press()
+{
+    int k = 0;
+    // Récupère le nombre de characters en attente d’être lus
+    ioctl(STDIN_FILENO, FIONREAD, &k);
+
+    if (k > 0)
+        return getchar();
+    else
+        return 0;
+}
+
 void move_to(int x, int y)
 {
     printf("\033[%d;%dH", y, x);

@@ -11,6 +11,7 @@
 #include <time.h>
 #include <math.h>
 #include <signal.h>
+#include <termios.h>
 
 /*
 #############
@@ -116,6 +117,7 @@ int msleep(long ms);
 #define COLOR_HEALTH_75 "\033[38;5;82m"
 
 
+char get_key_press();
 void move_to(int x, int y);
 void clear_screen();
 void clear_line();
