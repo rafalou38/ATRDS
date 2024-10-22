@@ -120,7 +120,16 @@ void drawEnemies(EnemyPool ep, Grid grid)
         }
 
         move_to(px - 1, py - 1);
-        printf("\033[48;5;236m\033[38;5;160m");
+        printf("\033[48;5;236m");
+        float ratio_tot = enemy->hp / (float)enemy->maxHP;
+        if (ratio_tot>=0.75)
+            printf("\033[38;5;82m");
+        else if (ratio_tot>=0.5)
+            printf("\033[38;5;178m");
+        else if (ratio_tot>=0.25)
+            printf("\033[38;5;166m");
+        else
+            printf("\033[38;5;196m");
         for (int i = 0; i < 4; i++)
         {
             float ratio = enemy->hp / (float)enemy->maxHP;
