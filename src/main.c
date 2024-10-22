@@ -59,6 +59,9 @@ int main()
     genBasicPath(&grid);
 
     clear_screen();
+    fillBG(1, 1, width + 1, height + 1);
+    // return 0;
+
     drawFullGrid(grid);
 
     addEnemy(grid, &enemyPool, ENEMY_TUX, grid.start_x, grid.start_y);
@@ -96,8 +99,12 @@ int main()
         clearUsedPath(grid, enemyPool);
         drawEnemies(enemyPool, grid);
 
-        move_to(0, 0);
-        printf("Enemy count %d/%d | (%.1f fps)", enemyPool.count, enemyPool.length, round(1.0f / delta_t * 10.0f) / 10.0);
+        if (1.0f / delta_t < 2 * TARGET_FPS)
+        {
+            move_to(0, 0);
+            printf(COLOR_STANDARD_BG);
+            printf("Enemy count %d/%d | (%.1f fps)", enemyPool.count, enemyPool.length, round(1.0f / delta_t * 10.0f) / 10.0);
+        }
 
         fflush(stdout);
     }

@@ -117,6 +117,7 @@ void drawEnemies(EnemyPool ep, Grid grid)
         int px = terminal_x + (CELL_WIDTH + GAP) * (enemy->grid_x - (int)enemy->grid_x);
         int py = terminal_y + (CELL_HEIGHT + GAP / 2) * (enemy->grid_y - (int)enemy->grid_y);
 
+        printf(COLOR_STANDARD_BG);
         if (enemy->type == ENEMY_TUX)
         {
             move_to(px, py);

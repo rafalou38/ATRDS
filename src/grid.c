@@ -164,7 +164,19 @@ void genBasicPath(Grid *grid)
     }
     free(historique);
 }
-
+void fillBG(int xmin, int ymin, int xmax, int ymax)
+{
+    printf(COLOR_STANDARD_BG);
+    for (int x = xmin; x < xmax; x++)
+    {
+        for (int y = ymin; y < ymax; y++)
+        {
+            move_to(x, y);
+            printf(" ");
+        }
+    }
+    fflush(stdout);
+}
 void drawCell(struct Cell cell, Grid grid)
 {
     if (cell.type == TERRAIN)
@@ -184,6 +196,10 @@ void drawCell(struct Cell cell, Grid grid)
         if (neighbor)
         {
             printf(COLOR_TOWER_SLOT);
+        }
+        else
+        {
+            printf(COLOR_STANDARD_BG);
         }
         for (int y = 0; y < CELL_HEIGHT; y++)
         {
@@ -212,6 +228,8 @@ void drawCell(struct Cell cell, Grid grid)
         bool chemin_vers_bas_droit = cell.x + 1 < grid.width && cell.y + 1 < grid.height && grid.cells[cell.x + 1][cell.y + 1].type == CHEMIN;
         bool chemin_vers_bas_gauche = cell.x - 1 >= 0 && cell.y + 1 < grid.height && grid.cells[cell.x - 1][cell.y + 1].type == CHEMIN;
 
+        printf(COLOR_STANDARD_BG);
+        printf(COLOR_PATH_BORDER);
         for (int y = 0; y < CELL_HEIGHT + 2; y++)
         {
             int terminal_x = (cell.x * (CELL_WIDTH + GAP) + 3);
@@ -226,36 +244,42 @@ void drawCell(struct Cell cell, Grid grid)
                     !side && ((x == 0 && y == 0 && !chemin_vers_gauche && !chemin_vers_haut)                                            //
                               || (x == CELL_WIDTH + 1 && y == CELL_HEIGHT + 1 && chemin_vers_bas && chemin_vers_droite)                 //
                               || (x == CELL_WIDTH + 1 && y == 0 && chemin_vers_haut_droit && chemin_vers_haut && !chemin_vers_droite))) //
-                    printf("╭");
-                    //
+                    printf("┏");
+                    // printf("╭");
+                //
                 else if (!side && ((x == CELL_WIDTH + 1 && y == 0 && !chemin_vers_droite && !chemin_vers_haut)  //
                                    || (x == 0 && y == CELL_HEIGHT + 1 && chemin_vers_gauche && chemin_vers_bas) //
                                    || (x == 0 && y == 0 && chemin_vers_haut && chemin_vers_haut_gauche && !chemin_vers_gauche)))
-                    printf("╮");
-                    //
+                    printf("┓");
+                    // printf("╮");
+                //
                 else if (!side                                                                                        //
                          && ((x == CELL_WIDTH + 1 && y == CELL_HEIGHT + 1 && !chemin_vers_droite && !chemin_vers_bas) //
                              || (x == 0 && y == 0 && chemin_vers_haut && chemin_vers_gauche && !chemin_vers_haut_gauche) || (x == 0 && y == CELL_HEIGHT + 1 && chemin_vers_bas && !chemin_vers_gauche && chemin_vers_bas_gauche)))
-                    printf("╯");
-                    //
+                    printf("┛");
+                    // printf("╯");
+                //
                 else if (
                     !side                                                                                                       //
                     && ((x == 0 && y == CELL_HEIGHT + 1 && !chemin_vers_gauche && !chemin_vers_bas)                             //
                         || (y == 0 && x == CELL_WIDTH + 1 && chemin_vers_haut && chemin_vers_droite && !chemin_vers_haut_droit) //
                         || (y == CELL_HEIGHT + 1 && x == CELL_WIDTH + 1 && chemin_vers_bas && !chemin_vers_droite && chemin_vers_bas_droit)))
-                    printf("╰");
-                    //
+                    printf("┗");
+                    // printf("╰");
+                //
                 else if (!(                                                        //
                              (cell.x == 0 && x == 0)                               //
                              || (cell.x == grid.width - 1 && x == CELL_WIDTH + 1)) //
                          && ((x == 0 && !chemin_vers_gauche)                       //
                              || (x == CELL_WIDTH + 1 && !chemin_vers_droite)))
-                    printf("│");
-                    //
+                    printf("┃");
+                    // printf("│");
+                //
                 else if (((y == 0 && !chemin_vers_haut) //
                           || (y == CELL_HEIGHT + 1 && !chemin_vers_bas)))
-                    printf("─");
-                    //
+                    printf("━");
+                    // printf("─");
+                //
                 else if (x >= 1 && x <= CELL_WIDTH && y >= 1 && y <= CELL_HEIGHT)
                 {
                     printf(" ");
@@ -266,6 +290,7 @@ void drawCell(struct Cell cell, Grid grid)
                 }
             }
         }
+        printf(RESET);
     }
 }
 

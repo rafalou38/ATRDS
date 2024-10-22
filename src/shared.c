@@ -22,6 +22,10 @@ void clear_screen()
 {
     printf("\033[2J");
 }
+void clear_line()
+{
+    printf("\033[2K");
+}
 void hide_cursor()
 {
     printf("\033[?25l");

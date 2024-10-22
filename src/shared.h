@@ -104,7 +104,9 @@ int msleep(long ms);
 #define COLOR_YELLOW "\033[38;5;11;1m"
 
     // Terrain colors
-#define COLOR_TOWER_SLOT "\033[100m"
+#define COLOR_STANDARD_BG "\033[48;5;233m"
+#define COLOR_TOWER_SLOT "\033[48;5;236m"
+#define COLOR_PATH_BORDER "\033[38;5;240m"
 
     // Health bar
 #define COLOR_HEALTH_BG "\033[48;5;236m"
@@ -116,6 +118,7 @@ int msleep(long ms);
 
 void move_to(int x, int y);
 void clear_screen();
+void clear_line();
 void hide_cursor();
 void show_cursor();
 void printCritical(char *errorMessage);
