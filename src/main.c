@@ -2,6 +2,7 @@
 
 #include "grid.h"
 #include "enemies.h"
+#include <locale.h>
 
 /*
 #################
@@ -15,8 +16,8 @@ EnemyPool enemyPool;
 void cleanup()
 {
     show_cursor();
-    printf("Bye.\n");
-    fflush(stdout);
+    fprintf(stdout, "Bye.\n");
+    // fflush(stdout);
     exit(0);
 }
 
@@ -28,22 +29,20 @@ int main()
     srand(seed);
     // Cette fonction si on l'active n'affichera pas le résultat des printf en direct mais tout d'un coup apres avoir appelé fflush(stdout); (meilleures performances)
     // https://en.cppreference.com/w/c/io/setvbuf
-    setvbuf(stdout, NULL, _IOFBF, (MIN_TERMINAL_WIDTH + 5) * (MIN_TERMINAL_HEIGHT + 5) * 2);
+    // setvbuf(stdout, NULL, _IOFBF, (MIN_TERMINAL_WIDTH + 5) * (MIN_TERMINAL_HEIGHT + 5) * 2);
+    setlocale(LC_ALL, "");
+    initscr();
 
     // Enregistre la fonction cleanup pour qu'elle soit exécutée a la terminaison du programme.
-    atexit(cleanup);
-    struct sigaction act;
-    // Set all of the structure's bits to 0 to avoid errors
-    // relating to uninitialized variables...
-    // bzero(&act, sizeof(act));
-    // Set the signal handler as the default action
-    act.sa_handler = &cleanup;
-    // Apply the action in the structure to the
-    // SIGINT signal (ctrl-c)
-    sigaction(SIGINT, &act, NULL);
+    {
+        atexit(cleanup);
+        struct sigaction act;
+        act.sa_handler = &cleanup;
+        sigaction(SIGINT, &act, NULL);
+    }
 
     hide_cursor();
-    clear_screen();
+    // clear_screen();
 
     int width = 0;
     int height = 0;
@@ -64,7 +63,6 @@ int main()
     addEnemy(grid, &enemyPool, ENEMY_TUX, grid.start_x, grid.start_y);
 
     struct timespec prev_time;
-
     clock_gettime(CLOCK_MONOTONIC, &prev_time);
 
     float spawnTimer;
@@ -74,17 +72,15 @@ int main()
         struct timespec current_time;
         clock_gettime(CLOCK_MONOTONIC, &current_time);
         float delta_t = (current_time.tv_nsec - prev_time.tv_nsec) / 1000000000.0 + (current_time.tv_sec - prev_time.tv_sec);
-
         prev_time = current_time;
-
         if (delta_t < 1.0 / TARGET_FPS)
         {
             msleep((1.0 / TARGET_FPS - delta_t) * 1000);
         }
 
-        spawnTimer += delta_t;
 
-        /* code */
+        // Timer spawn ennemis
+        spawnTimer += delta_t;
         if (spawnTimer > 4.0)
         {
             addEnemy(grid, &enemyPool, ENEMY_TUX, grid.start_x, grid.start_y);
@@ -93,16 +89,20 @@ int main()
 
         updateEnemies(&enemyPool, grid, delta_t);
         // clearPath(grid)
-        clearUsedPath(grid, enemyPool);
+        // clearUsedPath(grid, enemyPool);
+        clear_screen();
+
+        drawFullGrid(grid);
         drawEnemies(enemyPool, grid);
 
         move_to(0, 0);
         printf("Enemy count %d/%d | (%.1f fps)", enemyPool.count, enemyPool.length, round(1.0f / delta_t * 10.0f) / 10.0);
 
-        fflush(stdout);
+        refresh();
+        // fflush(stdout);
     }
 
-    printf("\n");
+    // printf("\n");
 
     freeGrid(grid);
     freeEnemyPool(enemyPool);

@@ -15,7 +15,9 @@
     "enemies.h": "c",
     "grid.h": "c",
     "shared.h": "c",
-    "math.h": "c"
+    "math.h": "c",
+    "stdbool.h": "c",
+    "curses.h": "c"
   },
   "explorer.fileNesting.enabled": true,
 	"explorer.fileNesting.patterns": {

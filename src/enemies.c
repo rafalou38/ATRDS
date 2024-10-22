@@ -17,9 +17,9 @@ EnemyPool AllocEnemyPool()
 
 void freeEnemyPool(EnemyPool ep)
 {
-    printf("\033[38;5;243m $\033[0m Freeing \033[38;5;11;1m%d\033[0m enemies:\t", ep.count);
+    fprintf(stdout, "\033[38;5;243m $\033[0m Freeing \033[38;5;11;1m%d\033[0m enemies:\t", ep.count);
     free(ep.enemies);
-    printf("\033[38;5;42m Done \033[0m\n");
+    fprintf(stdout, "\033[38;5;42m Done \033[0m\n");
 }
 
 void addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int start_y)

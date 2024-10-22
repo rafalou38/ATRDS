@@ -11,6 +11,7 @@
 #include <time.h>
 #include <math.h>
 #include <signal.h>
+#include <curses.h>
 
 /*
 #############
@@ -81,6 +82,15 @@ typedef struct Grid
 */
 
 int msleep(long ms);
+
+/*
+#############
+##    IO   ##
+#############
+*/
+
+#define printf printw
+
 void move_to(int x, int y);
 void clear_screen();
 void hide_cursor();

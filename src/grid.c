@@ -34,14 +34,14 @@ void allocateGridCells(Grid *grid)
 
 void freeGrid(Grid grid)
 {
-    printf("\033[38;5;243m $\033[0m Freeing \033[38;5;11;1m%dx%d\033[0m grid:\t", grid.width, grid.height);
+    fprintf(stdout, "\033[38;5;243m $\033[0m Freeing \033[38;5;11;1m%dx%d\033[0m grid:\t", grid.width, grid.height);
     for (int x = 0; x < grid.width; x++)
     {
         free(grid.cells[x]);
     }
     free(grid.cells);
 
-    printf("\033[38;5;42m Done \033[0m\n");
+    fprintf(stdout, "\033[38;5;42m Done \033[0m\n");
 }
 
 void genBasicPath(Grid *grid)
@@ -268,7 +268,7 @@ void drawFullGrid(Grid grid)
             drawCell(grid.cells[x][y], grid);
         }
     }
-    fflush(stdout);
+    // fflush(stdout);
 }
 void clearPath(Grid grid)
 {
