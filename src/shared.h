@@ -1,13 +1,16 @@
 #pragma once
 
+#define _POSIX_C_SOURCE 199309L
 #include <sys/ioctl.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <time.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <errno.h>    
+#include <errno.h>
+#include <time.h>
+#include <math.h>
+#include <signal.h>
 
 /*
 #############
@@ -19,6 +22,8 @@ CONFIGURATION
 #define MIN_TERMINAL_WIDTH 120
 #define MIN_TERMINAL_HEIGHT 20
 
+#define TARGET_FPS 45
+
 // TODO: add max size
 
 #define CELL_WIDTH 10
@@ -26,12 +31,22 @@ CONFIGURATION
 
 #define GAP 2
 
-
-
-
-
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define CLAMP(x, a, b) MIN(MAX(x, a), b)
+
+/*
+##################
+## Types custom ##
+##################
+*/
+
+typedef struct EnemyPool
+{
+    int length; // Taille du tableau
+    int count;  // Nombre d’ennemis dans le tableau
+    struct Enemy *enemies;
+} EnemyPool;
 
 enum CellType
 {
@@ -48,36 +63,28 @@ struct Cell
     bool visited;
 };
 
-
 typedef struct Grid
 {
     int width;
     int height;
+    int start_x;
+    int start_y;
+    int end_x;
+    int end_y;
     struct Cell **cells;
-}  Grid;
+} Grid;
 
+/*
+#############
+##  UTILS  ##
+#############
+*/
 
-
-/* msleep(): Sleep for the requested number of milliseconds.
-    Origin: https://stackoverflow.com/questions/1157209/is-there-an-alternative-sleep-function-in-c-to-milliseconds
- */
-int msleep(long msec)
-{
-    struct timespec ts;
-    int res;
-
-    if (msec < 0)
-    {
-        errno = EINVAL;
-        return -1;
-    }
-
-    ts.tv_sec = msec / 1000;
-    ts.tv_nsec = (msec % 1000) * 1000000;
-
-    do {
-        res = nanosleep(&ts, &ts);
-    } while (res && errno == EINTR);
-
-    return res;
-}
+int msleep(long ms);
+void move_to(int x, int y);
+void clear_screen();
+void hide_cursor();
+void show_cursor();
+void printCritical(char *errorMessage);
+void get_terminal_size(int *width, int *height);
+void checkTerminalSize(int *width, int *height);

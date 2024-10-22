@@ -11,6 +11,14 @@
     "hash_map": "cpp",
     "format": "cpp",
     "any": "cpp",
-    "complex": "cpp"
-  }
+    "complex": "cpp",
+    "enemies.h": "c",
+    "grid.h": "c",
+    "shared.h": "c",
+    "math.h": "c"
+  },
+  "explorer.fileNesting.enabled": true,
+	"explorer.fileNesting.patterns": {
+		"*.c": "${capture}.h"
+	},
 }
