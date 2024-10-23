@@ -24,7 +24,7 @@ CONFIGURATION
 #define MIN_TERMINAL_WIDTH 120
 #define MIN_TERMINAL_HEIGHT 20
 
-#define TARGET_FPS 45
+#define TARGET_FPS 40
 
 // TODO: add max size
 
@@ -42,6 +42,21 @@ CONFIGURATION
 ## Types custom ##
 ##################
 */
+
+enum TurretType
+{
+    Sniper
+};
+
+struct Turret
+{
+    enum TurretType type;
+    int lvl;
+    int compteur;
+    int range;
+    int damage;
+    int reload_delay;
+};
 
 typedef struct EnemyPool
 {
@@ -64,6 +79,8 @@ struct Cell
     enum CellType type;
     bool visited;
     bool selected;
+    struct Turret turret;
+    bool hasTurret;
 };
 
 typedef struct Grid

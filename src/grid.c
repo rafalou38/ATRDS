@@ -28,7 +28,8 @@ void allocateGridCells(Grid *grid)
             cells[x][y].y = y;
             cells[x][y].type = TERRAIN;
             cells[x][y].visited = false;
-            cells[x][y].selected = false;
+            cells[x][y].selected = false;;
+            cells[x][y].hasTurret = false;
         }
     }
 }
@@ -210,6 +211,13 @@ void drawCell(struct Cell cell, Grid grid)
                 else
                 {
                     printf(" ");
+                }
+                if (cell.hasTurret)
+                {
+                    if (cell.turret.type==Sniper)
+                    {
+                        printf("S"); 
+                    }
                 }
             }
         }

@@ -95,6 +95,7 @@ int main()
     bool selection_active = false;
     int selected_cell_x = 0;
     int selected_cell_y = 0;
+    int ligne=1;
     grid.cells[0][0].selected = true;
 
     for (int i = 0; i < 10000; i++)
@@ -118,7 +119,7 @@ int main()
         { // MENU DE SELECTION
             if (selection_active)
             {
-                showTowerSelection();
+                showTowerSelection(ligne,grid.cells[selected_cell_x][selected_cell_y].hasTurret);
             }
             else
             {
@@ -178,6 +179,7 @@ int main()
                 {
                     fillBG(1, 1, width + 1, height + 1);
                     drawFullGrid(grid);
+                    ligne=1;
                 }
                 selection_active = !selection_active;
             }
@@ -289,6 +291,27 @@ int main()
                     }
                     drawFullGrid(grid);
                     fflush(stdout);
+                }
+                else
+                {
+                    if (down)
+                    {
+                        ligne+=1;
+                    }
+                    else if (up)
+                    {
+                        ligne-=1;
+                    }
+                    else if (c=='y'||c=='Y')
+                    {
+                        grid.cells[selected_cell_x][selected_cell_y].turret.type = Sniper;
+                        grid.cells[selected_cell_x][selected_cell_y].turret.lvl = 1;
+                        grid.cells[selected_cell_x][selected_cell_y].turret.compteur = 0;
+                        grid.cells[selected_cell_x][selected_cell_y].turret.range = 100;
+                        grid.cells[selected_cell_x][selected_cell_y].turret.damage = 10;
+                        grid.cells[selected_cell_x][selected_cell_y].turret.reload_delay = 20;
+                        grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+                    }
                 }
             }
         }
