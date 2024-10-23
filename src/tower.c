@@ -55,8 +55,13 @@ void selectionTower(int x0, int y0, bool hasTurret)
     }
 }
 
+#if BULLETS_ON
 void updateTowers(Grid grid, EnemyPool ep, BulletPool *bp, float dt)
 {
+#else
+void updateTowers(Grid grid, EnemyPool ep, float dt)
+{
+#endif
     for (int x = 0; x < grid.width; x++)
     {
         for (int y = 0; y < grid.height; y++)
@@ -72,13 +77,14 @@ void updateTowers(Grid grid, EnemyPool ep, BulletPool *bp, float dt)
                         if (d <= grid.cells[x][y].turret.range)
                         {
                             grid.cells[x][y].turret.compteur = 0;
-                            // ep.enemies[i].hp -= grid.cells[x][y].turret.damage;
+#if BULLETS_ON
                             bp->bullets[bp->count].hit = false;
                             bp->bullets[bp->count].grid_x = x;
                             bp->bullets[bp->count].grid_y = y;
                             bp->bullets[bp->count].target = &(ep.enemies[i]);
                             bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage;
                             bp->count++;
+#endif
                             break;
                         }
                     }
@@ -88,6 +94,7 @@ void updateTowers(Grid grid, EnemyPool ep, BulletPool *bp, float dt)
     }
 }
 
+#if BULLETS_ON
 void defragBullets(BulletPool *bp)
 {
     int right = 0;
@@ -153,3 +160,5 @@ void updateBullets(BulletPool *bp, float dt)
     if (defrag_needed)
         defragBullets(bp);
 };
+
+#endif

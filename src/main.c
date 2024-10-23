@@ -12,7 +12,10 @@
 
 Grid grid;
 EnemyPool enemyPool;
+
+#if BULLETS_ON
 BulletPool bulletPool;
+#endif
 
 void cleanup()
 {
@@ -134,15 +137,7 @@ int main()
                     spawnTimer = 0.0;
                 }
 
-                updateTowers(grid, enemyPool, &bulletPool, delta_t);
-
-                updateBullets(&bulletPool, delta_t);
-
-                // Mise à jour des ennemis existants
-                updateEnemies(&enemyPool, grid, delta_t);
-
-                // Affichage des ennemis
-
+#if BULLETS_ON
                 if (i % 50 == 0)
                 {
                     fillBG(1, 1, width + 1, height + 1);
@@ -152,8 +147,20 @@ int main()
                 {
                     clearUsedPath(grid, enemyPool);
                 }
-                drawEnemies(enemyPool, grid);
+
+                updateTowers(grid, enemyPool, &bulletPool, delta_t);
+                updateBullets(&bulletPool, delta_t);
+
                 drawBullets(bulletPool);
+#else
+                clearUsedPath(grid, enemyPool);
+                updateTowers(grid, enemyPool, delta_t);
+#endif
+
+                // Mise à jour des ennemis existants
+                updateEnemies(&enemyPool, grid, delta_t);
+                // Affichage des ennemis
+                drawEnemies(enemyPool, grid);
             }
             fflush(stdout);
         }
@@ -168,10 +175,9 @@ int main()
             move_to(0, 0);
             printf(COLOR_STANDARD_BG);
             info = mallinfo2();
-            printf("Enemy count %d/%d | Bullet count: %d | (%.1f fps) | runtime: %lds | Heap: %zuKo",
+            printf("Enemy count %d/%d | (%.1f fps) | runtime: %lds | Heap: %zuKo",
                    enemyPool.count,                      //
                    enemyPool.length,                     //
-                   bulletPool.count,                     //
                    round(1.0f / delta_t * 10.0f) / 10.0, //
                    current_time.tv_sec - time_start,     //
                    info.uordblks / 1000);
@@ -200,7 +206,6 @@ int main()
                 }
                 selection_active = !selection_active;
             }
-
             else if (c == 27) // Touches spéciales (\033)
             {
                 getchar(); // [
