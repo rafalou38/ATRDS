@@ -45,11 +45,11 @@ void configTerminal()
 int main()
 {
     // SEEDS FUN: énorme jaune: 1729285683    /    problème ? 1729285706
-    unsigned int seed = 1729518567; // time(NULL);
+    unsigned int seed = time(NULL); // time(NULL);    seeded : 1729518567
     printf("seed: %d\n", seed);
     srand(seed);
 
-    // Enregistre la fonction cleanup pour qu'elle soit exécutée a la terminaison du programme.
+    // Enregistre la fonction cleanup pour qu'elle soit exécutée  la terminaison du programme.
     atexit(cleanup);
     struct sigaction act;
     // Set the signal handler as the default action
@@ -90,6 +90,10 @@ int main()
     float spawnTimer;
 
     struct mallinfo2 info;
+
+    int selected_cell_x = 3;
+    int selected_cell_y = 2;
+    
 
     for (int i = 0; i < 10000; i++)
     {
@@ -133,7 +137,7 @@ int main()
 
         fflush(stdout);
         // Get keystroke
-
+        
         int c = get_key_press();
         if (c != 0)
         {
@@ -145,31 +149,52 @@ int main()
             {
                 getchar(); // [
                 c = getchar();
-                move_to(1, height);
 
-                if (c == 'A')
+                if (c == 'A' 
+                && selected_cell_y-CELL_HEIGHT-GAP/2>1)
                 {
-                    printf("up   ");
+                    selected_cell_y=selected_cell_y-CELL_HEIGHT-GAP/2;
                 }
-                else if (c == 'B')
+                else if (c == 'B' 
+                && selected_cell_y+CELL_HEIGHT+GAP/2< 2 + (CELL_HEIGHT+GAP/2) * grid.height )
                 {
-                    printf("down ");
+                    selected_cell_y=selected_cell_y+CELL_HEIGHT+GAP/2;
                 }
-                else if (c == 'C')
+                else if (c == 'C' 
+                && selected_cell_x+CELL_WIDTH+GAP< 3 + (CELL_WIDTH+GAP) * grid.width )
                 {
-                    printf("right");
+                    selected_cell_x=selected_cell_x+CELL_WIDTH+GAP;
                 }
-                else if (c == 'D')
+                else if (c == 'D' 
+                && selected_cell_x-CELL_WIDTH-GAP>1)
                 {
-                    printf("left");
+                    selected_cell_x=selected_cell_x-CELL_WIDTH-GAP;
                 }
-            }
-            else
-            {
-                move_to(1, height);
-                printf("%d ", c);
-            }
+                
+                drawFullGrid(grid);
 
+                printf(COLOR_SELECTED_SLOT);
+                for(int x_of_cell = selected_cell_x ; x_of_cell<CELL_WIDTH+selected_cell_x; x_of_cell++){
+                    move_to(x_of_cell,selected_cell_y);
+                    printf("█");
+                }
+                for(int x_of_cell = selected_cell_x ; x_of_cell<CELL_WIDTH+selected_cell_x; x_of_cell++){
+                    move_to(x_of_cell,selected_cell_y+CELL_HEIGHT-1);
+                    printf("█");
+                }
+                for(int y_of_cell = selected_cell_y+1 ; y_of_cell<CELL_HEIGHT+selected_cell_y; y_of_cell++){
+                    move_to(selected_cell_x,y_of_cell);
+                    printf("██");
+                }
+                for(int y_of_cell = selected_cell_y+1 ; y_of_cell<CELL_HEIGHT+selected_cell_y; y_of_cell++){
+                    move_to(selected_cell_x+CELL_WIDTH-2,y_of_cell);
+                    printf("██");
+                }
+                move_to(selected_cell_x+3,selected_cell_y+2);
+                printf("%d,%d",grid.width,selected_cell_x);
+                
+            }
+           
             fflush(stdout);
         }
     }

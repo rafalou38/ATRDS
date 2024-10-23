@@ -194,8 +194,11 @@ void drawCell(struct Cell cell, Grid grid)
 
         if (neighbor)
         {
+            
             printf(COLOR_TOWER_SLOT);
+            
         }
+
         else
         {
             printf(COLOR_STANDARD_BG);
