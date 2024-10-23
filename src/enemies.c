@@ -3,7 +3,7 @@
 EnemyPool AllocEnemyPool()
 {
     EnemyPool ep;
-    ep.length = 0x100; // 256
+    ep.length = 0xff; // 256
     ep.count = 0x0;
     ep.enemies = (struct Enemy *)malloc(sizeof(struct Enemy) * ep.length);
     if (ep.enemies == NULL)
@@ -17,9 +17,13 @@ EnemyPool AllocEnemyPool()
 
 void freeEnemyPool(EnemyPool ep)
 {
-    printf("\033[38;5;243m $\033[0m Freeing \033[38;5;11;1m%d\033[0m enemies:\t", ep.count);
+    printf(COLOR_GRAY);
+    printf(" $ ");
+    printf(RESET);
+    printf("Freeing %s%d%s enemies:\t", COLOR_YELLOW, ep.count, RESET);
+
     free(ep.enemies);
-    printf("\033[38;5;42m Done \033[0m\n");
+    printf("%s Done %s\n", COLOR_GREEN, RESET);
 }
 
 void addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int start_y)
@@ -32,7 +36,7 @@ void addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int st
         newEnemy.hp = 10;
         newEnemy.maxHP = 10;
 
-        newEnemy.speed = 0.5f;
+        newEnemy.speed = 0.8f;
 
         newEnemy.state = ENEMY_STATE_ALIVE;
 
@@ -113,23 +117,30 @@ void drawEnemies(EnemyPool ep, Grid grid)
         int px = terminal_x + (CELL_WIDTH + GAP) * (enemy->grid_x - (int)enemy->grid_x);
         int py = terminal_y + (CELL_HEIGHT + GAP / 2) * (enemy->grid_y - (int)enemy->grid_y);
 
+        printf(COLOR_STANDARD_BG);
         if (enemy->type == ENEMY_TUX)
         {
             move_to(px, py);
             printf("🦍");
         }
 
+        // move_to((enemy->next_cell.x * (CELL_WIDTH + GAP) + 3), (enemy->next_cell.y * (CELL_HEIGHT + GAP / 2) + 2));
+        // printf("N%d", i);
+        // move_to((enemy->previous_cell.x * (CELL_WIDTH + GAP) + 3), (enemy->previous_cell.y * (CELL_HEIGHT + GAP / 2) + 2));
+        // printf("P%d", i);
+
         move_to(px - 1, py - 1);
-        printf("\033[48;5;236m");
+
+        printf(COLOR_HEALTH_BG);
         float ratio_tot = enemy->hp / (float)enemy->maxHP;
-        if (ratio_tot>=0.75)
-            printf("\033[38;5;82m");
-        else if (ratio_tot>=0.5)
-            printf("\033[38;5;178m");
-        else if (ratio_tot>=0.25)
-            printf("\033[38;5;166m");
+        if (ratio_tot >= 0.75)
+            printf(COLOR_HEALTH_75);
+        else if (ratio_tot >= 0.5)
+            printf(COLOR_HEALTH_50);
+        else if (ratio_tot >= 0.25)
+            printf(COLOR_HEALTH_25);
         else
-            printf("\033[38;5;196m");
+            printf(COLOR_HEALTH_0);
         for (int i = 0; i < 4; i++)
         {
             float ratio = enemy->hp / (float)enemy->maxHP;
@@ -155,7 +166,7 @@ void drawEnemies(EnemyPool ep, Grid grid)
             else
                 printf(" ");
         }
-        printf("\033[0m");
+        printf(RESET);
     }
 }
 

@@ -3,7 +3,7 @@
 int msleep(long ms)
 {
     struct timespec ts;
-    ts.tv_sec  = ms / 1000;
+    ts.tv_sec = ms / 1000;
     ts.tv_nsec = (ms % 1000) * 1000000;
     return nanosleep(&ts, &ts);
 }
@@ -14,6 +14,18 @@ int msleep(long ms)
 #############
 */
 
+char get_key_press()
+{
+    int k = 0;
+    // Récupère le nombre de characters en attente d’être lus
+    ioctl(STDIN_FILENO, FIONREAD, &k);
+
+    if (k > 0)
+        return getchar();
+    else
+        return 0;
+}
+
 void move_to(int x, int y)
 {
     printf("\033[%d;%dH", y, x);
@@ -21,6 +33,10 @@ void move_to(int x, int y)
 void clear_screen()
 {
     printf("\033[2J");
+}
+void clear_line()
+{
+    printf("\033[2K");
 }
 void hide_cursor()
 {
@@ -33,7 +49,7 @@ void show_cursor()
 
 void printCritical(char *errorMessage)
 {
-    printf("\033[91;4mCRITICAL\033[24m: %s \033[0m\n", errorMessage);
+    printf("%s%sCRITICAL%s: %s %s %s\n", COLOR_RED, UNDERLINE, UNDERLINE_RST, BOLD, errorMessage, RESET);
 }
 
 void get_terminal_size(int *width, int *height)
