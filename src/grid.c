@@ -181,28 +181,8 @@ void drawCell(struct Cell cell, Grid grid)
 {
     if (cell.type == TERRAIN)
     {
-        bool neighbor = false;
-        for (int dx = -1; dx <= 1; dx++)
-        {
-            for (int dy = -1; dy <= 1; dy++)
-            {
-                if (cell.x + dx >= 0 && cell.y + dy >= 0 && cell.x + dx < grid.width && cell.y + dy < grid.height && grid.cells[cell.x + dx][cell.y + dy].type == CHEMIN)
-                {
-                    neighbor = true;
-                }
-            }
-        }
+        printf(COLOR_TOWER_SLOT_BG);
 
-        if (neighbor)
-        {
-
-            printf(COLOR_TOWER_SLOT);
-        }
-
-        else
-        {
-            printf(COLOR_STANDARD_BG);
-        }
         if (cell.selected)
         {
             printf(COLOR_SELECTED_SLOT);
