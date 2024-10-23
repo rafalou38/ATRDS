@@ -334,9 +334,9 @@ int main()
                         grid.cells[selected_cell_x][selected_cell_y].turret.type = Sniper;
                         grid.cells[selected_cell_x][selected_cell_y].turret.lvl = 1;
                         grid.cells[selected_cell_x][selected_cell_y].turret.compteur = 0;
-                        grid.cells[selected_cell_x][selected_cell_y].turret.range = 1;
-                        grid.cells[selected_cell_x][selected_cell_y].turret.damage = 1;
-                        grid.cells[selected_cell_x][selected_cell_y].turret.reload_delay = 0.5;
+                        grid.cells[selected_cell_x][selected_cell_y].turret.range = 100;
+                        grid.cells[selected_cell_x][selected_cell_y].turret.damage = 5;
+                        grid.cells[selected_cell_x][selected_cell_y].turret.reload_delay = 1;
                         grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
                     }
 

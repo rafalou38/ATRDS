@@ -77,6 +77,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt)
                         if (d <= grid.cells[x][y].turret.range)
                         {
                             grid.cells[x][y].turret.compteur = 0;
+
 #if BULLETS_ON
                             bp->bullets[bp->count].hit = false;
                             bp->bullets[bp->count].grid_x = x;
@@ -84,6 +85,8 @@ void updateTowers(Grid grid, EnemyPool ep, float dt)
                             bp->bullets[bp->count].target = &(ep.enemies[i]);
                             bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage;
                             bp->count++;
+#else
+                            ep.enemies[i].hp -= grid.cells[x][y].turret.damage;
 #endif
                             break;
                         }
@@ -147,8 +150,8 @@ void updateBullets(BulletPool *bp, float dt)
         float dx = bp->bullets[i].target->grid_x - bp->bullets[i].grid_x;
         float dy = bp->bullets[i].target->grid_y - bp->bullets[i].grid_y;
         float d = sqrt(dx * dx + dy * dy);
-        bp->bullets[i].grid_x += (dx / d) * 5 * dt;
-        bp->bullets[i].grid_y += (dy / d) * 5 * dt;
+        bp->bullets[i].grid_x += (dx / d) * 10 * dt;
+        bp->bullets[i].grid_y += (dy / d) * 10 * dt;
 
         if (d <= 0.1)
         {
