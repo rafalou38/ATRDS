@@ -12,6 +12,7 @@
 
 Grid grid;
 EnemyPool enemyPool;
+BulletPool bulletPool;
 
 void cleanup()
 {
@@ -133,14 +134,26 @@ int main()
                     spawnTimer = 0.0;
                 }
 
-                updateTowers(grid, enemyPool, delta_t);
+                updateTowers(grid, enemyPool, &bulletPool, delta_t);
+
+                updateBullets(&bulletPool, delta_t);
 
                 // Mise à jour des ennemis existants
                 updateEnemies(&enemyPool, grid, delta_t);
 
                 // Affichage des ennemis
-                clearUsedPath(grid, enemyPool);
+
+                if (i % 50 == 0)
+                {
+                    fillBG(1, 1, width + 1, height + 1);
+                    drawFullGrid(grid);
+                }
+                else
+                {
+                    clearUsedPath(grid, enemyPool);
+                }
                 drawEnemies(enemyPool, grid);
+                drawBullets(bulletPool);
             }
             fflush(stdout);
         }
@@ -155,9 +168,10 @@ int main()
             move_to(0, 0);
             printf(COLOR_STANDARD_BG);
             info = mallinfo2();
-            printf("Enemy count %d/%d | (%.1f fps) | runtime: %lds | Heap: %zuKo",
+            printf("Enemy count %d/%d | Bullet count: %d | (%.1f fps) | runtime: %lds | Heap: %zuKo",
                    enemyPool.count,                      //
                    enemyPool.length,                     //
+                   bulletPool.count,                     //
                    round(1.0f / delta_t * 10.0f) / 10.0, //
                    current_time.tv_sec - time_start,     //
                    info.uordblks / 1000);

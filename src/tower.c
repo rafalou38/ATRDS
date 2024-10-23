@@ -28,6 +28,7 @@ void showTowerSelection(int ligne, bool hasTurret)
             if (x == 0 || x == width - 1)
                 printf("█");
             else if (y == 0)
+
                 printf("▀");
             else if (y == height - 1)
                 printf("▄");
@@ -54,7 +55,7 @@ void selectionTower(int x0, int y0, bool hasTurret)
     }
 }
 
-void updateTowers(Grid grid, EnemyPool ep, float dt)
+void updateTowers(Grid grid, EnemyPool ep, BulletPool *bp, float dt)
 {
     for (int x = 0; x < grid.width; x++)
     {
@@ -62,11 +63,6 @@ void updateTowers(Grid grid, EnemyPool ep, float dt)
         {
             if (grid.cells[x][y].hasTurret)
             {
-                int terminal_x = x * (CELL_WIDTH + GAP) + 3;
-                int terminal_y = y * (CELL_HEIGHT + GAP / 2) + 2;
-                move_to(terminal_x, terminal_y);
-
-                printf("%.2f", grid.cells[x][y].turret.compteur);
                 grid.cells[x][y].turret.compteur += dt;
                 if (grid.cells[x][y].turret.compteur >= grid.cells[x][y].turret.reload_delay)
                 {
@@ -76,7 +72,14 @@ void updateTowers(Grid grid, EnemyPool ep, float dt)
                         if (d <= grid.cells[x][y].turret.range)
                         {
                             grid.cells[x][y].turret.compteur = 0;
-                            ep.enemies[i].hp -= grid.cells[x][y].turret.damage;
+                            // ep.enemies[i].hp -= grid.cells[x][y].turret.damage;
+                            bp->bullets[bp->count].hit = false;
+                            bp->bullets[bp->count].grid_x = x;
+                            bp->bullets[bp->count].grid_y = y;
+                            bp->bullets[bp->count].target = &(ep.enemies[i]);
+                            bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage;
+                            bp->count++;
+                            break;
                         }
                     }
                 }
@@ -84,3 +87,69 @@ void updateTowers(Grid grid, EnemyPool ep, float dt)
         }
     }
 }
+
+void defragBullets(BulletPool *bp)
+{
+    int right = 0;
+    int left = -1;
+
+    while (right < bp->count)
+    {
+        if (!bp->bullets[right].hit)
+        {
+            if (left != -1)
+            {
+                assert(left >= 0);
+                // assert(left < bp->length);
+
+                bp->bullets[left] = bp->bullets[right];
+                left++;
+            }
+        }
+        else if (left == -1)
+        {
+            left = right;
+        }
+
+        right++;
+    }
+    bp->count -= right - left;
+    if (bp->count < 0)
+        bp->count = 0;
+}
+
+void drawBullets(BulletPool bp)
+{
+    for (int i = 0; i < bp.count; i++)
+    {
+        int terminal_x = bp.bullets[i].grid_x * (CELL_WIDTH + GAP) + 3;
+        int terminal_y = bp.bullets[i].grid_y * (CELL_HEIGHT + GAP / 2) + 2;
+        move_to(terminal_x, terminal_y);
+
+        printf("⌾");
+    }
+}
+void updateBullets(BulletPool *bp, float dt)
+{
+    float defrag_needed = false;
+    for (int i = 0; i < bp->count; i++)
+    {
+        if (bp->bullets[i].hit)
+            continue;
+
+        float dx = bp->bullets[i].target->grid_x - bp->bullets[i].grid_x;
+        float dy = bp->bullets[i].target->grid_y - bp->bullets[i].grid_y;
+        float d = sqrt(dx * dx + dy * dy);
+        bp->bullets[i].grid_x += (dx / d) * 5 * dt;
+        bp->bullets[i].grid_y += (dy / d) * 5 * dt;
+
+        if (d <= 0.1)
+        {
+            bp->bullets[i].target->hp -= bp->bullets[i].damage;
+            bp->bullets[i].hit = true;
+            defrag_needed = true;
+        }
+    }
+    if (defrag_needed)
+        defragBullets(bp);
+};

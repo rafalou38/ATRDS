@@ -81,6 +81,7 @@ struct Cell
     bool selected;
     struct Turret turret;
     bool hasTurret;
+    bool drawn;
 };
 
 typedef struct Grid
