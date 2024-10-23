@@ -110,7 +110,7 @@ int msleep(long ms);
 #define COLOR_STANDARD_BG "\033[48;5;233m"
 #define COLOR_TOWER_SLOT "\033[48;5;236m"
 #define COLOR_PATH_BORDER "\033[38;5;240m"
-#define COLOR_SELECTED_SLOT "\033[48;5;221m"
+#define COLOR_SELECTED_SLOT "\033[38;5;221m"
     // Health bar
 #define COLOR_HEALTH_BG "\033[48;5;236m"
 #define COLOR_HEALTH_0 "\033[38;5;196m"
