@@ -30,6 +30,7 @@ void allocateGridCells(Grid *grid)
             cells[x][y].visited = false;
             cells[x][y].selected = false;
             cells[x][y].hasTurret = false;
+            cells[x][y].drawn = false;
         }
     }
 }
@@ -458,9 +459,25 @@ void clearUsedPath(Grid grid, EnemyPool ep)
     {
         for (int y = 0; y < grid.height; y++)
         {
+            if (grid.cells[x][y].drawn)
+                continue;
+            // A coté de tourelle
+            for (int dx = -1; dx <= 1; dx++)
+            {
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    if (x > 0 && y > 0 && x < grid.width - 1 && y < grid.height - 1 && grid.cells[x + dx][y + dy].hasTurret)
+                    {
+                        drawCell(grid.cells[x][y], grid);
+                        
+                        grid.cells[x][y].drawn = true;
+                    }
+                }
+            }
+
+            // Chemin occupé
             if (grid.cells[x][y].type == CHEMIN)
             {
-
                 for (int i = 0; i < ep.count; i++)
                 {
                     if (
@@ -468,10 +485,24 @@ void clearUsedPath(Grid grid, EnemyPool ep)
                         || (ep.enemies[i].previous_cell.x + 1 == x && ep.enemies[i].previous_cell.y == y))
                     {
                         drawCell(grid.cells[x][y], grid);
+                        grid.cells[x][y].drawn = true;
                         break;
                     }
                 }
             }
+            else if (grid.cells[x][y].hasTurret == true)
+            {
+                drawCell(grid.cells[x][y], grid);
+                grid.cells[x][y].drawn = true;
+            }
+        }
+    }
+    // Reset
+    for (int x = 0; x < grid.width; x++)
+    {
+        for (int y = 0; y < grid.height; y++)
+        {
+            grid.cells[x][y].drawn = false;
         }
     }
 }

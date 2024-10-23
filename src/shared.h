@@ -52,10 +52,10 @@ struct Turret
 {
     enum TurretType type;
     int lvl;
-    int compteur;
+    float compteur;
     int range;
     int damage;
-    int reload_delay;
+    float reload_delay;
 };
 
 typedef struct EnemyPool
@@ -81,6 +81,7 @@ struct Cell
     bool selected;
     struct Turret turret;
     bool hasTurret;
+    bool drawn;
 };
 
 typedef struct Grid
@@ -108,35 +109,29 @@ int msleep(long ms);
 #############
 */
 
-
-
 #define RESET "\033[0m"
 #define UNDERLINE "\033[4m"
 #define UNDERLINE_RST "\033[24m"
 #define BOLD "\033[1m"
 #define BOLD_RST "\033[22m"
 
-
-    // General colors
+// General colors
 #define COLOR_RED "\033[91m"
 #define COLOR_GRAY "\033[38;5;243m"
 #define COLOR_GREEN "\033[38;5;42m"
 #define COLOR_YELLOW "\033[38;5;11;1m"
 
-#define COLOR_SNIPER_TOWER "\033[38;5;42m"
-#define COLOR_SNIPER_CANON "\033[91m"
-    // Terrain colors
+// Terrain colors
 #define COLOR_STANDARD_BG "\033[48;5;233m"
 #define COLOR_TOWER_SLOT_BG "\033[48;5;236m"
 #define COLOR_PATH_BORDER "\033[38;5;240m"
 #define COLOR_SELECTED_SLOT "\033[38;5;221m"
-    // Health bar
+// Health bar
 #define COLOR_HEALTH_BG "\033[48;5;236m"
 #define COLOR_HEALTH_0 "\033[38;5;196m"
 #define COLOR_HEALTH_25 "\033[38;5;166m"
 #define COLOR_HEALTH_50 "\033[38;5;178m"
 #define COLOR_HEALTH_75 "\033[38;5;82m"
-
 
 char get_key_press();
 void move_to(int x, int y);
