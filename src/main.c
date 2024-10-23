@@ -205,6 +205,17 @@ int main()
                             selected_cell_y = cell_y - 1;
                             grid.cells[selected_cell_x][selected_cell_y].selected = true;
                         }
+                        else
+                        {
+                            cell_y = grid.height;
+                            while (cell_y > 1 && grid.cells[cell_x][cell_y - 1].type == CHEMIN)
+                            {
+                                cell_y -= 1;
+                            }
+                            grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                            selected_cell_y = cell_y - 1;
+                            grid.cells[selected_cell_x][selected_cell_y].selected = true;
+                        }
                     }
                     else if (down)
                     {
@@ -216,6 +227,18 @@ int main()
                             grid.cells[selected_cell_x][selected_cell_y].selected = false;
                             selected_cell_y = cell_y + 1;
                             grid.cells[selected_cell_x][selected_cell_y].selected = true;
+                        }
+                        else
+                        {
+                            cell_y = -1;
+                            while (cell_y < grid.height - 1 && grid.cells[cell_x][cell_y + 1].type == CHEMIN)
+                            {
+                                cell_y += 1;
+                            }
+                            grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                            selected_cell_y = cell_y + 1;
+                            grid.cells[selected_cell_x][selected_cell_y].selected = true;
+                            
                         }
                     }
                     else if (right)
@@ -229,14 +252,36 @@ int main()
                             selected_cell_x = cell_x + 1;
                             grid.cells[selected_cell_x][selected_cell_y].selected = true;
                         }
+                        else
+                        {
+                            cell_x = -1;
+                            while (cell_x < grid.width - 1 && grid.cells[cell_x + 1][cell_y].type == CHEMIN)
+                            {
+                                cell_x += 1;
+                            }
+                            grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                            selected_cell_x = cell_x + 1;
+                            grid.cells[selected_cell_x][selected_cell_y].selected = true;
+                        }
                     }
                     else if (left)
                     {
-                        while (cell_x > 1 && grid.cells[cell_x - 1][cell_y].type == CHEMIN)
+                        while (cell_x >= 1 && grid.cells[cell_x - 1][cell_y].type == CHEMIN)
                             cell_x -= 1;
 
                         if (cell_x > 0)
                         {
+                            grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                            selected_cell_x = cell_x - 1;
+                            grid.cells[selected_cell_x][selected_cell_y].selected = true;
+                        }
+                        else
+                        {
+                            cell_x = grid.width;
+                            while (cell_x > 1 && grid.cells[cell_x - 1][cell_y].type == CHEMIN)
+                            {
+                                cell_x -= 1;
+                            }
                             grid.cells[selected_cell_x][selected_cell_y].selected = false;
                             selected_cell_x = cell_x - 1;
                             grid.cells[selected_cell_x][selected_cell_y].selected = true;
