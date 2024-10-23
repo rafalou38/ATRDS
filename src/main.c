@@ -2,6 +2,7 @@
 
 #include "grid.h"
 #include "enemies.h"
+#include "tower.h"
 
 /*
 #################
@@ -91,10 +92,10 @@ int main()
 
     struct mallinfo2 info;
 
+    bool selection_active = false;
     int selected_cell_x = 0;
     int selected_cell_y = 0;
     grid.cells[0][0].selected = true;
-    
 
     for (int i = 0; i < 10000; i++)
     {
@@ -109,20 +110,42 @@ int main()
             msleep((1.0 / TARGET_FPS - delta_t) * 1000);
         }
 
-        spawnTimer += delta_t;
+        /*
+        #############################
+        GESTION DE L'AFFICHAGE DU JEU
+        #############################
+        */
+        { // MENU DE SELECTION
+            if (selection_active)
+            {
+                showTowerSelection();
+            }
+            else
+            {
+                // JEU NORMAL
 
-        /* code */
-        if (spawnTimer > 4.0)
-        {
-            addEnemy(grid, &enemyPool, ENEMY_TUX, grid.start_x, grid.start_y);
-            spawnTimer = 0.0;
+                // Spawn des ennemis
+                spawnTimer += delta_t;
+                if (spawnTimer > 4.0)
+                {
+                    addEnemy(grid, &enemyPool, ENEMY_TUX, grid.start_x, grid.start_y);
+                    spawnTimer = 0.0;
+                }
+                // Mise à jour des ennemis existants
+                updateEnemies(&enemyPool, grid, delta_t);
+
+                // Affichage des ennemis
+                clearUsedPath(grid, enemyPool);
+                drawEnemies(enemyPool, grid);
+            }
+            fflush(stdout);
         }
 
-        updateEnemies(&enemyPool, grid, delta_t);
-        // clearPath(grid)
-        clearUsedPath(grid, enemyPool);
-        drawEnemies(enemyPool, grid);
-
+        /*
+        ##############################
+        AFFICHAGE DE LA RANGÉE DU HAUT
+        ##############################
+        */
         if (1.0f / delta_t < 2 * TARGET_FPS)
         {
             move_to(0, 0);
@@ -133,12 +156,14 @@ int main()
                    enemyPool.length,                     //
                    round(1.0f / delta_t * 10.0f) / 10.0, //
                    current_time.tv_sec - time_start,     //
-                   info.uordblks/1000);
+                   info.uordblks / 1000);
         }
 
-        fflush(stdout);
-        // Get keystroke
-        
+        /*
+        ###########################
+        GESTION DES ENTREES CLAVIER
+        ###########################
+        */
         int c = get_key_press();
         if (c != 0)
         {
@@ -146,80 +171,96 @@ int main()
             {
                 break;
             }
-            else if (c == 27) // \033
+            else if (c == ' ') // Touche espace pressée
+            {
+                // Nettoyage
+                if (selection_active)
+                {
+                    fillBG(1, 1, width + 1, height + 1);
+                    drawFullGrid(grid);
+                }
+                selection_active = !selection_active;
+            }
+            
+            else if (c == 27) // Touches spéciales (\033)
             {
                 getchar(); // [
                 c = getchar();
                 int cell_x = selected_cell_x;
                 int cell_y = selected_cell_y;
-                if (c == 'A' )
+                bool up = c == 'A';
+                bool down = c == 'B';
+                bool right = c == 'C';
+                bool left = c == 'D';
+                if (!selection_active)
                 {
-                    while (cell_y>1
-                    && grid.cells[cell_x][cell_y-1].type==CHEMIN)
+                    if (up)
                     {
-                        cell_y-=1;
+                        while (cell_y > 1 && grid.cells[cell_x][cell_y - 1].type == CHEMIN)
+                            cell_y -= 1;
+
+                        if (cell_y > 0)
+                        {
+                            grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                            selected_cell_y = cell_y - 1;
+                            grid.cells[selected_cell_x][selected_cell_y].selected = true;
+                        }
                     }
-                    if (cell_y>0)
+                    else if (down)
                     {
-                        grid.cells[selected_cell_x][selected_cell_y].selected = false;
-                        selected_cell_y=cell_y-1;
-                        grid.cells[selected_cell_x][selected_cell_y].selected = true;
+                        while (cell_y < grid.height - 1 && grid.cells[cell_x][cell_y + 1].type == CHEMIN)
+                            cell_y += 1;
+
+                        if (cell_y < grid.height - 1)
+                        {
+                            grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                            selected_cell_y = cell_y + 1;
+                            grid.cells[selected_cell_x][selected_cell_y].selected = true;
+                        }
                     }
-                }
-                else if (c == 'B')
-                {
-                    while (cell_y<grid.height-1
-                    && grid.cells[cell_x][cell_y+1].type==CHEMIN)
+                    else if (right)
                     {
-                        cell_y+=1;
+                        while (cell_x < grid.width - 1 && grid.cells[cell_x + 1][cell_y].type == CHEMIN)
+                            cell_x += 1;
+
+                        if (cell_x < grid.width - 1)
+                        {
+                            grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                            selected_cell_x = cell_x + 1;
+                            grid.cells[selected_cell_x][selected_cell_y].selected = true;
+                        }
                     }
-                    if (cell_y<grid.height-1)
+                    else if (left)
                     {
-                        grid.cells[selected_cell_x][selected_cell_y].selected = false;
-                        selected_cell_y=cell_y+1;
-                        grid.cells[selected_cell_x][selected_cell_y].selected = true;
+                        while (cell_x > 1 && grid.cells[cell_x - 1][cell_y].type == CHEMIN)
+                            cell_x -= 1;
+
+                        if (cell_x > 0)
+                        {
+                            grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                            selected_cell_x = cell_x - 1;
+                            grid.cells[selected_cell_x][selected_cell_y].selected = true;
+                        }
                     }
-                }
-                else if (c == 'C')
-                {
-                    while (cell_x<grid.width-1
-                    && grid.cells[cell_x+1][cell_y].type==CHEMIN)
-                    {
-                        cell_x+=1;
-                    }
-                    if (cell_x<grid.width-1)
-                    {
-                        grid.cells[selected_cell_x][selected_cell_y].selected = false;
-                        selected_cell_x=cell_x+1;
-                        grid.cells[selected_cell_x][selected_cell_y].selected = true;
-                    }
-                }
-                else if (c == 'D')
-                {
-                    while (cell_x>1
-                    && grid.cells[cell_x-1][cell_y].type==CHEMIN)
-                    {
-                        cell_x-=1;
-                    }
-                    if (cell_x>0)
-                    {
-                        grid.cells[selected_cell_x][selected_cell_y].selected = false;
-                        selected_cell_x=cell_x-1;
-                        grid.cells[selected_cell_x][selected_cell_y].selected = true;
-                    }
+                    drawFullGrid(grid);
+                    fflush(stdout);
                 }
             }
-            drawFullGrid(grid);
-            fflush(stdout);
         }
     }
+
+    /*
+    ################
+    FIN DE LA PARTIE
+    ################
+    */
 
     printf("\n");
     clear_screen();
     move_to(0, 0);
     freeGrid(grid);
     freeEnemyPool(enemyPool);
-    
+
     return 0;
 }
 
