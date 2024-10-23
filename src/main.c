@@ -95,7 +95,7 @@ int main()
     bool selection_active = false;
     int selected_cell_x = 0;
     int selected_cell_y = 0;
-    int ligne=1;
+    int ligne = 1;
     grid.cells[0][0].selected = true;
 
     for (int i = 0; i < 10000; i++)
@@ -119,7 +119,7 @@ int main()
         { // MENU DE SELECTION
             if (selection_active)
             {
-                showTowerSelection(ligne,grid.cells[selected_cell_x][selected_cell_y].hasTurret);
+                showTowerSelection(ligne, grid.cells[selected_cell_x][selected_cell_y].hasTurret);
             }
             else
             {
@@ -179,11 +179,11 @@ int main()
                 {
                     fillBG(1, 1, width + 1, height + 1);
                     drawFullGrid(grid);
-                    ligne=1;
+                    ligne = 1;
                 }
                 selection_active = !selection_active;
             }
-            
+
             else if (c == 27) // Touches spéciales (\033)
             {
                 getchar(); // [
@@ -240,7 +240,6 @@ int main()
                             grid.cells[selected_cell_x][selected_cell_y].selected = false;
                             selected_cell_y = cell_y + 1;
                             grid.cells[selected_cell_x][selected_cell_y].selected = true;
-                            
                         }
                     }
                     else if (right)
@@ -296,13 +295,19 @@ int main()
                 {
                     if (down)
                     {
-                        ligne+=1;
+                        ligne += 1;
                     }
                     else if (up)
                     {
-                        ligne-=1;
+                        ligne -= 1;
                     }
-                    else if (c=='y'||c=='Y')
+                }
+            }
+            else if (c == 10) // ENTER
+            {
+                if (selection_active)
+                {
+                    if (ligne == 1)
                     {
                         grid.cells[selected_cell_x][selected_cell_y].turret.type = Sniper;
                         grid.cells[selected_cell_x][selected_cell_y].turret.lvl = 1;
@@ -312,6 +317,10 @@ int main()
                         grid.cells[selected_cell_x][selected_cell_y].turret.reload_delay = 20;
                         grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
                     }
+
+                    selection_active = false;
+                    fillBG(1, 1, width + 1, height + 1);
+                    drawFullGrid(grid);
                 }
             }
         }

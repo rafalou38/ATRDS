@@ -28,7 +28,7 @@ void allocateGridCells(Grid *grid)
             cells[x][y].y = y;
             cells[x][y].type = TERRAIN;
             cells[x][y].visited = false;
-            cells[x][y].selected = false;;
+            cells[x][y].selected = false;
             cells[x][y].hasTurret = false;
         }
     }
@@ -182,44 +182,59 @@ void drawCell(struct Cell cell, Grid grid)
 {
     if (cell.type == TERRAIN)
     {
-        printf(COLOR_TOWER_SLOT_BG);
 
-        if (cell.selected)
-        {
-            printf(COLOR_SELECTED_SLOT);
-        }
         for (int y = 0; y < CELL_HEIGHT; y++)
         {
+
             int terminal_x = cell.x * (CELL_WIDTH + GAP) + 3;
             int terminal_y = cell.y * (CELL_HEIGHT + GAP / 2) + 2;
 
+            printf(COLOR_TOWER_SLOT_BG);
             move_to(terminal_x, terminal_y + y);
 
+            if (cell.hasTurret)
+            {
+                for (int x = 0; x < CELL_WIDTH; x++)
+                {
+                    if (cell.turret.type == Sniper)
+                    {
+                        printf("S");
+                    }
+                }
+            }
+            else
+            {
+                for (int x = 0; x < CELL_WIDTH; x++)
+                {
+                    printf(" ");
+                }
+            }
+
+            if (cell.selected)
+            {
+                printf(COLOR_SELECTED_SLOT);
+            }
+            move_to(terminal_x, terminal_y + y);
             for (int x = 0; x < CELL_WIDTH; x++)
             {
                 if (cell.selected)
                 {
-                    if (x == 0 || x == CELL_WIDTH - 1)
+                    if (x == 0)
+                    {
                         printf("█");
+                    }
+                    else if (x == CELL_WIDTH - 1)
+                    {
+                        move_to(terminal_x + x, terminal_y + y);
+                        printf("█");
+                    }
                     else if (y == 0)
                         printf("▀");
                     else if (y == CELL_HEIGHT - 1)
                         printf("▄");
-                    else
-                        printf(" ");
-                }
-                else
-                {
-                    printf(" ");
-                }
-                if (cell.hasTurret)
-                {
-                    if (cell.turret.type==Sniper)
-                    {
-                        printf("S"); 
-                    }
                 }
             }
+            printf(RESET);
         }
         printf(RESET);
     }
