@@ -52,10 +52,10 @@ struct Turret
 {
     enum TurretType type;
     int lvl;
-    int compteur;
+    float compteur;
     int range;
     int damage;
-    int reload_delay;
+    float reload_delay;
 };
 
 typedef struct EnemyPool

@@ -245,9 +245,7 @@ void updateEnemies(EnemyPool *ep, Grid grid, float dt_sec)
             defragNeeded = true;
         }
 
-        if (enemy->hp > 0)
-            enemy->hp -= (rand() % 100) / 10000.0f;
-        else
+        if (enemy->hp <= 0)
         {
             enemy->state = ENEMY_STATE_DEAD;
             drawCell(enemy->previous_cell, grid);
