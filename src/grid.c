@@ -28,6 +28,7 @@ void allocateGridCells(Grid *grid)
             cells[x][y].y = y;
             cells[x][y].type = TERRAIN;
             cells[x][y].visited = false;
+            cells[x][y].selected = false;
         }
     }
 }
@@ -202,6 +203,10 @@ void drawCell(struct Cell cell, Grid grid)
         else
         {
             printf(COLOR_STANDARD_BG);
+        }
+        if (cell.selected)
+        {
+            printf(COLOR_SELECTED_SLOT);
         }
         for (int y = 0; y < CELL_HEIGHT; y++)
         {

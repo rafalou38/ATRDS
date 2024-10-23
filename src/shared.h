@@ -63,6 +63,7 @@ struct Cell
     int index;
     enum CellType type;
     bool visited;
+    bool selected;
 };
 
 typedef struct Grid

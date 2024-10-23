@@ -91,8 +91,9 @@ int main()
 
     struct mallinfo2 info;
 
-    int selected_cell_x = 3;
-    int selected_cell_y = 2;
+    int selected_cell_x = 0;
+    int selected_cell_y = 0;
+    grid.cells[0][0].selected = true;
     
 
     for (int i = 0; i < 10000; i++)
@@ -149,52 +150,66 @@ int main()
             {
                 getchar(); // [
                 c = getchar();
-
-                if (c == 'A' 
-                && selected_cell_y-CELL_HEIGHT-GAP/2>1)
+                int cell_x = selected_cell_x;
+                int cell_y = selected_cell_y;
+                if (c == 'A' )
                 {
-                    selected_cell_y=selected_cell_y-CELL_HEIGHT-GAP/2;
+                    while (cell_y>1
+                    && grid.cells[cell_x][cell_y-1].type==CHEMIN)
+                    {
+                        cell_y-=1;
+                    }
+                    if (cell_y>0)
+                    {
+                        grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                        selected_cell_y=cell_y-1;
+                        grid.cells[selected_cell_x][selected_cell_y].selected = true;
+                    }
                 }
-                else if (c == 'B' 
-                && selected_cell_y+CELL_HEIGHT+GAP/2< 2 + (CELL_HEIGHT+GAP/2) * grid.height )
+                else if (c == 'B')
                 {
-                    selected_cell_y=selected_cell_y+CELL_HEIGHT+GAP/2;
+                    while (cell_y<grid.height-1
+                    && grid.cells[cell_x][cell_y+1].type==CHEMIN)
+                    {
+                        cell_y+=1;
+                    }
+                    if (cell_y<grid.height-1)
+                    {
+                        grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                        selected_cell_y=cell_y+1;
+                        grid.cells[selected_cell_x][selected_cell_y].selected = true;
+                    }
                 }
-                else if (c == 'C' 
-                && selected_cell_x+CELL_WIDTH+GAP< 3 + (CELL_WIDTH+GAP) * grid.width )
+                else if (c == 'C')
                 {
-                    selected_cell_x=selected_cell_x+CELL_WIDTH+GAP;
+                    while (cell_x<grid.width-1
+                    && grid.cells[cell_x+1][cell_y].type==CHEMIN)
+                    {
+                        cell_x+=1;
+                    }
+                    if (cell_x<grid.width-1)
+                    {
+                        grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                        selected_cell_x=cell_x+1;
+                        grid.cells[selected_cell_x][selected_cell_y].selected = true;
+                    }
                 }
-                else if (c == 'D' 
-                && selected_cell_x-CELL_WIDTH-GAP>1)
+                else if (c == 'D')
                 {
-                    selected_cell_x=selected_cell_x-CELL_WIDTH-GAP;
+                    while (cell_x>1
+                    && grid.cells[cell_x-1][cell_y].type==CHEMIN)
+                    {
+                        cell_x-=1;
+                    }
+                    if (cell_x>0)
+                    {
+                        grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                        selected_cell_x=cell_x-1;
+                        grid.cells[selected_cell_x][selected_cell_y].selected = true;
+                    }
                 }
-                
-                drawFullGrid(grid);
-
-                printf(COLOR_SELECTED_SLOT);
-                for(int x_of_cell = selected_cell_x ; x_of_cell<CELL_WIDTH+selected_cell_x; x_of_cell++){
-                    move_to(x_of_cell,selected_cell_y);
-                    printf("█");
-                }
-                for(int x_of_cell = selected_cell_x ; x_of_cell<CELL_WIDTH+selected_cell_x; x_of_cell++){
-                    move_to(x_of_cell,selected_cell_y+CELL_HEIGHT-1);
-                    printf("█");
-                }
-                for(int y_of_cell = selected_cell_y+1 ; y_of_cell<CELL_HEIGHT+selected_cell_y; y_of_cell++){
-                    move_to(selected_cell_x,y_of_cell);
-                    printf("██");
-                }
-                for(int y_of_cell = selected_cell_y+1 ; y_of_cell<CELL_HEIGHT+selected_cell_y; y_of_cell++){
-                    move_to(selected_cell_x+CELL_WIDTH-2,y_of_cell);
-                    printf("██");
-                }
-                move_to(selected_cell_x+3,selected_cell_y+2);
-                printf("%d,%d",grid.width,selected_cell_x);
-                
             }
-           
+            drawFullGrid(grid);
             fflush(stdout);
         }
     }
