@@ -18,7 +18,8 @@
     "math.h": "c",
     "termios.h": "c",
     "malloc.h": "c",
-    "random": "c"
+    "random": "c",
+    "variant": "c"
   },
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
