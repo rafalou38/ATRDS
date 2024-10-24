@@ -233,84 +233,69 @@ void drawCell(struct Cell cell, Grid grid)
                 int x_current_sniper = cell.x * (CELL_WIDTH + GAP) + 3;
                 int y_current_sniper = cell.y * (CELL_HEIGHT + GAP / 2) + 2;
 
-                int Sniper_direction = rand()%8+1 ;
+                float angle = atan2f(-cell.turret.last_shot_dy, cell.turret.last_shot_dx);
+
                 printf(COLOR_GREEN);
 
-                if (Sniper_direction == 1)
-                {
-                    char *sprite[5] = {"   ▄" COLOR_RED "/\\" COLOR_GREEN "▄   ", " ▄██" COLOR_RED "||" COLOR_GREEN "██▄ ", "████[]████", " ▀██████▀ ", "   ▀██▀   "};
+                char *sprite[8][5] = {
+                    {"   ▄██▄   ",
+                     " ▄██████▄ ",
+                     COLOR_RED "<===" COLOR_GREEN "[]████",
+                     " ▀██████▀ ",
+                     "   ▀██▀   "},
+                    {"   ▄██▄   ",
+                     " ▄██████▄ ",
+                     "████[]████",
+                     " ▀█" COLOR_RED "//" COLOR_GREEN "███▀ ",
+                     COLOR_RED "   ┗" COLOR_GREEN "██▀   "},
+                    {"   ▄██▄   ",
+                     " ▄██████▄ ",
+                     "████[]████",
+                     " ▀██" COLOR_RED "||" COLOR_GREEN "██▀ ",
+                     "   ▀" COLOR_RED "\\/" COLOR_GREEN "▀   "},
+                    {"   ▄██▄   ",
+                     " ▄██████▄ ",
+                     "████[]████",
+                     " ▀███" COLOR_RED "\\\\" COLOR_GREEN "█▀ ",
+                     "   ▀██" COLOR_RED "┛   "},
+                    {"   ▄██▄   ",
+                     " ▄██████▄ ",
+                     "████[]" COLOR_RED "===>" COLOR_GREEN,
+                     " ▀██████▀ ",
+                     "   ▀██▀   "},
+                    {"   ▄██" COLOR_RED "┓   " COLOR_GREEN,
+                     " ▄███" COLOR_RED "//" COLOR_GREEN "█▄ ",
+                     "████[]████",
+                     " ▀██████▀ ",
+                     "   ▀██▀   "},
+                    {"   ▄" COLOR_RED "/\\" COLOR_GREEN "▄   ",
+                     " ▄██" COLOR_RED "||" COLOR_GREEN "██▄ ",
+                     "████[]████",
+                     " ▀██████▀ ",
+                     "   ▀██▀   "},
+                    {COLOR_RED "   ┏" COLOR_GREEN "██▄   ",
+                     " ▄█" COLOR_RED "\\\\" COLOR_GREEN "███▄ ",
+                     "████[]████",
+                     " ▀██████▀ ",
+                     "   ▀██▀   "},
+                };
+
+                // angle est approché au PI/le plus proche sous forme d'index
+                size_t index = MIN(round(((angle + PI) / (2 * PI)) * 8), 7);
+
+                if (index < 8)
                     for (int i = 0; i < 5; i++)
                     {
                         move_to(x_current_sniper, y_current_sniper + i);
-                        printf(sprite[i]);
+                        printf(sprite[index][i]);
+
+                        // printf("%ld %f", index, (angle + PI) * 180 / PI);
+                        // printf("%.2f %.2f", cell.turret.last_shot_dx, cell.turret.last_shot_dy);
                     }
-                }
-                else if (Sniper_direction == 2)
-                {
-                    char *sprite[5] = {"   ▄██▄   ", " ▄██████▄ ", "████[]" COLOR_RED "===>" COLOR_GREEN, " ▀██████▀ ", "   ▀██▀   "};
-                    for (int i = 0; i < 5; i++)
-                    {
-                        move_to(x_current_sniper, y_current_sniper + i);
-                        printf(sprite[i]);
-                    }
-                }
-                else if (Sniper_direction == 3)
-                {
-                    char *sprite[5] = {"   ▄██▄   ", " ▄██████▄ ", "████[]████", " ▀██" COLOR_RED "||" COLOR_GREEN "██▀ ", "   ▀" COLOR_RED "\\/" COLOR_GREEN "▀   "};
-                    for (int i = 0; i < 5; i++)
-                    {
-                        move_to(x_current_sniper, y_current_sniper + i);
-                        printf(sprite[i]);
-                    }
-                }
-                else if (Sniper_direction == 4)
-                {
-                    char *sprite[5] = {"   ▄██▄   ", " ▄██████▄ ", COLOR_RED "<===" COLOR_GREEN "[]████", " ▀██████▀ ", "   ▀██▀   "};
-                    for (int i = 0; i < 5; i++)
-                    {
-                        move_to(x_current_sniper, y_current_sniper + i);
-                        printf(sprite[i]);
-                    }
-                }
-                else if (Sniper_direction == 5)
-                {
-                    char *sprite[5] = {"   ▄██" COLOR_RED "┓   " COLOR_GREEN, " ▄███" COLOR_RED "//" COLOR_GREEN "█▄ ", "████[]████", " ▀██████▀ ", "   ▀██▀   "};
-                    for (int i = 0; i < 5; i++)
-                    {
-                        move_to(x_current_sniper, y_current_sniper + i);
-                        printf(sprite[i]);
-                    }
-                }
-                else if (Sniper_direction == 6)
-                {
-                    char *sprite[5] = {COLOR_RED "   ┏" COLOR_GREEN "██▄   ", " ▄█" COLOR_RED "\\\\" COLOR_GREEN "███▄ ", "████[]████", " ▀██████▀ ", "   ▀██▀   "};
-                    for (int i = 0; i < 5; i++)
-                    {
-                        move_to(x_current_sniper, y_current_sniper + i);
-                        printf(sprite[i]);
-                    }
-                }
-                else if (Sniper_direction == 7)
-                {
-                    char *sprite[5] = {"   ▄██▄   ", " ▄██████▄ ", "████[]████", " ▀█" COLOR_RED "//" COLOR_GREEN "███▀ ", COLOR_RED "   ┗" COLOR_GREEN "██▀   "};
-                    for (int i = 0; i < 5; i++)
-                    {
-                        move_to(x_current_sniper, y_current_sniper + i);
-                        printf(sprite[i]);
-                    }
-                }
-                else if (Sniper_direction == 8)
-                {
-                    char *sprite[5] = {"   ▄██▄   ", " ▄██████▄ ", "████[]████", " ▀███" COLOR_RED "\\\\" COLOR_GREEN "█▀ ", "   ▀██" COLOR_RED "┛   "};
-                    for (int i = 0; i < 5; i++)
-                    {
-                        move_to(x_current_sniper, y_current_sniper + i);
-                        printf(sprite[i]);
-                    }
-                }
+
+                printf(RESET);
             }
         }
-        printf(RESET);
     }
     if (cell.type == CHEMIN)
     {

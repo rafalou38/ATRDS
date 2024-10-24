@@ -37,6 +37,8 @@ CONFIGURATION
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define CLAMP(x, a, b) MIN(MAX(x, a), b)
 
+
+#define PI 3.14159265359
 /*
 ##################
 ## Types custom ##
@@ -54,9 +56,11 @@ struct Turret
     int lvl;
     float compteur;
     int range;
-    int damage;
+    float damage;
     float reload_delay;
     int direction;
+    float last_shot_dx;
+    float last_shot_dy;
 };
 
 typedef struct EnemyPool

@@ -131,7 +131,7 @@ int main()
 
                 // Spawn des ennemis
                 spawnTimer += delta_t;
-                if (spawnTimer > 2.0)
+                if (spawnTimer > 8.0)
                 {
                     addEnemy(grid, &enemyPool, ENEMY_TUX, grid.start_x, grid.start_y);
                     spawnTimer = 0.0;
@@ -335,8 +335,8 @@ int main()
                         grid.cells[selected_cell_x][selected_cell_y].turret.lvl = 1;
                         grid.cells[selected_cell_x][selected_cell_y].turret.compteur = 0;
                         grid.cells[selected_cell_x][selected_cell_y].turret.range = 100;
-                        grid.cells[selected_cell_x][selected_cell_y].turret.damage = 5;
-                        grid.cells[selected_cell_x][selected_cell_y].turret.reload_delay = 1;
+                        grid.cells[selected_cell_x][selected_cell_y].turret.damage = 0.1;
+                        grid.cells[selected_cell_x][selected_cell_y].turret.reload_delay = 0.5;
                         grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
                     }
 
