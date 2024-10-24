@@ -233,8 +233,6 @@ void drawCell(struct Cell cell, Grid grid)
                 int x_current_sniper = cell.x * (CELL_WIDTH + GAP) + 3;
                 int y_current_sniper = cell.y * (CELL_HEIGHT + GAP / 2) + 2;
 
-                float angle = atan2f(-cell.turret.last_shot_dy, cell.turret.last_shot_dx);
-
                 printf(COLOR_GREEN);
 
                 char *sprite[8][5] = {
@@ -281,17 +279,15 @@ void drawCell(struct Cell cell, Grid grid)
                 };
 
                 // angle est approché au PI/le plus proche sous forme d'index
+                float angle = atan2f(-cell.turret.last_shot_dy, cell.turret.last_shot_dx);
                 size_t index = MIN(round(((angle + PI) / (2 * PI)) * 8), 7);
+                assert(index < 8);
 
-                if (index < 8)
-                    for (int i = 0; i < 5; i++)
-                    {
-                        move_to(x_current_sniper, y_current_sniper + i);
-                        printf(sprite[index][i]);
-
-                        // printf("%ld %f", index, (angle + PI) * 180 / PI);
-                        // printf("%.2f %.2f", cell.turret.last_shot_dx, cell.turret.last_shot_dy);
-                    }
+                for (int i = 0; i < 5; i++)
+                {
+                    move_to(x_current_sniper, y_current_sniper + i);
+                    printf(sprite[index][i]);
+                }
 
                 printf(RESET);
             }
