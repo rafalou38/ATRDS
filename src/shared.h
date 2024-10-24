@@ -56,6 +56,7 @@ struct Turret
     int range;
     int damage;
     float reload_delay;
+    int direction;
 };
 
 typedef struct EnemyPool

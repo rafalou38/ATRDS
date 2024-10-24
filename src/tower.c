@@ -77,7 +77,6 @@ void updateTowers(Grid grid, EnemyPool ep, float dt)
                         if (d <= grid.cells[x][y].turret.range)
                         {
                             grid.cells[x][y].turret.compteur = 0;
-
 #if BULLETS_ON
                             bp->bullets[bp->count].hit = false;
                             bp->bullets[bp->count].grid_x = x;

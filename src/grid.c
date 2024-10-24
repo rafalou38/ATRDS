@@ -232,121 +232,82 @@ void drawCell(struct Cell cell, Grid grid)
             {
                 int x_current_sniper = cell.x * (CELL_WIDTH + GAP) + 3;
                 int y_current_sniper = cell.y * (CELL_HEIGHT + GAP / 2) + 2;
-                
-                int Sniper_direction=rand()%8+1;
+
+                int Sniper_direction = rand()%8+1 ;
                 printf(COLOR_GREEN);
-                
-                if (Sniper_direction==1)
+
+                if (Sniper_direction == 1)
                 {
-                    move_to(x_current_sniper, y_current_sniper);
-                    printf("   ▄" COLOR_RED "/\\" COLOR_GREEN "▄   ");
-                    move_to(x_current_sniper, y_current_sniper + 1);
-                    printf(" ▄██" COLOR_RED "||" COLOR_GREEN "██▄ ");
-                    move_to(x_current_sniper, y_current_sniper + 2);
-                    printf("████[]████");
-                    move_to(x_current_sniper, y_current_sniper + 3);
-                    printf(" ▀██████▀ ");
-                    move_to(x_current_sniper, y_current_sniper + 4);
-                    printf("   ▀██▀   ");
-                }
-                else if (Sniper_direction==2)
-                {
-                    move_to(x_current_sniper, y_current_sniper);
-                    printf("   ▄██▄   ");
-                    move_to(x_current_sniper, y_current_sniper + 1);
-                    printf(" ▄██████▄ ");
-                    move_to(x_current_sniper, y_current_sniper + 2);
-                    printf("████[]" COLOR_RED "===>" COLOR_GREEN);
-                    move_to(x_current_sniper, y_current_sniper + 3);
-                    printf(" ▀██████▀ ");
-                    move_to(x_current_sniper, y_current_sniper + 4);
-                    printf("   ▀██▀   ");
-                }
-                else if (Sniper_direction==3)
-                {
-                    move_to(x_current_sniper, y_current_sniper);
-                    printf("   ▄██▄   ");
-                    move_to(x_current_sniper, y_current_sniper + 1);
-                    printf(" ▄██████▄ ");
-                    move_to(x_current_sniper, y_current_sniper + 2);
-                    printf("████[]████");
-                    move_to(x_current_sniper, y_current_sniper + 3);
-                    printf(" ▀██"COLOR_RED"||"COLOR_GREEN"██▀ ");
-                    move_to(x_current_sniper, y_current_sniper + 4);
-                    printf("   ▀"COLOR_RED"\\/"COLOR_GREEN"▀   ");
-                }
-                else if (Sniper_direction==4)
-                {
-                    move_to(x_current_sniper, y_current_sniper);
-                    printf("   ▄██▄   ");
-                    move_to(x_current_sniper, y_current_sniper + 1);
-                    printf(" ▄██████▄ ");
-                    move_to(x_current_sniper, y_current_sniper + 2);
-                    printf(COLOR_RED "<===" COLOR_GREEN"[]████");
-                    move_to(x_current_sniper, y_current_sniper + 3);
-                    printf(" ▀██████▀ ");
-                    move_to(x_current_sniper, y_current_sniper + 4);
-                    printf("   ▀██▀   ");
-                }
-                else if (Sniper_direction==5)
-                {
-                    move_to(x_current_sniper, y_current_sniper);
-                    printf("   ▄██"COLOR_RED"🭾   "COLOR_GREEN);
-                    move_to(x_current_sniper, y_current_sniper + 1);
-                    printf(" ▄███"COLOR_RED"//"COLOR_GREEN"█▄ ");
-                    move_to(x_current_sniper, y_current_sniper + 2);
-                    printf("████[]████");
-                    move_to(x_current_sniper, y_current_sniper + 3);
-                    printf(" ▀██████▀ ");
-                    move_to(x_current_sniper, y_current_sniper + 4);
-                    printf("   ▀██▀   ");
-                }
-                else if (Sniper_direction==6)
-                {
-                    move_to(x_current_sniper, y_current_sniper);
-                    printf(COLOR_RED"   🭽"COLOR_GREEN"██▄   ");
-                    move_to(x_current_sniper, y_current_sniper + 1);
-                    printf(" ▄█"COLOR_RED"\\\\"COLOR_GREEN"███▄ ");
-                    move_to(x_current_sniper, y_current_sniper + 2);
-                    printf("████[]████");
-                    move_to(x_current_sniper, y_current_sniper + 3);
-                    printf(" ▀██████▀ ");
-                    move_to(x_current_sniper, y_current_sniper + 4);
-                    printf("   ▀██▀   ");
-                }
-                else if (Sniper_direction==7)
-                {
-                    char* sprite[5] = {"   ▄██▄   "," ▄██████▄ ","████[]████"," ▀█"COLOR_RED"//"COLOR_GREEN"███▀ ",COLOR_RED"   🭼"COLOR_GREEN"██▀   "};
-                    for(int i=0;i<5;i++){
-                        move_to(x_current_sniper, y_current_sniper+i);
+                    char *sprite[5] = {"   ▄" COLOR_RED "/\\" COLOR_GREEN "▄   ", " ▄██" COLOR_RED "||" COLOR_GREEN "██▄ ", "████[]████", " ▀██████▀ ", "   ▀██▀   "};
+                    for (int i = 0; i < 5; i++)
+                    {
+                        move_to(x_current_sniper, y_current_sniper + i);
                         printf(sprite[i]);
                     }
-                   
-                    // move_to(x_current_sniper, y_current_sniper);
-                    // printf("   ▄██▄   ");
-                    // move_to(x_current_sniper, y_current_sniper + 1);
-                    // printf(" ▄██████▄ ");
-                    // move_to(x_current_sniper, y_current_sniper + 2);
-                    // printf("████[]████");
-                    // move_to(x_current_sniper, y_current_sniper + 3);
-                    // printf(" ▀█"COLOR_RED"//"COLOR_GREEN"███▀ ");
-                    // move_to(x_current_sniper, y_current_sniper + 4);
-                    // printf(COLOR_RED"   🭼"COLOR_GREEN"██▀   ");
                 }
-                else if (Sniper_direction==8)
+                else if (Sniper_direction == 2)
                 {
-                    move_to(x_current_sniper, y_current_sniper);
-                    printf("   ▄██▄   ");
-                    move_to(x_current_sniper, y_current_sniper + 1);
-                    printf(" ▄██████▄ ");
-                    move_to(x_current_sniper, y_current_sniper + 2);
-                    printf("████[]████");
-                    move_to(x_current_sniper, y_current_sniper + 3);
-                    printf(" ▀███"COLOR_RED"\\\\"COLOR_GREEN"█▀ ");
-                    move_to(x_current_sniper, y_current_sniper + 4);
-                    printf("   ▀██"COLOR_RED"🭿   ");
+                    char *sprite[5] = {"   ▄██▄   ", " ▄██████▄ ", "████[]" COLOR_RED "===>" COLOR_GREEN, " ▀██████▀ ", "   ▀██▀   "};
+                    for (int i = 0; i < 5; i++)
+                    {
+                        move_to(x_current_sniper, y_current_sniper + i);
+                        printf(sprite[i]);
+                    }
                 }
-
+                else if (Sniper_direction == 3)
+                {
+                    char *sprite[5] = {"   ▄██▄   ", " ▄██████▄ ", "████[]████", " ▀██" COLOR_RED "||" COLOR_GREEN "██▀ ", "   ▀" COLOR_RED "\\/" COLOR_GREEN "▀   "};
+                    for (int i = 0; i < 5; i++)
+                    {
+                        move_to(x_current_sniper, y_current_sniper + i);
+                        printf(sprite[i]);
+                    }
+                }
+                else if (Sniper_direction == 4)
+                {
+                    char *sprite[5] = {"   ▄██▄   ", " ▄██████▄ ", COLOR_RED "<===" COLOR_GREEN "[]████", " ▀██████▀ ", "   ▀██▀   "};
+                    for (int i = 0; i < 5; i++)
+                    {
+                        move_to(x_current_sniper, y_current_sniper + i);
+                        printf(sprite[i]);
+                    }
+                }
+                else if (Sniper_direction == 5)
+                {
+                    char *sprite[5] = {"   ▄██" COLOR_RED "┓   " COLOR_GREEN, " ▄███" COLOR_RED "//" COLOR_GREEN "█▄ ", "████[]████", " ▀██████▀ ", "   ▀██▀   "};
+                    for (int i = 0; i < 5; i++)
+                    {
+                        move_to(x_current_sniper, y_current_sniper + i);
+                        printf(sprite[i]);
+                    }
+                }
+                else if (Sniper_direction == 6)
+                {
+                    char *sprite[5] = {COLOR_RED "   ┏" COLOR_GREEN "██▄   ", " ▄█" COLOR_RED "\\\\" COLOR_GREEN "███▄ ", "████[]████", " ▀██████▀ ", "   ▀██▀   "};
+                    for (int i = 0; i < 5; i++)
+                    {
+                        move_to(x_current_sniper, y_current_sniper + i);
+                        printf(sprite[i]);
+                    }
+                }
+                else if (Sniper_direction == 7)
+                {
+                    char *sprite[5] = {"   ▄██▄   ", " ▄██████▄ ", "████[]████", " ▀█" COLOR_RED "//" COLOR_GREEN "███▀ ", COLOR_RED "   ┗" COLOR_GREEN "██▀   "};
+                    for (int i = 0; i < 5; i++)
+                    {
+                        move_to(x_current_sniper, y_current_sniper + i);
+                        printf(sprite[i]);
+                    }
+                }
+                else if (Sniper_direction == 8)
+                {
+                    char *sprite[5] = {"   ▄██▄   ", " ▄██████▄ ", "████[]████", " ▀███" COLOR_RED "\\\\" COLOR_GREEN "█▀ ", "   ▀██" COLOR_RED "┛   "};
+                    for (int i = 0; i < 5; i++)
+                    {
+                        move_to(x_current_sniper, y_current_sniper + i);
+                        printf(sprite[i]);
+                    }
+                }
             }
         }
         printf(RESET);
@@ -469,7 +430,7 @@ void clearUsedPath(Grid grid, EnemyPool ep)
                     if (x > 0 && y > 0 && x < grid.width - 1 && y < grid.height - 1 && grid.cells[x + dx][y + dy].hasTurret)
                     {
                         drawCell(grid.cells[x][y], grid);
-                        
+
                         grid.cells[x][y].drawn = true;
                     }
                 }
