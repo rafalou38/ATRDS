@@ -47,7 +47,8 @@ CONFIGURATION
 
 enum TurretType
 {
-    Sniper
+    Sniper,
+    Inferno
 };
 
 struct Turret
@@ -55,10 +56,11 @@ struct Turret
     enum TurretType type;
     int lvl;
     float compteur;
-    int range;
-    float damage;
-    float reload_delay;
+    int range[2];
+    float damage[2];
+    float reload_delay[2];
     int direction;
+    int nb_ennemi[2];
     float last_shot_dx;
     float last_shot_dy;
 };

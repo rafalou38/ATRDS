@@ -52,6 +52,8 @@ void selectionTower(int x0, int y0, bool hasTurret)
     {
         move_to(x0 + 1, y0 + 1);
         printf("Sniper");
+        move_to(x0 + 1, y0 + 2);
+        printf("Inferno");
     }
 }
 
@@ -68,13 +70,15 @@ void updateTowers(Grid grid, EnemyPool ep, float dt)
         {
             if (grid.cells[x][y].hasTurret)
             {
+                int lvl = grid.cells[x][y].turret.lvl;
                 grid.cells[x][y].turret.compteur += dt;
-                if (grid.cells[x][y].turret.compteur >= grid.cells[x][y].turret.reload_delay)
+                if (grid.cells[x][y].turret.compteur >= grid.cells[x][y].turret.reload_delay[lvl])
                 {
+                    int enemies_hit = 0;
                     for (int i = 0; i < ep.count; i++)
                     {
                         int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2));
-                        if (d <= grid.cells[x][y].turret.range)
+                        if (d <= grid.cells[x][y].turret.range[lvl])
                         {
                             grid.cells[x][y].turret.compteur = 0;
 
@@ -90,12 +94,14 @@ void updateTowers(Grid grid, EnemyPool ep, float dt)
                             bp->bullets[bp->count].grid_x = x;
                             bp->bullets[bp->count].grid_y = y;
                             bp->bullets[bp->count].target = &(ep.enemies[i]);
-                            bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage;
+                            bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage[lvl];
                             bp->count++;
 #else
-                            ep.enemies[i].hp -= grid.cells[x][y].turret.damage;
+                            ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
 #endif
-                            break;
+                            enemies_hit ++;
+                            if (enemies_hit>=grid.cells[x][y].turret.nb_ennemi[lvl])
+                                break;
                         }
                     }
                 }

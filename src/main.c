@@ -329,17 +329,46 @@ int main()
             {
                 if (selection_active)
                 {
-                    if (ligne == 1)
+                    if (grid.cells[selected_cell_x][selected_cell_y].hasTurret)
                     {
-                        grid.cells[selected_cell_x][selected_cell_y].turret.type = Sniper;
-                        grid.cells[selected_cell_x][selected_cell_y].turret.lvl = 1;
-                        grid.cells[selected_cell_x][selected_cell_y].turret.compteur = 0;
-                        grid.cells[selected_cell_x][selected_cell_y].turret.range = 100;
-                        grid.cells[selected_cell_x][selected_cell_y].turret.damage = 0.1;
-                        grid.cells[selected_cell_x][selected_cell_y].turret.reload_delay = 0.5;
-                        grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+                        if (ligne == 1)
+                        {
+                            grid.cells[selected_cell_x][selected_cell_y].turret.lvl = 1;
+                        }
                     }
-
+                    else
+                    {
+                        if (ligne == 1)
+                        {
+                            grid.cells[selected_cell_x][selected_cell_y].turret.type = Sniper;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.lvl = 0;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.compteur = 0;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.range[0] = 100;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.range[1] = 100;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.damage[0] = 1;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.damage[1] = 1.5;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.reload_delay[0] = 0.5;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.reload_delay[1] = 0.6;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.nb_ennemi[0] = 1;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.nb_ennemi[1] = 2;
+                            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+                        }
+                        else if (ligne == 2)
+                        {
+                            grid.cells[selected_cell_x][selected_cell_y].turret.type = Inferno;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.lvl = 0;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.compteur = 0;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.range[0] = 1;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.range[1] = 2;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.damage[0] = 0.2;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.damage[1] = 0.3;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.reload_delay[0] = 1.5;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.reload_delay[1] = 2;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.nb_ennemi[0] = 4;
+                            grid.cells[selected_cell_x][selected_cell_y].turret.nb_ennemi[1] = 8;
+                            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+                        }
+                    }
                     selection_active = false;
                     fillBG(1, 1, width + 1, height + 1);
                     drawFullGrid(grid);
