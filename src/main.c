@@ -96,6 +96,8 @@ int main()
 
     struct mallinfo2 info;
 
+    grid.pv = 10000;
+
     bool selection_active = false;
     int selected_cell_x = 0;
     int selected_cell_y = 0;
@@ -161,6 +163,14 @@ int main()
                 updateEnemies(&enemyPool, grid, delta_t);
                 // Affichage des ennemis
                 drawEnemies(enemyPool, grid);
+                
+                move_to(0,height);
+                grid.pv -= 1;
+                printf("Pv restants : %d",grid.pv);
+                if (grid.pv<=0)
+                {
+                    break;
+                }
             }
             fflush(stdout);
         }
