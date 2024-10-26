@@ -129,7 +129,7 @@ int main()
         { // MENU DE SELECTION
             if (selection_active)
             {
-                showTowerSelection(ligne, grid.cells[selected_cell_x][selected_cell_y].hasTurret);
+                showTowerSelection(ligne, grid.cells[selected_cell_x][selected_cell_y].hasTurret, grid.cells[selected_cell_x][selected_cell_y].turret);
             }
             else
             {
@@ -137,7 +137,7 @@ int main()
 
                 // Spawn des ennemis
                 spawnTimer += delta_t;
-                if (spawnTimer > 1.0)
+                if (spawnTimer > 6.0)
                 {
                     addEnemy(grid, &enemyPool, ENEMY_TUX, grid.start_x, grid.start_y);
                     spawnTimer = 0.0;
@@ -348,41 +348,31 @@ int main()
                 {
                     if (grid.cells[selected_cell_x][selected_cell_y].hasTurret)
                     {
-                        if (ligne == 1)
+                        int upgrade_price = getTurretPrice(Sniper, grid.cells[selected_cell_x][selected_cell_y].turret.lvl + 1);
+                        if (ligne == 1 && upgrade_price > 0 && gameStats.cash >= upgrade_price)
                         {
+                            // Upgrade
+                            gameStats.cash -= upgrade_price;
                             grid.cells[selected_cell_x][selected_cell_y].turret.lvl = 1;
+                        }
+                        else if (ligne == 2)
+                        {
+                            gameStats.cash += getTurretPrice(Sniper, grid.cells[selected_cell_x][selected_cell_y].turret.lvl);
+                            grid.cells[selected_cell_x][selected_cell_y].hasTurret = false;
                         }
                     }
                     else
                     {
-                        if (ligne == 1)
+                        if (ligne == 1 && gameStats.cash >= getTurretPrice(Sniper, 0))
                         {
-                            grid.cells[selected_cell_x][selected_cell_y].turret.type = Sniper;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.lvl = 0;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.compteur = 0;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.range[0] = 100;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.range[1] = 100;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.damage[0] = 1;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.damage[1] = 1.5;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.reload_delay[0] = 0.5;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.reload_delay[1] = 0.6;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.nb_ennemi[0] = 1;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.nb_ennemi[1] = 2;
+                            gameStats.cash -= getTurretPrice(Sniper, 0);
+                            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Sniper);
                             grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
                         }
-                        else if (ligne == 2)
+                        else if (ligne == 2 && gameStats.cash >= getTurretPrice(Inferno, 0))
                         {
-                            grid.cells[selected_cell_x][selected_cell_y].turret.type = Inferno;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.lvl = 0;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.compteur = 0;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.range[0] = 1;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.range[1] = 2;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.damage[0] = 0.2;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.damage[1] = 0.3;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.reload_delay[0] = 1.5;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.reload_delay[1] = 2;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.nb_ennemi[0] = 4;
-                            grid.cells[selected_cell_x][selected_cell_y].turret.nb_ennemi[1] = 8;
+                            gameStats.cash -= getTurretPrice(Inferno, 0);
+                            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Inferno);
                             grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
                         }
                     }

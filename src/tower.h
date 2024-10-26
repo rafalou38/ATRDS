@@ -23,8 +23,9 @@ typedef struct BulletPool
 
 #endif
 
-void showTowerSelection(int ligne, bool hasTurret);
-void selectionTower(int x0, int y0, bool hasTurret);
+void showTowerSelection(int ligne, bool hasTurret, struct Turret selected_tower);
+struct Turret getTurretStruct(enum TurretType type);
+int getTurretPrice(enum TurretType type, int level);
 
 #if BULLETS_ON
 void updateTowers(Grid grid, EnemyPool ep, BulletPool *bp, float dt);

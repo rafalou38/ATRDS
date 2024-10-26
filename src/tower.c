@@ -1,62 +1,5 @@
 #include "tower.h"
 
-void showTowerSelection(int ligne, bool hasTurret)
-{
-    int terminal_width, terminal_height;
-    get_terminal_size(&terminal_width, &terminal_height);
-
-    int width = 80;  // terminal_width/2;
-    int height = 30; // terminal_height/2;
-    assert(width < terminal_width);
-    assert(height < terminal_height);
-
-    int x0 = terminal_width / 2.0f - width / 2.0f;
-    int y0 = terminal_height / 2.0f - height / 2.0f + 1;
-
-    printf(RESET);
-    printf(COLOR_STANDARD_BG);
-
-    for (int y = 0; y < height; y++)
-    {
-        move_to(x0, y0 + y);
-
-        for (int x = 0; x < width; x++)
-        {
-            printf(RESET);
-            if (y == ligne)
-                printf("\033[38;5;221m");
-            if (x == 0 || x == width - 1)
-                printf("█");
-            else if (y == 0)
-
-                printf("▀");
-            else if (y == height - 1)
-                printf("▄");
-            else
-                printf(" ");
-        }
-    }
-
-    selectionTower(x0, y0, hasTurret);
-    printf(RESET);
-}
-
-void selectionTower(int x0, int y0, bool hasTurret)
-{
-    if (hasTurret)
-    {
-        move_to(x0 + 1, y0 + 1);
-        printf("Upgrade");
-    }
-    else
-    {
-        move_to(x0 + 1, y0 + 1);
-        printf("Sniper");
-        move_to(x0 + 1, y0 + 2);
-        printf("Inferno");
-    }
-}
-
 #if BULLETS_ON
 void updateTowers(Grid grid, EnemyPool ep, BulletPool *bp, float dt)
 {
@@ -91,8 +34,8 @@ void updateTowers(Grid grid, EnemyPool ep, float dt)
 
 #if BULLETS_ON
                             bp->bullets[bp->count].hit = false;
-                            bp->bullets[bp->count].grid_x = x + 0.5 + (dx / d)/4;
-                            bp->bullets[bp->count].grid_y = y + 0.5 + (dy / d)/4;
+                            bp->bullets[bp->count].grid_x = x + 0.5 + (dx / d) / 4;
+                            bp->bullets[bp->count].grid_y = y + 0.5 + (dy / d) / 4;
                             bp->bullets[bp->count].target = &(ep.enemies[i]);
                             bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage[lvl];
                             bp->count++;
@@ -178,3 +121,136 @@ void updateBullets(BulletPool *bp, float dt)
 };
 
 #endif
+
+int getTurretPrice(enum TurretType type, int level)
+{
+    if (type == Sniper)
+    {
+        if (level == 0)
+        {
+            return 10;
+        }
+        if (level == 1)
+        {
+            return 15;
+        }
+    }
+    if (type == Inferno)
+    {
+        if (level == 0)
+        {
+            return 10;
+        }
+        if (level == 1)
+        {
+            return 15;
+        }
+    }
+
+    return -1;
+}
+
+struct Turret getTurretStruct(enum TurretType type)
+{
+    struct Turret tur;
+    if (type == Sniper)
+    {
+        tur.type = Sniper;
+        tur.lvl = 0;
+        tur.compteur = 0;
+        tur.range[0] = 100;
+        tur.range[1] = 100;
+        tur.damage[0] = 1;
+        tur.damage[1] = 1.5;
+        tur.reload_delay[0] = 0.5;
+        tur.reload_delay[1] = 0.6;
+        tur.nb_ennemi[0] = 1;
+        tur.nb_ennemi[1] = 2;
+    }
+    else if (type == Inferno)
+    {
+        tur.type = Inferno;
+        tur.lvl = 0;
+        tur.compteur = 0;
+        tur.range[0] = 1;
+        tur.range[1] = 2;
+        tur.damage[0] = 0.2;
+        tur.damage[1] = 0.3;
+        tur.reload_delay[0] = 1.5;
+        tur.reload_delay[1] = 2;
+        tur.nb_ennemi[0] = 4;
+        tur.nb_ennemi[1] = 8;
+    }
+    return tur;
+}
+
+void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
+{
+    int terminal_width, terminal_height;
+    get_terminal_size(&terminal_width, &terminal_height);
+
+    int width = 80;  // terminal_width/2;
+    int height = 30; // terminal_height/2;
+    assert(width < terminal_width);
+    assert(height < terminal_height);
+
+    int x0 = terminal_width / 2.0f - width / 2.0f;
+    int y0 = terminal_height / 2.0f - height / 2.0f + 1;
+
+    printf(RESET);
+    printf(COLOR_STANDARD_BG);
+
+    for (int y = 0; y < height; y++)
+    {
+        move_to(x0, y0 + y);
+
+        for (int x = 0; x < width; x++)
+        {
+            printf(RESET);
+            if (y == ligne)
+                printf("\033[38;5;221m");
+            if (x == 0 || x == width - 1)
+                printf("█");
+            else if (y == 0)
+
+                printf("▀");
+            else if (y == height - 1)
+                printf("▄");
+            else
+                printf(" ");
+        }
+    }
+
+    if (hasTurret)
+    {
+        int next_price = getTurretPrice(selectedTurret.type, selectedTurret.lvl + 1);
+
+        if (next_price != -1)
+        {
+            move_to(x0 + 1, y0 + 1);
+            printf(" 🛠️ Upgrade");
+
+            move_to(x0 + 1 + width - 8, y0 + 1);
+            printf(COLOR_YELLOW "-% 3d €" RESET, next_price);
+        }
+
+        move_to(x0 + 1, y0 + 2);
+        printf(" 💰 Sell");
+
+        move_to(x0 + 1 + width - 8, y0 + 2);
+        printf(COLOR_GREEN "+% 3d €" RESET, getTurretPrice(selectedTurret.type, selectedTurret.lvl));
+    }
+    else
+    {
+        move_to(x0 + 1, y0 + 1);
+        printf(" 🔫 Sniper");
+        move_to(x0 + 1 + width - 8, y0 + 1);
+        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Sniper, 0));
+
+        move_to(x0 + 1, y0 + 2);
+        printf(" 🔥 Inferno");
+        move_to(x0 + 1 + width - 8, y0 + 2);
+        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Inferno, 0));
+    }
+    printf(RESET);
+}
