@@ -3,7 +3,7 @@
 #include "shared.h"
 #include "enemies.h"
 
-#define BULLETS_ON false
+#define BULLETS_ON true
 
 #if BULLETS_ON
 

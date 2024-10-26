@@ -91,16 +91,16 @@ void updateTowers(Grid grid, EnemyPool ep, float dt)
 
 #if BULLETS_ON
                             bp->bullets[bp->count].hit = false;
-                            bp->bullets[bp->count].grid_x = x;
-                            bp->bullets[bp->count].grid_y = y;
+                            bp->bullets[bp->count].grid_x = x + 0.5 + (dx / d)/4;
+                            bp->bullets[bp->count].grid_y = y + 0.5 + (dy / d)/4;
                             bp->bullets[bp->count].target = &(ep.enemies[i]);
                             bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage[lvl];
                             bp->count++;
 #else
                             ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
 #endif
-                            enemies_hit ++;
-                            if (enemies_hit>=grid.cells[x][y].turret.nb_ennemi[lvl])
+                            enemies_hit++;
+                            if (enemies_hit >= grid.cells[x][y].turret.nb_ennemi[lvl])
                                 break;
                         }
                     }
