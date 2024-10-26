@@ -13,6 +13,7 @@
 Grid grid;
 EnemyPool enemyPool;
 GameStats gameStats;
+Labels labels;
 
 #if BULLETS_ON
 BulletPool bulletPool;
@@ -67,21 +68,22 @@ int main()
     configTerminal();
     clear_screen();
 
-    gameStats.cash = 10;
-    gameStats.health = 10;
-
     int width = 0;
     int height = 0;
-
     checkTerminalSize(&width, &height);
 
     grid.width = (width - 2) / (CELL_WIDTH + 2);
     grid.height = (height - 2) / (CELL_HEIGHT + 1);
-
     allocateGridCells(&grid);
+    genBasicPath(&grid);
+
+    gameStats.cash = 10;
+    gameStats.health = 10;
+
+    labels.size = 255;
+    labels.labels = malloc(sizeof(struct Label) * labels.size);
 
     enemyPool = AllocEnemyPool();
-    genBasicPath(&grid);
 
     clear_screen();
     fillBG(1, 1, width + 1, height + 1);
@@ -160,14 +162,16 @@ int main()
                 clearUsedPath(grid, enemyPool);
                 updateTowers(grid, enemyPool, delta_t);
 #endif
+                updateLabels(&labels, delta_t);
+                drawLabels(labels);
 
                 // Mise à jour des ennemis existants
-                updateEnemies(&enemyPool, grid, &gameStats, delta_t);
+                updateEnemies(&enemyPool, grid, &gameStats, &labels, delta_t);
                 // Affichage des ennemis
                 drawEnemies(enemyPool, grid);
 
                 move_to(width - (7 + 6), 1);
-                printf("%02d ❤ | % 4d €", gameStats.health, gameStats.cash);
+                printf(COLOR_RED "%02d ❤" RESET COLOR_STANDARD_BG " | " COLOR_YELLOW " % 4d €" RESET, gameStats.health, gameStats.cash);
                 if (gameStats.health <= 0)
                 {
                     break;
@@ -186,9 +190,11 @@ int main()
             move_to(0, 0);
             printf(COLOR_STANDARD_BG);
             info = mallinfo2();
-            printf("Enemy count %d/%d | (%.1f fps) | runtime: %lds | Heap: %zuKo",
+            printf("Enemies: %d/%d | Labels: %d/%d | (%.1f fps) | runtime: %lds | Heap: %zuKo",
                    enemyPool.count,                      //
                    enemyPool.length,                     //
+                   labels.count,                         //
+                   labels.size,                          //
                    round(1.0f / delta_t * 10.0f) / 10.0, //
                    current_time.tv_sec - time_start,     //
                    info.uordblks / 1000);
@@ -399,6 +405,7 @@ int main()
     move_to(0, 0);
     freeGrid(grid);
     freeEnemyPool(enemyPool);
+    freeLabels(labels);
 
     return 0;
 }

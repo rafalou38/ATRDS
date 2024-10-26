@@ -37,7 +37,6 @@ CONFIGURATION
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define CLAMP(x, a, b) MIN(MAX(x, a), b)
 
-
 #define PI 3.14159265359
 /*
 ##################
@@ -107,6 +106,25 @@ typedef struct GameStats
     int cash;
     int health;
 } GameStats;
+
+struct Label
+{
+    int x;
+    int y;
+    char *text;
+    float duration;
+    float counter;
+};
+
+typedef struct Labels
+{
+    int size;
+    int count;
+    struct Label *labels;
+} Labels;
+void updateLabels(Labels *labels, float dt);
+void drawLabels(Labels labels);
+void freeLabels(Labels labels);
 
 /*
 #############

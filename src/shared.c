@@ -8,6 +8,59 @@ int msleep(long ms)
     return nanosleep(&ts, &ts);
 }
 
+void updateLabels(Labels *labels, float dt)
+{
+    for (int i = 0; i < labels->count; i++)
+    {
+        labels->labels[i].counter += dt;
+    }
+    int right = 0;
+    int left = -1;
+
+    while (right < labels->count)
+    {
+        if (labels->labels[right].counter < labels->labels[right].duration)
+        {
+            if (left != -1)
+            {
+                assert(left >= 0);
+                // assert(left < labels->length);
+
+                labels->labels[left] = labels->labels[right];
+                left++;
+            }
+        }
+        else if (left == -1)
+        {
+            left = right;
+        }
+
+        right++;
+    }
+    if (left != -1)
+    {
+        labels->count -= right - left;
+    }
+    if (labels->count < 0)
+        labels->count = 0;
+};
+void drawLabels(Labels labels)
+{
+    for (int i = 0; i < labels.count; i++)
+    {
+        move_to(labels.labels[i].x, labels.labels[i].y);
+        printf(labels.labels[i].text);
+        // printf("%.2f", labels.labels[i].counter);
+    }
+};
+void freeLabels(Labels labels)
+{
+    printf(COLOR_GRAY " $ " RESET "Freeing %s%d%s labels:\t", COLOR_YELLOW, labels.count, RESET);
+    free(labels.labels);
+
+    printf("%s Done %s\n", COLOR_GREEN, RESET);
+};
+
 /*
 #############
 ##    IO   ##

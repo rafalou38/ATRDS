@@ -64,8 +64,6 @@ void defragEnemyPool(EnemyPool *ep)
     int right = 0;
     int left = -1;
 
-    int removed = 0;
-
     while (right < ep->count)
     {
         if (ep->enemies[right].state == ENEMY_STATE_ALIVE)
@@ -76,7 +74,6 @@ void defragEnemyPool(EnemyPool *ep)
                 assert(left < ep->length);
 
                 ep->enemies[left] = ep->enemies[right];
-                removed++;
                 left++;
             }
         }
@@ -170,7 +167,7 @@ void drawEnemies(EnemyPool ep, Grid grid)
     }
 }
 
-void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, float dt_sec)
+void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, float dt_sec)
 {
     bool defragNeeded = false;
     // Walk
@@ -252,6 +249,12 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, float dt_sec)
             drawCell(enemy->previous_cell, grid);
             defragNeeded = true;
             gs->cash += 1;
+            labels->labels[labels->count].counter = 0;
+            labels->labels[labels->count].duration = 2;
+            labels->labels[labels->count].text = COLOR_STANDARD_BG COLOR_YELLOW "+1€" RESET;
+            labels->labels[labels->count].x = (enemy->grid_x * (CELL_WIDTH + GAP) + 3);
+            labels->labels[labels->count].y = (enemy->grid_y * (CELL_HEIGHT + GAP / 2) + 2);
+            labels->count++;
         }
     }
 
