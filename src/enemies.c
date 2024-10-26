@@ -170,7 +170,7 @@ void drawEnemies(EnemyPool ep, Grid grid)
     }
 }
 
-void updateEnemies(EnemyPool *ep, Grid grid, float dt_sec)
+void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, float dt_sec)
 {
     bool defragNeeded = false;
     // Walk
@@ -243,6 +243,7 @@ void updateEnemies(EnemyPool *ep, Grid grid, float dt_sec)
         {
             enemy->state = ENEMY_STATE_ARRIVED;
             defragNeeded = true;
+            gs->health -= 1;
         }
 
         if (enemy->hp <= 0)
@@ -250,6 +251,7 @@ void updateEnemies(EnemyPool *ep, Grid grid, float dt_sec)
             enemy->state = ENEMY_STATE_DEAD;
             drawCell(enemy->previous_cell, grid);
             defragNeeded = true;
+            gs->cash += 1;
         }
     }
 

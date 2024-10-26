@@ -100,8 +100,13 @@ typedef struct Grid
     int end_x;
     int end_y;
     struct Cell **cells;
-    int pv;
 } Grid;
+
+typedef struct GameStats
+{
+    int cash;
+    int health;
+} GameStats;
 
 /*
 #############

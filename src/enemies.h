@@ -42,4 +42,4 @@ void freeEnemyPool(EnemyPool ep);
 void addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int start_y);
 void defragEnemyPool(EnemyPool *ep);
 void drawEnemies(EnemyPool ep, Grid grid);
-void updateEnemies(EnemyPool *ep, Grid grid, float dt_sec);
+void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, float dt_sec);

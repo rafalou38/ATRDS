@@ -12,6 +12,7 @@
 
 Grid grid;
 EnemyPool enemyPool;
+GameStats gameStats;
 
 #if BULLETS_ON
 BulletPool bulletPool;
@@ -66,6 +67,9 @@ int main()
     configTerminal();
     clear_screen();
 
+    gameStats.cash = 10;
+    gameStats.health = 10;
+
     int width = 0;
     int height = 0;
 
@@ -95,8 +99,6 @@ int main()
     float spawnTimer;
 
     struct mallinfo2 info;
-
-    grid.pv = 10000;
 
     bool selection_active = false;
     int selected_cell_x = 0;
@@ -133,7 +135,7 @@ int main()
 
                 // Spawn des ennemis
                 spawnTimer += delta_t;
-                if (spawnTimer > 8.0)
+                if (spawnTimer > 1.0)
                 {
                     addEnemy(grid, &enemyPool, ENEMY_TUX, grid.start_x, grid.start_y);
                     spawnTimer = 0.0;
@@ -160,14 +162,13 @@ int main()
 #endif
 
                 // Mise à jour des ennemis existants
-                updateEnemies(&enemyPool, grid, delta_t);
+                updateEnemies(&enemyPool, grid, &gameStats, delta_t);
                 // Affichage des ennemis
                 drawEnemies(enemyPool, grid);
-                
-                move_to(0,height);
-                grid.pv -= 1;
-                printf("Pv restants : %d",grid.pv);
-                if (grid.pv<=0)
+
+                move_to(width - (7 + 6), 1);
+                printf("%02d ❤ | % 4d €", gameStats.health, gameStats.cash);
+                if (gameStats.health <= 0)
                 {
                     break;
                 }
