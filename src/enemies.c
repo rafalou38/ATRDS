@@ -26,28 +26,44 @@ void freeEnemyPool(EnemyPool ep)
     printf("%s Done %s\n", COLOR_GREEN, RESET);
 }
 
+struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
+{
+    struct Enemy enemy;
+    if (type == ENEMY_TUX)
+    {
+        enemy.type = ENEMY_TUX;
+        enemy.hp = 10;
+        enemy.maxHP = 10;
+        enemy.speed = 0.8f;
+        enemy.state = ENEMY_STATE_ALIVE;
+        enemy.grid_x = (float)start_x;
+        enemy.grid_y = (float)start_y;
+        enemy.previous_cell = grid.cells[start_x][start_y];
+        enemy.next_cell = grid.cells[start_x][start_y];
+        enemy.on_last_cell = false;
+
+    }
+    else if (type == ENEMY_SPEED)
+    {
+        enemy.type = ENEMY_SPEED;
+        enemy.hp = 5;
+        enemy.maxHP = 5;
+        enemy.speed = 1.8f;
+        enemy.state = ENEMY_STATE_ALIVE;
+        enemy.grid_x = (float)start_x;
+        enemy.grid_y = (float)start_y;
+        enemy.previous_cell = grid.cells[start_x][start_y];
+        enemy.next_cell = grid.cells[start_x][start_y];
+        enemy.on_last_cell = false;
+    }
+    return enemy;
+}
+
 void addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int start_y)
 {
     if (ep->count < ep->length)
     {
-
-        struct Enemy newEnemy;
-
-        newEnemy.hp = 10;
-        newEnemy.maxHP = 10;
-
-        newEnemy.speed = 0.8f;
-
-        newEnemy.state = ENEMY_STATE_ALIVE;
-
-        newEnemy.type = type;
-        newEnemy.grid_x = (float)start_x;
-        newEnemy.grid_y = (float)start_y;
-        newEnemy.previous_cell = grid.cells[start_x][start_y];
-        newEnemy.next_cell = grid.cells[start_x][start_y];
-        newEnemy.on_last_cell = false;
-
-        ep->enemies[ep->count] = newEnemy;
+        ep->enemies[ep->count] = defEnemy(grid, type, start_x, start_y);
 
         ep->count++;
     }
@@ -119,6 +135,11 @@ void drawEnemies(EnemyPool ep, Grid grid)
         {
             move_to(px, py);
             printf("🦍");
+        }
+        else if (enemy->type == ENEMY_SPEED)
+        {
+            move_to(px, py);
+            printf("⏩");
         }
 
         // move_to((enemy->next_cell.x * (CELL_WIDTH + GAP) + 3), (enemy->next_cell.y * (CELL_HEIGHT + GAP / 2) + 2));
