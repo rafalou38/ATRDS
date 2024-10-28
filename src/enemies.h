@@ -5,7 +5,8 @@
 
 enum EnemyType
 {
-    ENEMY_TUX
+    ENEMY_TUX,
+    ENEMY_SPEED
 };
 
 enum EnemyState
@@ -21,6 +22,7 @@ struct Enemy
     float hp;
     float maxHP;
     float speed;
+    float damage;
 
     enum EnemyState state;
 
@@ -39,6 +41,7 @@ struct Enemy
 
 EnemyPool AllocEnemyPool();
 void freeEnemyPool(EnemyPool ep);
+struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y);
 void addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int start_y);
 void defragEnemyPool(EnemyPool *ep);
 void drawEnemies(EnemyPool ep, Grid grid);

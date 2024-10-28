@@ -139,7 +139,7 @@ int main()
                 spawnTimer += delta_t;
                 if (spawnTimer > 6.0)
                 {
-                    addEnemy(grid, &enemyPool, ENEMY_TUX, grid.start_x, grid.start_y);
+                    addEnemy(grid, &enemyPool, ENEMY_SPEED, grid.start_x, grid.start_y);
                     spawnTimer = 0.0;
                 }
 
