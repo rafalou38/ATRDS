@@ -21,7 +21,8 @@ void updateTowers(Grid grid, EnemyPool ep, float dt)
                     for (int i = 0; i < ep.count; i++)
                     {
                         int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2));
-                        if (d <= grid.cells[x][y].turret.range[lvl])
+                        if (d <= grid.cells[x][y].turret.range_max[lvl]
+                        && d >= grid.cells[x][y].turret.range_min[lvl])
                         {
                             grid.cells[x][y].turret.compteur = 0;
 
@@ -41,6 +42,23 @@ void updateTowers(Grid grid, EnemyPool ep, float dt)
                             bp->count++;
 #else
                             ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
+                            if (grid.cells[x][y].turret.splash[lvl] != 0.0)
+                            {
+                                float d_min = grid.cells[x][y].turret.splash[lvl];
+                                for (int j = 0 ; j < ep.count ; j++)
+                                {
+                                    if (j != i)
+                                    {
+                                        int d_enemy = sqrt(pow(ep.enemies[i].grid_x - ep.enemies[j].grid_x, 2) + 
+                                        pow(ep.enemies[i].grid_y - ep.enemies[j].grid_y, 2));
+                                        if (d_enemy < d_min)
+                                        {
+                                            ep.enemies[j].hp -= grid.cells[x][y].turret.damage[lvl];
+                                        }
+                                    }
+                                }
+
+                            }
 #endif
                             enemies_hit++;
                             if (enemies_hit >= grid.cells[x][y].turret.nb_ennemi[lvl])
@@ -146,6 +164,17 @@ int getTurretPrice(enum TurretType type, int level)
             return 15;
         }
     }
+    if (type == Mortier)
+    {
+        if (level == 0)
+        {
+            return 10;
+        }
+        if (level == 1)
+        {
+            return 15;
+        }
+    }
 
     return -1;
 }
@@ -158,12 +187,16 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.type = Sniper;
         tur.lvl = 0;
         tur.compteur = 0;
-        tur.range[0] = 100;
-        tur.range[1] = 100;
+        tur.range_min[0] = 0;
+        tur.range_min[1] = 0;
+        tur.range_max[0] = 100;
+        tur.range_max[1] = 100;
         tur.damage[0] = 1;
         tur.damage[1] = 1.5;
         tur.reload_delay[0] = 0.5;
         tur.reload_delay[1] = 0.6;
+        tur.splash[0] = 0.0;
+        tur.splash[1] = 0.0;
         tur.nb_ennemi[0] = 1;
         tur.nb_ennemi[1] = 2;
     }
@@ -172,14 +205,36 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.type = Inferno;
         tur.lvl = 0;
         tur.compteur = 0;
-        tur.range[0] = 1;
-        tur.range[1] = 2;
+        tur.range_min[0] = 0;
+        tur.range_min[1] = 0;
+        tur.range_max[0] = 1;
+        tur.range_max[1] = 2;
         tur.damage[0] = 0.2;
         tur.damage[1] = 0.3;
         tur.reload_delay[0] = 1.5;
         tur.reload_delay[1] = 2;
+        tur.splash[0] = 0.0;
+        tur.splash[1] = 0.0;
         tur.nb_ennemi[0] = 4;
         tur.nb_ennemi[1] = 8;
+    }
+    else if (type == Mortier)
+    {
+        tur.type = Mortier;
+        tur.lvl = 0;
+        tur.compteur = 0;
+        tur.range_min[0] = 2;
+        tur.range_min[1] = 1;
+        tur.range_max[0] = 5;
+        tur.range_max[1] = 6;
+        tur.damage[0] = 1.3;
+        tur.damage[1] = 1.5;
+        tur.reload_delay[0] = 3;
+        tur.reload_delay[1] = 2.8;
+        tur.splash[0] = 1.0;
+        tur.splash[1] = 1.5;
+        tur.nb_ennemi[0] = 1;
+        tur.nb_ennemi[1] = 1;
     }
     return tur;
 }
@@ -251,6 +306,11 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
         printf(" 🔥 Inferno");
         move_to(x0 + 1 + width - 8, y0 + 2);
         printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Inferno, 0));
+        
+        move_to(x0 + 1, y0 + 3);
+        printf(" Mortier ");
+        move_to(x0 + 1 + width - 8, y0 + 3);
+        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Mortier, 0));
     }
     printf(RESET);
 }

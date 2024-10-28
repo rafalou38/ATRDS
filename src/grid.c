@@ -295,6 +295,10 @@ void drawCell(struct Cell cell, Grid grid)
             {
                 printf("IIIIII");
             }
+            else if (cell.turret.type == Mortier)
+            {
+                printf("MMMMMM");
+            }
         }
     }
     if (cell.type == CHEMIN)

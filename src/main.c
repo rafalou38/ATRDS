@@ -375,6 +375,12 @@ int main()
                             grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Inferno);
                             grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
                         }
+                        else if (ligne == 3 && gameStats.cash >= getTurretPrice(Mortier, 0))
+                        {
+                            gameStats.cash -= getTurretPrice(Mortier, 0);
+                            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Mortier);
+                            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+                        }
                     }
                     selection_active = false;
                     fillBG(1, 1, width + 1, height + 1);
