@@ -233,49 +233,93 @@ void drawCell(struct Cell cell, Grid grid)
                 int x_current_sniper = cell.x * (CELL_WIDTH + GAP) + 3;
                 int y_current_sniper = cell.y * (CELL_HEIGHT + GAP / 2) + 2;
 
-                printf(COLOR_GREEN);
+                printf(COLOR_SNIPER_BASE);
 
-                char *sprite[8][5] = {
+                char *sprite[2][8][5] = {
+                    {
                     {"   ▄██▄   ",
                      " ▄██████▄ ",
-                     COLOR_RED "<===" COLOR_GREEN "[]████",
+                     COLOR_SNIPER_HEAD "<"COLOR_SNIPER_CANNON"===[]" COLOR_SNIPER_BASE "████",
                      " ▀██████▀ ",
                      "   ▀██▀   "},
                     {"   ▄██▄   ",
                      " ▄██████▄ ",
-                     "████[]████",
-                     " ▀█" COLOR_RED "//" COLOR_GREEN "███▀ ",
-                     COLOR_RED "   ┗" COLOR_GREEN "██▀   "},
+                     "████"COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE"████",
+                     " ▀█" COLOR_SNIPER_CANNON "//" COLOR_SNIPER_BASE "███▀ ",
+                     COLOR_SNIPER_HEAD " ▕▁▁" COLOR_SNIPER_BASE "██▀   "},
                     {"   ▄██▄   ",
                      " ▄██████▄ ",
-                     "████[]████",
-                     " ▀██" COLOR_RED "||" COLOR_GREEN "██▀ ",
-                     "   ▀" COLOR_RED "\\/" COLOR_GREEN "▀   "},
+                     "████"COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE"████",
+                     " ▀██" COLOR_SNIPER_CANNON "||" COLOR_SNIPER_BASE "██▀ ",
+                     "   ▀" COLOR_SNIPER_HEAD "\\/" COLOR_SNIPER_BASE "▀   "},
                     {"   ▄██▄   ",
                      " ▄██████▄ ",
-                     "████[]████",
-                     " ▀███" COLOR_RED "\\\\" COLOR_GREEN "█▀ ",
-                     "   ▀██" COLOR_RED "┛   "},
+                     "████"COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE"████",
+                     " ▀███" COLOR_SNIPER_CANNON "\\\\" COLOR_SNIPER_BASE "█▀ ",
+                     "   ▀██" COLOR_SNIPER_HEAD "▁▁▏ "},
                     {"   ▄██▄   ",
                      " ▄██████▄ ",
-                     "████[]" COLOR_RED "===>" COLOR_GREEN,
+                     "████"COLOR_SNIPER_CANNON "[]==="COLOR_SNIPER_HEAD">" COLOR_SNIPER_BASE,
                      " ▀██████▀ ",
                      "   ▀██▀   "},
-                    {"   ▄██" COLOR_RED "┓   " COLOR_GREEN,
-                     " ▄███" COLOR_RED "//" COLOR_GREEN "█▄ ",
-                     "████[]████",
+                    {"   ▄██" COLOR_SNIPER_HEAD "▔▔▏ " COLOR_SNIPER_BASE,
+                     " ▄███" COLOR_SNIPER_CANNON "//" COLOR_SNIPER_BASE "█▄ ",
+                     "████"COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE"████",
                      " ▀██████▀ ",
                      "   ▀██▀   "},
-                    {"   ▄" COLOR_RED "/\\" COLOR_GREEN "▄   ",
-                     " ▄██" COLOR_RED "||" COLOR_GREEN "██▄ ",
-                     "████[]████",
+                    {"   ▄" COLOR_SNIPER_HEAD "/\\" COLOR_SNIPER_BASE "▄   ",
+                     " ▄██" COLOR_SNIPER_CANNON "||" COLOR_SNIPER_BASE "██▄ ",
+                     "████"COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE"████",
                      " ▀██████▀ ",
                      "   ▀██▀   "},
-                    {COLOR_RED "   ┏" COLOR_GREEN "██▄   ",
-                     " ▄█" COLOR_RED "\\\\" COLOR_GREEN "███▄ ",
-                     "████[]████",
+                    {COLOR_SNIPER_HEAD " ▕▔▔" COLOR_SNIPER_BASE "██▄   ",
+                     " ▄█" COLOR_SNIPER_CANNON "\\\\" COLOR_SNIPER_BASE "███▄ ",
+                     "████"COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE"████",
                      " ▀██████▀ ",
                      "   ▀██▀   "},
+                },
+                {
+                    {" ▄ ▄██▄ ▄ ",
+                     " ▄██████▄ ",
+                     COLOR_SNIPER_HEAD "⊃"COLOR_SNIPER_CANNON"≡≡≡⋐⋑" COLOR_SNIPER_BASE "████",
+                     " ▀██████▀ ",
+                     " ▀ ▀██▀ ▀ "},
+                    {" ▄ ▄██▄ ▄ ",
+                     " ▄██████▄ ",
+                     "████"COLOR_SNIPER_CANNON"⋐⋑"COLOR_SNIPER_BASE"████",
+                     " ▀█" COLOR_SNIPER_CANNON "⎳/" COLOR_SNIPER_BASE "███▀ ",
+                     COLOR_SNIPER_BASE " ▀"COLOR_SNIPER_HEAD"⊃ " COLOR_SNIPER_BASE "██▀ ▀ "},
+                    {" ▄ ▄██▄ ▄ ",
+                     " ▄██████▄ ",
+                     "████"COLOR_SNIPER_CANNON"⋐⋑"COLOR_SNIPER_BASE"████",
+                     " ▀██" COLOR_SNIPER_CANNON "∥∥" COLOR_SNIPER_BASE "██▀ ",
+                     " ▀ ▀" COLOR_SNIPER_HEAD "⎾⏋" COLOR_SNIPER_BASE "▀ ▀ "},
+                    {" ▄ ▄██▄ ▄ ",
+                     " ▄██████▄ ",
+                     "████"COLOR_SNIPER_CANNON"⋐⋑"COLOR_SNIPER_BASE"████",
+                     " ▀███" COLOR_SNIPER_CANNON "\\ܠ" COLOR_SNIPER_BASE "█▀ ",
+                     " ▀ ▀██" COLOR_SNIPER_HEAD "⊂"COLOR_SNIPER_BASE" ▀ "},
+                    {" ▄ ▄██▄ ▄ ",
+                     " ▄██████▄ ",
+                     "████"COLOR_SNIPER_CANNON "⋐⋑≡≡≡"COLOR_SNIPER_HEAD"⊂" COLOR_SNIPER_BASE,
+                     " ▀██████▀ ",
+                     " ▀ ▀██▀ ▀ "},
+                    {" ▄ ▄██" COLOR_SNIPER_HEAD "⊂"COLOR_INFERNO_BASE" ▄ ",
+                     " ▄███" COLOR_SNIPER_CANNON "/7" COLOR_SNIPER_BASE "█▄ ",
+                     "████"COLOR_SNIPER_CANNON"⋐⋑"COLOR_SNIPER_BASE"████",
+                     " ▀██████▀ ",
+                     " ▀ ▀██▀ ▀ "},
+                    {" ▄ ▄" COLOR_SNIPER_HEAD "⎿⏌" COLOR_SNIPER_BASE "▄ ▄ ",
+                     " ▄██" COLOR_SNIPER_CANNON "∥∥" COLOR_SNIPER_BASE "██▄ ",
+                     "████"COLOR_SNIPER_CANNON"⋐⋑"COLOR_SNIPER_BASE"████",
+                     " ▀██████▀ ",
+                     " ▀ ▀██▀ ▀ "},
+                    {COLOR_SNIPER_BASE " ▄"COLOR_SNIPER_HEAD"⊃ " COLOR_SNIPER_BASE "██▄ ▄ ",
+                     " ▄█" COLOR_SNIPER_CANNON "⎲\\" COLOR_SNIPER_BASE "███▄ ",
+                     "████"COLOR_SNIPER_CANNON"⋐⋑"COLOR_SNIPER_BASE"████",
+                     " ▀██████▀ ",
+                     " ▀ ▀██▀ ▀ "},
+                }
                 };
 
                 // angle est approché au PI/le plus proche sous forme d'index
@@ -286,18 +330,45 @@ void drawCell(struct Cell cell, Grid grid)
                 for (int i = 0; i < 5; i++)
                 {
                     move_to(x_current_sniper, y_current_sniper + i);
-                    printf(sprite[index][i]);
+                    printf(sprite[cell.turret.lvl][index][i]);
                 }
 
                 printf(RESET);
             }
             else if (cell.turret.type == Inferno)
             {
-                printf("IIIIII");
+                int x_current_inferno = cell.x * (CELL_WIDTH + GAP) + 3;
+                int y_current_inferno = cell.y * (CELL_HEIGHT + GAP / 2) + 2;
+
+                printf(COLOR_INFERNO_BASE);
+
+                char *sprite[2][5] = {
+                    {"   ▄"COLOR_INFERNO_HEAD"/\\"COLOR_INFERNO_BASE"▄   ",
+                     " ▄██"COLOR_INFERNO_CANNON"||"COLOR_INFERNO_BASE"██▄ ",
+                     COLOR_INFERNO_HEAD"<"COLOR_INFERNO_CANNON"===[]==="COLOR_INFERNO_HEAD">",
+                     COLOR_INFERNO_BASE" ▀██"COLOR_INFERNO_CANNON"||"COLOR_INFERNO_BASE"██▀ ",
+                     "   ▀"COLOR_INFERNO_HEAD"\\/"COLOR_INFERNO_BASE"▀   "},
+
+                    {"   ▄"COLOR_INFERNO_HEAD"/\\"COLOR_INFERNO_BASE"▄   ",
+                     " ▄"COLOR_INFERNO_HEAD"⇖ "COLOR_INFERNO_CANNON"||"COLOR_INFERNO_HEAD"⇗ "COLOR_INFERNO_BASE"▄ ",
+                     COLOR_INFERNO_HEAD"<"COLOR_INFERNO_CANNON"===[]==="COLOR_INFERNO_HEAD">",
+                     COLOR_INFERNO_BASE" ▀"COLOR_INFERNO_HEAD"⇙ "COLOR_INFERNO_CANNON"||"COLOR_INFERNO_HEAD"⇘ "COLOR_INFERNO_BASE"▀ ",
+                     "   ▀"COLOR_INFERNO_HEAD"\\/"COLOR_INFERNO_BASE"▀   "}
+                };
+
+                int index = cell.turret.lvl;
+
+                for (int i = 0; i < 5; i++)
+                {
+                    move_to(x_current_inferno, y_current_inferno + i);
+                    printf(sprite[index][i]);
+                }
+
+                printf(RESET);
             }
             else if (cell.turret.type == Mortier)
             {
-                printf("MMMMMM");
+                printf("⇘▀⇘█⇘");
             }
         }
     }

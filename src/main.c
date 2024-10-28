@@ -77,7 +77,7 @@ int main()
     allocateGridCells(&grid);
     genBasicPath(&grid);
 
-    gameStats.cash = 10;
+    gameStats.cash = 100;
     gameStats.health = 10;
 
     labels.size = 255;

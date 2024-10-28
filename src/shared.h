@@ -148,13 +148,21 @@ int msleep(long ms);
 #define UNDERLINE_RST "\033[24m"
 #define BOLD "\033[1m"
 #define BOLD_RST "\033[22m"
-
+#define BG_RESET "\033[48;5;0m"
 // General colors
 #define COLOR_RED "\033[91m"
 #define COLOR_GRAY "\033[38;5;243m"
 #define COLOR_GREEN "\033[38;5;42m"
 #define COLOR_YELLOW "\033[38;5;11;1m"
-
+// Turrets colors
+    //Sniper colors
+    #define COLOR_SNIPER_BASE "\033[38;5;48m"
+    #define COLOR_SNIPER_CANNON "\033[38;5;33m"
+    #define COLOR_SNIPER_HEAD "\033[38;5;196m"
+    //Inferno colors
+    #define COLOR_INFERNO_BASE "\033[38;5;88m"
+    #define COLOR_INFERNO_CANNON "\033[38;5;202m"
+    #define COLOR_INFERNO_HEAD "\033[38;5;226m"
 // Terrain colors
 #define COLOR_STANDARD_BG "\033[48;5;233m"
 #define COLOR_TOWER_SLOT_BG "\033[48;5;236m"
