@@ -165,6 +165,10 @@ int msleep(long ms);
     #define COLOR_INFERNO_BASE "\033[38;5;88m"
     #define COLOR_INFERNO_CANNON "\033[38;5;202m"
     #define COLOR_INFERNO_HEAD "\033[38;5;226m"
+    //Mortier colors
+    #define COLOR_MORTIER_BASE "\033[38;5;243m"
+    #define COLOR_MORTIER_FIRING "\033[38;5;208m"
+    #define COLOR_MORTIER_FIRING_CENTER "\033[38;5;184m"
 // Terrain colors
 #define COLOR_STANDARD_BG "\033[48;5;233m"
 #define COLOR_TOWER_SLOT_BG "\033[48;5;236m"
