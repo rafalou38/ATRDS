@@ -104,6 +104,7 @@ int main()
     struct mallinfo2 info;
 
     bool selection_active = false;
+    bool was_range_visible = false;
     int selected_cell_x = 0;
     int selected_cell_y = 0;
     int ligne = 1;
@@ -144,11 +145,11 @@ int main()
                 if (changing_wave)
                 {
                     gameStats.wave += 1;
-                    while (nb_ennemy<=0)
+                    while (nb_ennemy <= 0)
                     {
-                        if (gameStats.wave/5 == 0)
+                        if (gameStats.wave / 5 == 0)
                         {
-                            possible_ennemy[0]=ENEMY_TUX;
+                            possible_ennemy[0] = ENEMY_TUX;
                             int alea = rand();
                             int signe = rand();
                             if (RAND_MAX / 2 >= signe)
@@ -162,8 +163,8 @@ int main()
                         }
                         else
                         {
-                            possible_ennemy[0]=ENEMY_TUX;
-                            possible_ennemy[1]=ENEMY_SPEED;
+                            possible_ennemy[0] = ENEMY_TUX;
+                            possible_ennemy[1] = ENEMY_SPEED;
                             int alea = rand();
                             int signe = rand();
                             if (RAND_MAX / 2 >= signe)
@@ -180,10 +181,10 @@ int main()
                 }
                 if (spawnTimer > 1.0)
                 {
-                    if (nb_ennemy>0)
+                    if (nb_ennemy > 0)
                     {
                         nb_ennemy -= 1;
-                        if (gameStats.wave/5 == 0)
+                        if (gameStats.wave / 5 == 0)
                         {
                             addEnemy(grid, &enemyPool, ENEMY_TUX, grid.start_x, grid.start_y);
                             spawnTimer = 0.0;
@@ -191,16 +192,16 @@ int main()
                         else
                         {
                             int type_alea = rand();
-                            addEnemy(grid, &enemyPool, possible_ennemy[(RAND_MAX - type_alea)/(RAND_MAX/2)],
-                            grid.start_x, grid.start_y);
+                            addEnemy(grid, &enemyPool, possible_ennemy[(RAND_MAX - type_alea) / (RAND_MAX / 2)],
+                                     grid.start_x, grid.start_y);
                             spawnTimer = 0.0;
                         }
                     }
                 }
-                if (enemyPool.count==0 && nb_ennemy==0)
-                    {
-                        changing_wave = true;
-                    }
+                if (enemyPool.count == 0 && nb_ennemy == 0)
+                {
+                    changing_wave = true;
+                }
 
 #if BULLETS_ON
                 if (i % 50 == 0)
@@ -228,6 +229,23 @@ int main()
                 updateEnemies(&enemyPool, grid, &gameStats, &labels, delta_t);
                 // Affichage des ennemis
                 drawEnemies(enemyPool, grid);
+
+                // Affichage cercle range
+                if (grid.cells[selected_cell_x][selected_cell_y].hasTurret)
+                {
+                    float range_min = grid.cells[selected_cell_x][selected_cell_y].turret.range_min[grid.cells[selected_cell_x][selected_cell_y].turret.lvl];
+                    float range_max = grid.cells[selected_cell_x][selected_cell_y].turret.range_max[grid.cells[selected_cell_x][selected_cell_y].turret.lvl];
+                    if (range_min > 0)
+                        drawRange(width, height, range_min, selected_cell_x, selected_cell_y);
+                    if (range_max > 0)
+                        drawRange(width, height, range_max, selected_cell_x, selected_cell_y);
+
+                    was_range_visible = true;
+                }else if(was_range_visible){
+                    fillBG(1, 1, width + 1, height + 1);
+                    drawFullGrid(grid);
+                    was_range_visible = false;
+                }
 
                 move_to(width - (7 + 6), 1);
                 printf(COLOR_RED "%02d ❤" RESET COLOR_STANDARD_BG " | " COLOR_YELLOW " % 4d €" RESET, gameStats.health, gameStats.cash);

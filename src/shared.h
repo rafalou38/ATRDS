@@ -36,6 +36,7 @@ CONFIGURATION
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define CLAMP(x, a, b) MIN(MAX(x, a), b)
+#define ABS(a) ((a < 0) ? (-a) : (a))
 
 #define PI 3.14159265359
 /*
@@ -185,3 +186,4 @@ void show_cursor();
 void printCritical(char *errorMessage);
 void get_terminal_size(int *width, int *height);
 void checkTerminalSize(int *width, int *height);
+void drawRange(int term_width, int term_height, float range, float grid_x, float grid_y);

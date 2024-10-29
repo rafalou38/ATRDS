@@ -136,3 +136,34 @@ void checkTerminalSize(int *width, int *height)
         msleep(200);
     }
 }
+
+void drawRange(int term_width, int term_height, float range, float grid_x, float grid_y)
+{
+    // float center_term_x = grid_x * (CELL_WIDTH + GAP) + 3;
+    // float center_term_x = grid_y * (CELL_HEIGHT + GAP / 2) + 2;
+    printf(COLOR_STANDARD_BG);
+
+    for (int y = 0; y < term_height; y++)
+    {
+        for (int x = 0; x < term_width; x++)
+        {
+            float current_grid_x = (x - 3.0f) / (CELL_WIDTH + GAP);
+            float current_grid_y = (y - 2.0f) / (CELL_HEIGHT + GAP / 2);
+
+            float dx = grid_x - current_grid_x;
+            float dy = grid_y - current_grid_y;
+            float d = sqrt(dx * dx + dy * dy);
+
+            if (d < range + 0.05 && d > range - 0.06)
+            {
+                int term_x = x + CELL_WIDTH / 2.0f;
+                int term_y = y + CELL_HEIGHT / 2.0f;
+                if (term_x > 0 && term_y > 0 && term_x < term_width && term_y < term_height)
+                {
+                    move_to(term_x, term_y);
+                    printf("•");
+                }
+            }
+        }
+    }
+}
