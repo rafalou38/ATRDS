@@ -108,6 +108,7 @@ typedef struct GameStats
 {
     int cash;
     int health;
+    int wave;
 } GameStats;
 
 struct Label

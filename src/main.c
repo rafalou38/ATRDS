@@ -79,6 +79,7 @@ int main()
 
     gameStats.cash = 100;
     gameStats.health = 10;
+    gameStats.wave = 0;
 
     labels.size = 255;
     labels.labels = malloc(sizeof(struct Label) * labels.size);
@@ -107,6 +108,9 @@ int main()
     int selected_cell_y = 0;
     int ligne = 1;
     grid.cells[0][0].selected = true;
+    int nb_ennemy = 0;
+    enum EnemyType possible_ennemy[2];
+    bool changing_wave = true;
 
     for (int i = 0; i < 10000; i++)
     {
@@ -137,11 +141,63 @@ int main()
 
                 // Spawn des ennemis
                 spawnTimer += delta_t;
-                if (spawnTimer > 6.0)
+                if (changing_wave)
                 {
-                    addEnemy(grid, &enemyPool, ENEMY_SPEED, grid.start_x, grid.start_y);
-                    spawnTimer = 0.0;
+                    gameStats.wave += 1;
+                    if (gameStats.wave/5 == 0)
+                    {
+                        possible_ennemy[0]=ENEMY_TUX;
+                        int alea = rand();
+                        int signe = rand();
+                        if (RAND_MAX / 2 >= signe)
+                        {
+                            nb_ennemy = 15 + RAND_MAX / alea;
+                        }
+                        else
+                        {
+                            nb_ennemy = 15 - RAND_MAX / alea;
+                        }
+                    }
+                    else
+                    {
+                        possible_ennemy[0]=ENEMY_TUX;
+                        possible_ennemy[1]=ENEMY_SPEED;
+                        int alea = rand();
+                        int signe = rand();
+                        if (RAND_MAX / 2 >= signe)
+                        {
+                            nb_ennemy = 20 + RAND_MAX / alea;
+                        }
+                        else
+                        {
+                            nb_ennemy = 20 - RAND_MAX / alea;
+                        }
+                    }
+                    changing_wave = false;
                 }
+                if (spawnTimer > 1.0)
+                {
+                    if (nb_ennemy>0)
+                    {
+                        nb_ennemy -= 1;
+                        if (gameStats.wave/5 == 0)
+                        {
+                            addEnemy(grid, &enemyPool, ENEMY_TUX, grid.start_x, grid.start_y);
+                            spawnTimer = 0.0;
+                        }
+                        else
+                        {
+                            int type_alea = rand();
+                            addEnemy(grid, &enemyPool, possible_ennemy[(RAND_MAX - type_alea)/(RAND_MAX/2)],
+                            grid.start_x, grid.start_y);
+                            spawnTimer = 0.0;
+                        }
+                    }
+                }
+                if (enemyPool.count==0 && nb_ennemy==0)
+                    {
+                        changing_wave = true;
+                    }
 
 #if BULLETS_ON
                 if (i % 50 == 0)
@@ -190,14 +246,16 @@ int main()
             move_to(0, 0);
             printf(COLOR_STANDARD_BG);
             info = mallinfo2();
-            printf("Enemies: %d/%d | Labels: %d/%d | (%.1f fps) | runtime: %lds | Heap: %zuKo",
+            printf("Enemies: %d/%d | Labels: %d/%d | (%.1f fps) | runtime: %lds | Heap: %zuKo | wave: %d | ennemy left: %d",
                    enemyPool.count,                      //
                    enemyPool.length,                     //
                    labels.count,                         //
                    labels.size,                          //
                    round(1.0f / delta_t * 10.0f) / 10.0, //
                    current_time.tv_sec - time_start,     //
-                   info.uordblks / 1000);
+                   info.uordblks / 1000,
+                   gameStats.wave,
+                   nb_ennemy);
         }
 
         /*
