@@ -32,5 +32,5 @@ void updateTowers(Grid grid, EnemyPool ep, BulletPool *bp, float dt);
 void drawBullets(BulletPool bp);
 void updateBullets(BulletPool *bp, float dt);
 #else
-void updateTowers(Grid grid, EnemyPool ep, float dt);
+void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs);
 #endif

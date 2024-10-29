@@ -49,7 +49,13 @@ enum TurretType
 {
     Sniper,
     Inferno,
-    Mortier
+    Mortier,
+    Banque
+};
+
+enum EffectType
+{
+    Money
 };
 
 struct Turret
@@ -64,6 +70,9 @@ struct Turret
     float splash[2];
     int direction;
     int nb_ennemi[2];
+    bool has_effect;
+    enum EffectType effet;
+    float puissance_effet[2];
     float last_shot_dx;
     float last_shot_dy;
 };

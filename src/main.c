@@ -77,7 +77,7 @@ int main()
     allocateGridCells(&grid);
     genBasicPath(&grid);
 
-    gameStats.cash = 100;
+    gameStats.cash = 200;
     gameStats.health = 10;
     gameStats.wave = 0;
 
@@ -145,37 +145,18 @@ int main()
                 if (changing_wave)
                 {
                     gameStats.wave += 1;
-                    while (nb_ennemy <= 0)
+                    if (gameStats.wave / 5 == 0)
                     {
-                        if (gameStats.wave / 5 == 0)
-                        {
-                            possible_ennemy[0] = ENEMY_TUX;
-                            int alea = rand();
-                            int signe = rand();
-                            if (RAND_MAX / 2 >= signe)
-                            {
-                                nb_ennemy = 15 + RAND_MAX / alea;
-                            }
-                            else
-                            {
-                                nb_ennemy = 15 - RAND_MAX / alea;
-                            }
-                        }
-                        else
-                        {
-                            possible_ennemy[0] = ENEMY_TUX;
-                            possible_ennemy[1] = ENEMY_SPEED;
-                            int alea = rand();
-                            int signe = rand();
-                            if (RAND_MAX / 2 >= signe)
-                            {
-                                nb_ennemy = 20 + RAND_MAX / alea;
-                            }
-                            else
-                            {
-                                nb_ennemy = 20 - RAND_MAX / alea;
-                            }
-                        }
+                        possible_ennemy[0] = ENEMY_TUX;
+                        float alea = (float)rand() / RAND_MAX;
+                        nb_ennemy = 15 + (alea * 20 - 10);
+                    }
+                    else
+                    {
+                        possible_ennemy[0] = ENEMY_TUX;
+                        possible_ennemy[1] = ENEMY_SPEED;
+                        float alea = (float)rand() / RAND_MAX;
+                        nb_ennemy = 15 + (alea * 20 - 10);
                     }
                     changing_wave = false;
                 }
@@ -220,7 +201,7 @@ int main()
                 drawBullets(bulletPool);
 #else
                 clearUsedPath(grid, enemyPool);
-                updateTowers(grid, enemyPool, delta_t);
+                updateTowers(grid, enemyPool, delta_t, &gameStats);
 #endif
                 updateLabels(&labels, delta_t);
                 drawLabels(labels);
@@ -458,6 +439,12 @@ int main()
                         {
                             gameStats.cash -= getTurretPrice(Mortier, 0);
                             grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Mortier);
+                            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+                        }
+                        else if (ligne == 4 && gameStats.cash >= getTurretPrice(Banque, 0))
+                        {
+                            gameStats.cash -= getTurretPrice(Banque, 0);
+                            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Banque);
                             grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
                         }
                     }
