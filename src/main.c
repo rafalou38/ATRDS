@@ -145,37 +145,18 @@ int main()
                 if (changing_wave)
                 {
                     gameStats.wave += 1;
-                    while (nb_ennemy <= 0)
+                    if (gameStats.wave / 5 == 0)
                     {
-                        if (gameStats.wave / 5 == 0)
-                        {
-                            possible_ennemy[0] = ENEMY_TUX;
-                            int alea = rand();
-                            int signe = rand();
-                            if (RAND_MAX / 2 >= signe)
-                            {
-                                nb_ennemy = 15 + RAND_MAX / alea;
-                            }
-                            else
-                            {
-                                nb_ennemy = 15 - RAND_MAX / alea;
-                            }
-                        }
-                        else
-                        {
-                            possible_ennemy[0] = ENEMY_TUX;
-                            possible_ennemy[1] = ENEMY_SPEED;
-                            int alea = rand();
-                            int signe = rand();
-                            if (RAND_MAX / 2 >= signe)
-                            {
-                                nb_ennemy = 20 + RAND_MAX / alea;
-                            }
-                            else
-                            {
-                                nb_ennemy = 20 - RAND_MAX / alea;
-                            }
-                        }
+                        possible_ennemy[0] = ENEMY_TUX;
+                        float alea = (float)rand() / RAND_MAX;
+                        nb_ennemy = 15 + (alea * 20 - 10)
+                    }
+                    else
+                    {
+                        possible_ennemy[0] = ENEMY_TUX;
+                        possible_ennemy[1] = ENEMY_SPEED;
+                        float alea = (float)rand() / RAND_MAX;
+                        nb_ennemy = 15 + (alea * 20 - 10)
                     }
                     changing_wave = false;
                 }
