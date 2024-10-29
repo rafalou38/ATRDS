@@ -77,7 +77,7 @@ int main()
     allocateGridCells(&grid);
     genBasicPath(&grid);
 
-    gameStats.cash = 100;
+    gameStats.cash = 200;
     gameStats.health = 10;
     gameStats.wave = 0;
 
@@ -201,7 +201,7 @@ int main()
                 drawBullets(bulletPool);
 #else
                 clearUsedPath(grid, enemyPool);
-                updateTowers(grid, enemyPool, delta_t);
+                updateTowers(grid, enemyPool, delta_t, &gameStats);
 #endif
                 updateLabels(&labels, delta_t);
                 drawLabels(labels);
@@ -439,6 +439,12 @@ int main()
                         {
                             gameStats.cash -= getTurretPrice(Mortier, 0);
                             grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Mortier);
+                            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+                        }
+                        else if (ligne == 4 && gameStats.cash >= getTurretPrice(Banque, 0))
+                        {
+                            gameStats.cash -= getTurretPrice(Banque, 0);
+                            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Banque);
                             grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
                         }
                     }

@@ -4,7 +4,7 @@
 void updateTowers(Grid grid, EnemyPool ep, BulletPool *bp, float dt)
 {
 #else
-void updateTowers(Grid grid, EnemyPool ep, float dt)
+void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
 {
 #endif
     for (int x = 0; x < grid.width; x++)
@@ -17,54 +17,63 @@ void updateTowers(Grid grid, EnemyPool ep, float dt)
                 grid.cells[x][y].turret.compteur += dt;
                 if (grid.cells[x][y].turret.compteur >= grid.cells[x][y].turret.reload_delay[lvl])
                 {
-                    int enemies_hit = 0;
-                    for (int i = 0; i < ep.count; i++)
+                    if (grid.cells[x][y].turret.has_effect)
                     {
-                        int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2));
-                        if (d <= grid.cells[x][y].turret.range_max[lvl]
-                        && d >= grid.cells[x][y].turret.range_min[lvl])
+                        if (grid.cells[x][y].turret.effet == Money)
                         {
-                            grid.cells[x][y].turret.compteur = 0;
-
-                            float dx = ep.enemies[i].grid_x - x;
-                            float dy = ep.enemies[i].grid_y - y;
-                            float d = sqrt(dx * dx + dy * dy);
-
-                            grid.cells[x][y].turret.last_shot_dx = dx / d;
-                            grid.cells[x][y].turret.last_shot_dy = dy / d;
-
-#if BULLETS_ON
-                            bp->bullets[bp->count].hit = false;
-                            bp->bullets[bp->count].grid_x = x + 0.5 + (dx / d) / 4;
-                            bp->bullets[bp->count].grid_y = y + 0.5 + (dy / d) / 4;
-                            bp->bullets[bp->count].target = &(ep.enemies[i]);
-                            bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage[lvl];
-                            bp->count++;
-#else
-                            ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
-                            if (grid.cells[x][y].turret.splash[lvl] != 0.0)
-                            {
-                                float d_min = grid.cells[x][y].turret.splash[lvl];
-                                for (int j = 0 ; j < ep.count ; j++)
-                                {
-                                    if (j != i)
-                                    {
-                                        int d_enemy = sqrt(pow(ep.enemies[i].grid_x - ep.enemies[j].grid_x, 2) + 
-                                        pow(ep.enemies[i].grid_y - ep.enemies[j].grid_y, 2));
-                                        if (d_enemy < d_min)
-                                        {
-                                            ep.enemies[j].hp -= grid.cells[x][y].turret.damage[lvl];
-                                        }
-                                    }
-                                }
-
-                            }
-#endif
-                            enemies_hit++;
-                            if (enemies_hit >= grid.cells[x][y].turret.nb_ennemi[lvl])
-                                break;
+                            gs->cash += grid.cells[x][y].turret.puissance_effet[lvl];
                         }
                     }
+                    else
+                    {
+                        int enemies_hit = 0;
+                        for (int i = 0; i < ep.count; i++)
+                        {
+                            int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2));
+                            if (d <= grid.cells[x][y].turret.range_max[lvl]
+                            && d >= grid.cells[x][y].turret.range_min[lvl])
+                            {
+                                float dx = ep.enemies[i].grid_x - x;
+                                float dy = ep.enemies[i].grid_y - y;
+                                float d = sqrt(dx * dx + dy * dy);
+
+                                grid.cells[x][y].turret.last_shot_dx = dx / d;
+                                grid.cells[x][y].turret.last_shot_dy = dy / d;
+
+#if BULLETS_ON
+                                bp->bullets[bp->count].hit = false;
+                                bp->bullets[bp->count].grid_x = x + 0.5 + (dx / d) / 4;
+                                bp->bullets[bp->count].grid_y = y + 0.5 + (dy / d) / 4;
+                                bp->bullets[bp->count].target = &(ep.enemies[i]);
+                                bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage[lvl];
+                                bp->count++;
+#else
+                                ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
+                                if (grid.cells[x][y].turret.splash[lvl] != 0.0)
+                                {
+                                    float d_min = grid.cells[x][y].turret.splash[lvl];
+                                    for (int j = 0 ; j < ep.count ; j++)
+                                    {
+                                        if (j != i)
+                                        {
+                                            int d_enemy = sqrt(pow(ep.enemies[i].grid_x - ep.enemies[j].grid_x, 2) + 
+                                            pow(ep.enemies[i].grid_y - ep.enemies[j].grid_y, 2));
+                                            if (d_enemy < d_min)
+                                            {
+                                                ep.enemies[j].hp -= grid.cells[x][y].turret.damage[lvl];
+                                            }
+                                        }
+                                    }
+
+                                }
+    #endif
+                                enemies_hit++;
+                                if (enemies_hit >= grid.cells[x][y].turret.nb_ennemi[lvl])
+                                    break;
+                            }
+                        }
+                    }
+                    grid.cells[x][y].turret.compteur = 0;
                 }
             }
         }
@@ -175,6 +184,17 @@ int getTurretPrice(enum TurretType type, int level)
             return 15;
         }
     }
+    if (type == Banque)
+    {
+        if (level == 0)
+        {
+            return 150;
+        }
+        if (level == 1)
+        {
+            return 300;
+        }
+    }
 
     return -1;
 }
@@ -199,6 +219,7 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.splash[1] = 0.0;
         tur.nb_ennemi[0] = 1;
         tur.nb_ennemi[1] = 2;
+        tur.has_effect = false;
     }
     else if (type == Inferno)
     {
@@ -217,6 +238,7 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.splash[1] = 0.0;
         tur.nb_ennemi[0] = 4;
         tur.nb_ennemi[1] = 8;
+        tur.has_effect = false;
     }
     else if (type == Mortier)
     {
@@ -235,6 +257,19 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.splash[1] = 1.5;
         tur.nb_ennemi[0] = 1;
         tur.nb_ennemi[1] = 1;
+        tur.has_effect = false;
+    }
+    else if (type == Banque)
+    {
+        tur.type = Banque;
+        tur.lvl = 0;
+        tur.compteur = 0;
+        tur.reload_delay[0] = 5;
+        tur.reload_delay[1] = 10;
+        tur.has_effect = true;
+        tur.effet = Money;
+        tur.puissance_effet[0] = 10;
+        tur.puissance_effet[1] = 30;
     }
     return tur;
 }
@@ -311,6 +346,11 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
         printf(" Mortier ");
         move_to(x0 + 1 + width - 8, y0 + 3);
         printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Mortier, 0));
+
+        move_to(x0 + 1, y0 + 4);
+        printf(" Banque ");
+        move_to(x0 + 1 + width - 8, y0 + 4);
+        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Banque, 0));
     }
     printf(RESET);
 }
