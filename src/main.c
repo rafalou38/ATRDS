@@ -149,14 +149,14 @@ int main()
                     {
                         possible_ennemy[0] = ENEMY_TUX;
                         float alea = (float)rand() / RAND_MAX;
-                        nb_ennemy = 15 + (alea * 20 - 10)
+                        nb_ennemy = 15 + (alea * 20 - 10);
                     }
                     else
                     {
                         possible_ennemy[0] = ENEMY_TUX;
                         possible_ennemy[1] = ENEMY_SPEED;
                         float alea = (float)rand() / RAND_MAX;
-                        nb_ennemy = 15 + (alea * 20 - 10)
+                        nb_ennemy = 15 + (alea * 20 - 10);<
                     }
                     changing_wave = false;
                 }
