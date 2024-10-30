@@ -178,6 +178,10 @@ int msleep(long ms);
     #define COLOR_MORTIER_BASE "\033[38;5;243m"
     #define COLOR_MORTIER_FIRING "\033[38;5;208m"
     #define COLOR_MORTIER_FIRING_CENTER "\033[38;5;184m"
+    //Banque colors
+    #define COLOR_BANQUE_BASE "\033[38;5;130m"
+    #define COLOR_BANQUE_MONEY "\033[38;5;184m"
+    #define COLOR_BANQUE_GENERATION "\033[38;5;40m"
 // Terrain colors
 #define COLOR_STANDARD_BG "\033[48;5;233m"
 #define COLOR_TOWER_SLOT_BG "\033[48;5;236m"

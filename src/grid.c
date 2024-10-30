@@ -376,9 +376,9 @@ void drawCell(struct Cell cell, Grid grid)
                       "███▄  ▄███",
                       "  ██████  "},
                      {"  ██▀▀██  ",
-                      "███▀"COLOR_MORTIER_FIRING"▄▄"COLOR_MORTIER_BASE"▀███",
-                      "█  "COLOR_MORTIER_FIRING"█"COLOR_MORTIER_FIRING_CENTER"██"COLOR_MORTIER_FIRING"█"COLOR_MORTIER_BASE"  █",
-                      "███▄"COLOR_MORTIER_FIRING"▀▀"COLOR_MORTIER_BASE"▄███",
+                      "███▀" COLOR_MORTIER_FIRING "▄▄" COLOR_MORTIER_BASE "▀███",
+                      "█  " COLOR_MORTIER_FIRING "█" COLOR_MORTIER_FIRING_CENTER "██" COLOR_MORTIER_FIRING "█" COLOR_MORTIER_BASE "  █",
+                      "███▄" COLOR_MORTIER_FIRING "▀▀" COLOR_MORTIER_BASE "▄███",
                       "  ██▄▄██  "}},
                     {{"▄█▀▀██▀▀█▄",
                       "█ ██▀▀██ █",
@@ -386,9 +386,9 @@ void drawCell(struct Cell cell, Grid grid)
                       "█ ██▄▄██ █",
                       "▀█▄▄██▄▄█▀"},
                      {"▄█▀█▀▀█▀█▄",
-                      "█▄█▀"COLOR_MORTIER_FIRING"▄▄"COLOR_MORTIER_BASE"▀█▄█",
-                      "█  "COLOR_MORTIER_FIRING"█"COLOR_MORTIER_FIRING_CENTER"██"COLOR_MORTIER_FIRING"█"COLOR_MORTIER_BASE"  █",
-                      "█▀█▄"COLOR_MORTIER_FIRING"▀▀"COLOR_MORTIER_BASE"▄█▀█",
+                      "█▄█▀" COLOR_MORTIER_FIRING "▄▄" COLOR_MORTIER_BASE "▀█▄█",
+                      "█  " COLOR_MORTIER_FIRING "█" COLOR_MORTIER_FIRING_CENTER "██" COLOR_MORTIER_FIRING "█" COLOR_MORTIER_BASE "  █",
+                      "█▀█▄" COLOR_MORTIER_FIRING "▀▀" COLOR_MORTIER_BASE "▄█▀█",
                       "▀█▄█▄▄█▄█▀"}}};
                 int mortier_shooting;
                 if (cell.turret.compteur < 0.5)
@@ -409,7 +409,114 @@ void drawCell(struct Cell cell, Grid grid)
             }
             else if (cell.turret.type == Banque)
             {
-                printf("Banque");
+                int x_current_banque = cell.x * (CELL_WIDTH + GAP) + 3;
+                int y_current_banque = cell.y * (CELL_HEIGHT + GAP / 2) + 2;
+
+                printf(COLOR_BANQUE_BASE);
+
+                char *sprite[2][8][5] = {
+                    {{"  ▄▄▄▄▄▄  ",
+                      " ██▄▄▄▄██ ",
+                      " ██" COLOR_BANQUE_MONEY "$$$$" COLOR_BANQUE_BASE "██ ",
+                      " ████████ ",
+                      "          "},
+                     {"  ▄▄▄▄▄▄  ",
+                      " ██▄▄▄▄██ ",
+                      " ██" COLOR_BANQUE_GENERATION "$$$$" COLOR_BANQUE_BASE "██ ",
+                      " ████████ ",
+                      "          "},
+                     {COLOR_BANQUE_MONEY"          ",
+                      "          ",
+                      "    ██    ",
+                      "          ",
+                      "          "},
+                     {COLOR_BANQUE_MONEY"          ",
+                      "   ▄▄▄▄   ",
+                      "   █  █   ",
+                      "   ▀▀▀▀   ",
+                      "          "},
+                     {COLOR_BANQUE_MONEY"          ",
+                      "  █▀▀▀▀█  ",
+                      "  █+10 █  ",
+                      "  █▄▄▄▄█  ",
+                      "          "},
+                     {COLOR_BANQUE_MONEY" ▄▄▄▄▄▄▄▄ ",
+                      " █      █ ",
+                      " █ +10  █ ",
+                      " █      █ ",
+                      " ▀▀▀▀▀▀▀▀ "},
+                     {COLOR_BANQUE_MONEY"█▀▀▀▀▀▀▀▀█",
+                      "█        █",
+                      "█  +10   █",
+                      "█        █",
+                      "█▄▄▄▄▄▄▄▄█"},
+                     {COLOR_BANQUE_GENERATION"█▀▀▀▀▀▀▀▀█",
+                      "█        █",
+                      "█  +10   █",
+                      "█        █",
+                      "█▄▄▄▄▄▄▄▄█"}},
+                    {{"  ▄▄▄ █ █ ",
+                      " ████████ ",
+                      " █" COLOR_BANQUE_MONEY "$$$$$$" COLOR_BANQUE_BASE "█ ",
+                      " █▀▀█▀▀▀█ ",
+                      " ▀▀▀▀▀▀▀▀ "},
+                     {"  ▄▄▄ █ █ ",
+                      " ████████ ",
+                      " █" COLOR_BANQUE_GENERATION "$$$$$$" COLOR_BANQUE_BASE "█ ",
+                      " █▀▀█▀▀▀█ ",
+                      " ▀▀▀▀▀▀▀▀ "},
+                     {COLOR_BANQUE_MONEY"          ",
+                      "          ",
+                      "    ██    ",
+                      "          ",
+                      "          "},
+                     {COLOR_BANQUE_MONEY"          ",
+                      "   ▄▄▄▄   ",
+                      "   █  █   ",
+                      "   ▀▀▀▀   ",
+                      "          "},
+                     {COLOR_BANQUE_MONEY"          ",
+                      "  █▀▀▀▀█  ",
+                      "  █+30 █  ",
+                      "  █▄▄▄▄█  ",
+                      "          "},
+                     {COLOR_BANQUE_MONEY" ▄▄▄▄▄▄▄▄ ",
+                      " █      █ ",
+                      " █ +30  █ ",
+                      " █      █ ",
+                      " ▀▀▀▀▀▀▀▀ "},
+                     {COLOR_BANQUE_MONEY"█▀▀▀▀▀▀▀▀█",
+                      "█        █",
+                      "█  +30   █",
+                      "█        █",
+                      "█▄▄▄▄▄▄▄▄█"},
+                     {COLOR_BANQUE_GENERATION"█▀▀▀▀▀▀▀▀█",
+                      "█        █",
+                      "█  +30   █",
+                      "█        █",
+                      "█▄▄▄▄▄▄▄▄█"}}};
+                int banque_generating;
+                float d = cell.turret.compteur;
+                if (1.1<d && d<2){banque_generating = 1;}
+                else if (1<d && d<1.1){banque_generating=6;}
+                else if (0.9<d && d<1){banque_generating=7;}
+                else if (0.8<d && d<0.9){banque_generating=6;}
+                else if (0.7<d && d<0.8){banque_generating=7;}
+                else if (0.6<d && d<0.7){banque_generating=6;}
+                else if (0.5<d && d<0.6){banque_generating=7;}
+                else if (0.4<d && d<0.5){banque_generating=6;}
+                else if (0.3<d && d<0.4){banque_generating=5;}
+                else if (0.2<d && d<0.3){banque_generating=4;}
+                else if (0.1<d && d<0.2){banque_generating=3;}
+                else if (0<d && d<0.1){banque_generating=2;}
+                else {banque_generating = 0;}
+                for (int i = 0; i < 5; i++)
+                {
+                    move_to(x_current_banque, y_current_banque + i);
+                    printf(sprite[cell.turret.lvl][banque_generating][i]);
+                }
+
+                printf(RESET);
             }
         }
     }
