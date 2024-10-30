@@ -268,7 +268,7 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
         dy *= enemy->speed * dt_sec;
         if (enemy->has_effect)
         {
-            if (enemy->effet == Freeze)
+            if (enemy->effet == Stun)
             {
                 dx = 0;
                 dy = 0;

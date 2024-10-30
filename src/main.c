@@ -78,7 +78,7 @@ int main()
     genBasicPath(&grid);
 
     gameStats.cash = 500;
-    gameStats.health = 10;
+    gameStats.health = 100;
     gameStats.wave = 0;
 
     labels.size = 255;
@@ -113,7 +113,7 @@ int main()
     enum EnemyType possible_ennemy[2];
     bool changing_wave = true;
 
-    for (int i = 0; i < 10000; i++)
+    for (int i = 0; i < 100000; i++)
     {
         struct timespec current_time;
         clock_gettime(CLOCK_MONOTONIC, &current_time);
@@ -447,16 +447,16 @@ int main()
                             grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Gatling);
                             grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
                         }
-                        else if (ligne == 5 && gameStats.cash >= getTurretPrice(Freezer, 0))
+                        else if (ligne == 5 && gameStats.cash >= getTurretPrice(Petrificateur, 0))
+                        {
+                            gameStats.cash -= getTurretPrice(Petrificateur, 0);
+                            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Petrificateur);
+                            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+                        }
+                        else if (ligne == 6 && gameStats.cash >= getTurretPrice(Freezer, 0))
                         {
                             gameStats.cash -= getTurretPrice(Freezer, 0);
                             grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Freezer);
-                            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
-                        }
-                        else if (ligne == 6 && gameStats.cash >= getTurretPrice(Tornade, 0))
-                        {
-                            gameStats.cash -= getTurretPrice(Tornade, 0);
-                            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Tornade);
                             grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
                         }
                         else if (ligne == 7 && gameStats.cash >= getTurretPrice(Banque, 0))

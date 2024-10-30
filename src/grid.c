@@ -415,7 +415,7 @@ void drawCell(struct Cell cell, Grid grid)
             {
                 printf("Freezer");
             }
-            else if (cell.turret.type == Tornade)
+            else if (cell.turret.type == Petrificateur)
             {
                 printf("Tornade");
             }

@@ -23,7 +23,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                         {
                             gs->cash += grid.cells[x][y].turret.puissance_effet[lvl];
                         }
-                        else if (grid.cells[x][y].turret.effet == Freeze)
+                        else if (grid.cells[x][y].turret.effet == Stun)
                         {
                             for (int i = 0; i < ep.count; i++)
                             {
@@ -38,9 +38,10 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                     grid.cells[x][y].turret.last_shot_dx = dx / d;
                                     grid.cells[x][y].turret.last_shot_dy = dy / d;
                                     ep.enemies[i].has_effect = true;
-                                    ep.enemies[i].effet = Freeze;
+                                    ep.enemies[i].effet = Stun;
                                     ep.enemies[i].temps_rest = grid.cells[x][y].turret.puissance_effet[lvl];
-                                } 
+                                    break;
+                                }
                             }
                         }
                         else if (grid.cells[x][y].turret.effet == Slow)
@@ -59,7 +60,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                     grid.cells[x][y].turret.last_shot_dy = dy / d;
                                     ep.enemies[i].has_effect = true;
                                     ep.enemies[i].effet = Slow;
-                                    ep.enemies[i].temps_rest = 4 * grid.cells[x][y].turret.puissance_effet[lvl];
+                                    ep.enemies[i].temps_rest = lvl + 1;
                                     ep.enemies[i].puissance_effet = grid.cells[x][y].turret.puissance_effet[lvl];
                                 } 
                             }
@@ -247,7 +248,7 @@ int getTurretPrice(enum TurretType type, int level)
             return 150;
         }
     }
-    if (type == Tornade)
+    if (type == Petrificateur)
     {
         if (level == 0)
         {
@@ -352,9 +353,9 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.nb_ennemi[1] = 1;
         tur.has_effect = false;
     }
-    else if (type == Freezer)
+    else if (type == Petrificateur)
     {
-        tur.type = Freezer;
+        tur.type = Petrificateur;
         tur.lvl = 0;
         tur.compteur = 0;
         tur.range_min[0] = 0;
@@ -367,16 +368,16 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.reload_delay[1] = 4;
         tur.splash[0] = 0;
         tur.splash[1] = 0;
-        tur.nb_ennemi[0] = 3;
-        tur.nb_ennemi[1] = 3;
+        tur.nb_ennemi[0] = 1;
+        tur.nb_ennemi[1] = 1;
         tur.has_effect = true;
-        tur.effet = Freeze;
-        tur.puissance_effet[0] = 2;
-        tur.puissance_effet[1] = 3;
+        tur.effet = Stun;
+        tur.puissance_effet[0] = 1;
+        tur.puissance_effet[1] = 1.5;
     }
-    else if (type == Tornade)
+    else if (type == Freezer)
     {
-        tur.type = Tornade;
+        tur.type = Freezer;
         tur.lvl = 0;
         tur.compteur = 0;
         tur.range_min[0] = 0;
@@ -385,16 +386,16 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.range_max[1] = 2;
         tur.damage[0] = 0;
         tur.damage[1] = 0;
-        tur.reload_delay[0] = 4;
-        tur.reload_delay[1] = 4;
+        tur.reload_delay[0] = 2;
+        tur.reload_delay[1] = 2;
         tur.splash[0] = 0;
         tur.splash[1] = 0;
         tur.nb_ennemi[0] = 100;
         tur.nb_ennemi[1] = 100;
         tur.has_effect = true;
         tur.effet = Slow;
-        tur.puissance_effet[0] = 0.5;
-        tur.puissance_effet[1] = 0.25;
+        tur.puissance_effet[0] = 0.75;
+        tur.puissance_effet[1] = 0.5;
     }
     else if (type == Banque)
     {
@@ -490,14 +491,14 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
         printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Gatling, 0));
 
         move_to(x0 + 1, y0 + 5);
-        printf(" Freezer ");
+        printf(" Petrificateur ");
         move_to(x0 + 1 + width - 8, y0 + 5);
-        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Freezer, 0));
+        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Petrificateur, 0));
 
         move_to(x0 + 1, y0 + 6);
-        printf(" Tornade ");
+        printf(" Freezer ");
         move_to(x0 + 1 + width - 8, y0 + 6);
-        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Tornade, 0));
+        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Freezer, 0));
 
         move_to(x0 + 1, y0 + 7);
         printf(" Banque ");

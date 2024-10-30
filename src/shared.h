@@ -51,7 +51,7 @@ enum TurretType
     Inferno,
     Mortier,
     Freezer,
-    Tornade,
+    Petrificateur,
     Banque,
     Gatling,
 };
@@ -59,7 +59,7 @@ enum TurretType
 enum EffectType
 {
     Money,
-    Freeze,
+    Stun,
     Slow
 };
 
