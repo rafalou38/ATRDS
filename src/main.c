@@ -453,7 +453,13 @@ int main()
                             grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Freezer);
                             grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
                         }
-                        else if (ligne == 6 && gameStats.cash >= getTurretPrice(Banque, 0))
+                        else if (ligne == 6 && gameStats.cash >= getTurretPrice(Tornade, 0))
+                        {
+                            gameStats.cash -= getTurretPrice(Tornade, 0);
+                            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Tornade);
+                            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+                        }
+                        else if (ligne == 7 && gameStats.cash >= getTurretPrice(Banque, 0))
                         {
                             gameStats.cash -= getTurretPrice(Banque, 0);
                             grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Banque);

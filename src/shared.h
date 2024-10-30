@@ -51,6 +51,7 @@ enum TurretType
     Inferno,
     Mortier,
     Freezer,
+    Tornade,
     Banque,
     Gatling,
 };
@@ -58,7 +59,8 @@ enum TurretType
 enum EffectType
 {
     Money,
-    Freeze
+    Freeze,
+    Slow
 };
 
 struct Turret

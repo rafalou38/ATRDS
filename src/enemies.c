@@ -278,6 +278,16 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
                     enemy->has_effect = false;
                 }
             }
+            else if (enemy->effet == Slow)
+            {
+                dx *= enemy->puissance_effet;
+                dy *= enemy->puissance_effet;
+                enemy->temps_rest -= dt_sec;
+                if (enemy->temps_rest <= 0)
+                {
+                    enemy->has_effect = false;
+                }
+            }
         }
         enemy->grid_x += dx;
         enemy->grid_y += dy;
