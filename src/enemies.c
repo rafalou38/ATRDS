@@ -133,13 +133,26 @@ void drawEnemies(EnemyPool ep, Grid grid)
         printf(COLOR_STANDARD_BG);
         if (enemy->type == ENEMY_TUX)
         {
-            move_to(px, py);
-            printf("🦍");
+            int sprite_anim;
+            char* sprite_ennemy[2][2]={
+                {"X O",
+                 "-⎶-"},
+                {"X O",
+                 "<=>"}};
+            if ((px%3==0 && py%3==0)||((px%3==1 && py%3==1))){
+                sprite_anim = 0;
+            }else{sprite_anim = 1;}
+            for (int i = py; i < py+2; i++){
+                move_to(px, i);
+                printf(sprite_ennemy[sprite_anim][i-py]);
+            }
         }
         else if (enemy->type == ENEMY_SPEED)
         {
             move_to(px, py);
-            printf("⏩");
+            printf("∑ ∑");
+            move_to(px, py+1);
+            printf("/▔\\");
         }
 
         // move_to((enemy->next_cell.x * (CELL_WIDTH + GAP) + 3), (enemy->next_cell.y * (CELL_HEIGHT + GAP / 2) + 2));
@@ -233,7 +246,7 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
             enemy->previous_cell = cell;
         }
 
-        float rand_factor = 0.5;
+        float rand_factor = 0.4;
         // float rand_factor = 0.4 + ((float)rand() / RAND_MAX) * 0.2;
 
         // Le déplacement se fait dans le repère orthonormé de la grille, indépendant de la dimension du terminal.

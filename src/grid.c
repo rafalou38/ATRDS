@@ -417,12 +417,12 @@ void drawCell(struct Cell cell, Grid grid)
                 char *sprite[2][8][5] = {
                     {{"  ▄▄▄▄▄▄  ",
                       " ██▄▄▄▄██ ",
-                      " ██" COLOR_BANQUE_MONEY "$$$$" COLOR_BANQUE_BASE "██ ",
+                      " ██" COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_BASE "██ ",
                       " ████████ ",
                       "          "},
                      {"  ▄▄▄▄▄▄  ",
                       " ██▄▄▄▄██ ",
-                      " ██" COLOR_BANQUE_GENERATION "$$$$" COLOR_BANQUE_BASE "██ ",
+                      " ██" COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_BASE "██ ",
                       " ████████ ",
                       "          "},
                      {COLOR_BANQUE_MONEY"          ",
@@ -457,12 +457,12 @@ void drawCell(struct Cell cell, Grid grid)
                       "█▄▄▄▄▄▄▄▄█"}},
                     {{"  ▄▄▄ █ █ ",
                       " ████████ ",
-                      " █" COLOR_BANQUE_MONEY "$$$$$$" COLOR_BANQUE_BASE "█ ",
+                      " █" COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_BASE "█ ",
                       " █▀▀█▀▀▀█ ",
                       " ▀▀▀▀▀▀▀▀ "},
                      {"  ▄▄▄ █ █ ",
                       " ████████ ",
-                      " █" COLOR_BANQUE_GENERATION "$$$$$$" COLOR_BANQUE_BASE "█ ",
+                      " █" COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_BASE "█ ",
                       " █▀▀█▀▀▀█ ",
                       " ▀▀▀▀▀▀▀▀ "},
                      {COLOR_BANQUE_MONEY"          ",
@@ -497,7 +497,10 @@ void drawCell(struct Cell cell, Grid grid)
                       "█▄▄▄▄▄▄▄▄█"}}};
                 int banque_generating;
                 float d = cell.turret.compteur;
-                if (1.1<d && d<2){banque_generating = 1;}
+                float fractionnaire_d = d-floor(d);
+                if (0<fractionnaire_d && fractionnaire_d<0.5){banque_generating=1;}
+                else {banque_generating=0;}
+                if (1.1<d && d<1.2){banque_generating=7;}
                 else if (1<d && d<1.1){banque_generating=6;}
                 else if (0.9<d && d<1){banque_generating=7;}
                 else if (0.8<d && d<0.9){banque_generating=6;}
@@ -509,7 +512,6 @@ void drawCell(struct Cell cell, Grid grid)
                 else if (0.2<d && d<0.3){banque_generating=4;}
                 else if (0.1<d && d<0.2){banque_generating=3;}
                 else if (0<d && d<0.1){banque_generating=2;}
-                else {banque_generating = 0;}
                 for (int i = 0; i < 5; i++)
                 {
                     move_to(x_current_banque, y_current_banque + i);
