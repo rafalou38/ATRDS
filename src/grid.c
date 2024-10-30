@@ -407,6 +407,10 @@ void drawCell(struct Cell cell, Grid grid)
 
                 printf(RESET);
             }
+            else if (cell.turret.type == Freezer)
+            {
+                printf("Freezer");
+            }
             else if (cell.turret.type == Banque)
             {
                 int x_current_banque = cell.x * (CELL_WIDTH + GAP) + 3;

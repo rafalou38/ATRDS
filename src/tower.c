@@ -23,6 +23,28 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                         {
                             gs->cash += grid.cells[x][y].turret.puissance_effet[lvl];
                         }
+                        else if (grid.cells[x][y].turret.effet == Freeze)
+                        {
+                            for (int i = 0; i < ep.count; i++)
+                            {
+                                int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2));
+                                if (d <= grid.cells[x][y].turret.range_max[lvl]
+                                && d >= grid.cells[x][y].turret.range_min[lvl])
+                                {
+                                    float dx = ep.enemies[i].grid_x - x;
+                                    float dy = ep.enemies[i].grid_y - y;
+                                    float d = sqrt(dx * dx + dy * dy);
+
+                                    grid.cells[x][y].turret.last_shot_dx = dx / d;
+                                    grid.cells[x][y].turret.last_shot_dy = dy / d;
+                                    ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
+                                    ep.enemies[i].has_effect = true;
+                                    ep.enemies[i].effet = Freeze;
+                                    ep.enemies[i].temps_rest = grid.cells[x][y].turret.puissance_effet[lvl];
+                                } 
+
+                            }
+                        }
                     }
                     else
                     {
@@ -184,6 +206,17 @@ int getTurretPrice(enum TurretType type, int level)
             return 15;
         }
     }
+    if (type == Freezer)
+    {
+        if (level == 0)
+        {
+            return 75;
+        }
+        if (level == 1)
+        {
+            return 150;
+        }
+    }
     if (type == Banque)
     {
         if (level == 0)
@@ -258,6 +291,28 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.nb_ennemi[0] = 1;
         tur.nb_ennemi[1] = 1;
         tur.has_effect = false;
+    }
+    else if (type == Freezer)
+    {
+        tur.type = Freezer;
+        tur.lvl = 0;
+        tur.compteur = 0;
+        tur.range_min[0] = 0;
+        tur.range_min[1] = 0;
+        tur.range_max[0] = 1;
+        tur.range_max[1] = 2;
+        tur.damage[0] = 0.3;
+        tur.damage[1] = 0.3;
+        tur.reload_delay[0] = 4;
+        tur.reload_delay[1] = 4;
+        tur.splash[0] = 0;
+        tur.splash[1] = 0;
+        tur.nb_ennemi[0] = 100;
+        tur.nb_ennemi[1] = 100;
+        tur.has_effect = true;
+        tur.effet = Freeze;
+        tur.puissance_effet[0] = 2;
+        tur.puissance_effet[1] = 3;
     }
     else if (type == Banque)
     {
@@ -348,8 +403,13 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
         printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Mortier, 0));
 
         move_to(x0 + 1, y0 + 4);
-        printf(" Banque ");
+        printf(" Freezer ");
         move_to(x0 + 1 + width - 8, y0 + 4);
+        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Freezer, 0));
+
+        move_to(x0 + 1, y0 + 5);
+        printf(" Banque ");
+        move_to(x0 + 1 + width - 8, y0 + 5);
         printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Banque, 0));
     }
     printf(RESET);

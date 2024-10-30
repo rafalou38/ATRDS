@@ -30,6 +30,11 @@ struct Enemy
     struct Cell next_cell;
     struct Cell previous_cell;
 
+    bool has_effect;
+    enum EffectType effet;
+    float puissance_effet;
+    float temps_rest;
+
     // Indice intentionnellement flottant pour permette un positionnement dynamique dans chaque cellule
     float grid_x;
     float grid_y;
