@@ -206,6 +206,17 @@ int getTurretPrice(enum TurretType type, int level)
             return 15;
         }
     }
+    if (type == Gatling)
+    {
+        if (level == 0)
+        {
+            return 15;
+        }
+        if (level == 1)
+        {
+            return 20;
+        }
+    }
     if (type == Freezer)
     {
         if (level == 0)
@@ -288,6 +299,25 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.reload_delay[1] = 2.8;
         tur.splash[0] = 1.0;
         tur.splash[1] = 1.5;
+        tur.nb_ennemi[0] = 1;
+        tur.nb_ennemi[1] = 1;
+        tur.has_effect = false;
+    }
+    else if (type == Gatling)
+    {
+        tur.type = Gatling;
+        tur.lvl = 0;
+        tur.compteur = 0;
+        tur.range_min[0] = 0;
+        tur.range_min[1] = 0;
+        tur.range_max[0] = 0.5;
+        tur.range_max[1] = 1;
+        tur.damage[0] = 0.1;
+        tur.damage[1] = 0.2;
+        tur.reload_delay[0] = 0.1;
+        tur.reload_delay[1] = 0.05;
+        tur.splash[0] = 0;
+        tur.splash[1] = 0;
         tur.nb_ennemi[0] = 1;
         tur.nb_ennemi[1] = 1;
         tur.has_effect = false;
@@ -403,13 +433,18 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
         printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Mortier, 0));
 
         move_to(x0 + 1, y0 + 4);
-        printf(" Freezer ");
+        printf(" Gatling ");
         move_to(x0 + 1 + width - 8, y0 + 4);
-        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Freezer, 0));
+        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Gatling, 0));
 
         move_to(x0 + 1, y0 + 5);
-        printf(" Banque ");
+        printf(" Freezer ");
         move_to(x0 + 1 + width - 8, y0 + 5);
+        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Freezer, 0));
+
+        move_to(x0 + 1, y0 + 6);
+        printf(" Banque ");
+        move_to(x0 + 1 + width - 8, y0 + 6);
         printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Banque, 0));
     }
     printf(RESET);

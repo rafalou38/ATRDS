@@ -51,7 +51,8 @@ enum TurretType
     Inferno,
     Mortier,
     Freezer,
-    Banque
+    Banque,
+    Gatling,
 };
 
 enum EffectType

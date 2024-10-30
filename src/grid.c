@@ -407,6 +407,10 @@ void drawCell(struct Cell cell, Grid grid)
 
                 printf(RESET);
             }
+            else if (cell.turret.type == Gatling)
+            {
+                printf("Gatling");
+            }
             else if (cell.turret.type == Freezer)
             {
                 printf("Freezer");
