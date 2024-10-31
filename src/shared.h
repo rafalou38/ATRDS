@@ -28,8 +28,8 @@ CONFIGURATION
 
 // TODO: add max size
 
-#define CELL_WIDTH 10
-#define CELL_HEIGHT 5
+#define CELL_WIDTH 18
+#define CELL_HEIGHT 9
 
 #define GAP 2
 
@@ -187,6 +187,10 @@ int msleep(long ms);
     #define COLOR_BANQUE_BASE "\033[38;5;130m"
     #define COLOR_BANQUE_MONEY "\033[38;5;184m"
     #define COLOR_BANQUE_GENERATION "\033[38;5;40m"
+    //Freezer colors
+    #define COLOR_FREEZER_BASE "\033[38;5;14m"
+    #define COLOR_FREEZER_FIRING "\033[38;5;50m"
+    #define COLOR_FREEZER_FIRING_CENTER "\033[38;5;15m"
 // Terrain colors
 #define COLOR_STANDARD_BG "\033[48;5;233m"
 #define COLOR_TOWER_SLOT_BG "\033[48;5;236m"

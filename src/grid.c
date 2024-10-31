@@ -235,90 +235,122 @@ void drawCell(struct Cell cell, Grid grid)
 
                 printf(COLOR_SNIPER_BASE);
 
-                char *sprite[2][8][5] = {
+                char *sprite[2][8][7] = {
                     {
-                        {"   ▄██▄   ",
-                         " ▄██████▄ ",
-                         COLOR_SNIPER_HEAD "<" COLOR_SNIPER_CANNON "===[]" COLOR_SNIPER_BASE "████",
-                         " ▀██████▀ ",
-                         "   ▀██▀   "},
-                        {"   ▄██▄   ",
-                         " ▄██████▄ ",
-                         "████" COLOR_SNIPER_CANNON "[]" COLOR_SNIPER_BASE "████",
-                         " ▀█" COLOR_SNIPER_CANNON "//" COLOR_SNIPER_BASE "███▀ ",
-                         COLOR_SNIPER_HEAD " ▕▁▁" COLOR_SNIPER_BASE "██▀   "},
-                        {"   ▄██▄   ",
-                         " ▄██████▄ ",
-                         "████" COLOR_SNIPER_CANNON "[]" COLOR_SNIPER_BASE "████",
-                         " ▀██" COLOR_SNIPER_CANNON "||" COLOR_SNIPER_BASE "██▀ ",
-                         "   ▀" COLOR_SNIPER_HEAD "\\/" COLOR_SNIPER_BASE "▀   "},
-                        {"   ▄██▄   ",
-                         " ▄██████▄ ",
-                         "████" COLOR_SNIPER_CANNON "[]" COLOR_SNIPER_BASE "████",
-                         " ▀███" COLOR_SNIPER_CANNON "\\\\" COLOR_SNIPER_BASE "█▀ ",
-                         "   ▀██" COLOR_SNIPER_HEAD "▁▁▏ "},
-                        {"   ▄██▄   ",
-                         " ▄██████▄ ",
-                         "████" COLOR_SNIPER_CANNON "[]===" COLOR_SNIPER_HEAD ">" COLOR_SNIPER_BASE,
-                         " ▀██████▀ ",
-                         "   ▀██▀   "},
-                        {"   ▄██" COLOR_SNIPER_HEAD "▔▔▏ " COLOR_SNIPER_BASE,
-                         " ▄███" COLOR_SNIPER_CANNON "//" COLOR_SNIPER_BASE "█▄ ",
-                         "████" COLOR_SNIPER_CANNON "[]" COLOR_SNIPER_BASE "████",
-                         " ▀██████▀ ",
-                         "   ▀██▀   "},
-                        {"   ▄" COLOR_SNIPER_HEAD "/\\" COLOR_SNIPER_BASE "▄   ",
-                         " ▄██" COLOR_SNIPER_CANNON "||" COLOR_SNIPER_BASE "██▄ ",
-                         "████" COLOR_SNIPER_CANNON "[]" COLOR_SNIPER_BASE "████",
-                         " ▀██████▀ ",
-                         "   ▀██▀   "},
-                        {COLOR_SNIPER_HEAD " ▕▔▔" COLOR_SNIPER_BASE "██▄   ",
-                         " ▄█" COLOR_SNIPER_CANNON "\\\\" COLOR_SNIPER_BASE "███▄ ",
-                         "████" COLOR_SNIPER_CANNON "[]" COLOR_SNIPER_BASE "████",
-                         " ▀██████▀ ",
-                         "   ▀██▀   "},
+                        {"     ▄██▄     ",
+                         "   ▄██████▄   ",
+                         " ▄████▀▀████▄ ",
+                         COLOR_SNIPER_HEAD"<"COLOR_SNIPER_CANNON"==="COLOR_SNIPER_BASE"█ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █████",
+                         " ▀████▄▄████▀ ",
+                         "   ▀██████▀   ",
+                         "     ▀██▀     "},
+                        {"     ▄██▄     ",
+                         "   ▄██████▄   ",
+                         " ▄████▀▀████▄ ",
+                         "█████ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █████",
+                         " ▀██"COLOR_SNIPER_CANNON"//"COLOR_SNIPER_BASE"▄▄████▀ ",
+                         COLOR_SNIPER_HEAD"  ▕▁▁"COLOR_SNIPER_BASE"█████▀   ",
+                         "     ▀██▀     "},
+                        {"     ▄██▄     ",
+                         "   ▄██████▄   ",
+                         " ▄████▀▀████▄ ",
+                         "█████ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █████",
+                         " ▀████▄▄████▀ ",
+                         "   ▀██"COLOR_SNIPER_CANNON"||"COLOR_SNIPER_BASE"██▀   ",
+                         "     ▀"COLOR_SNIPER_HEAD"\\/"COLOR_SNIPER_BASE"▀     "},
+                        {"     ▄██▄     ",
+                         "   ▄██████▄   ",
+                         " ▄████▀▀████▄ ",
+                         "█████ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █████",
+                         " ▀████▄▄"COLOR_SNIPER_CANNON"\\\\"COLOR_SNIPER_BASE"██▀ ",
+                         "   ▀█████"COLOR_SNIPER_HEAD"▁▁▏  "COLOR_SNIPER_BASE,
+                         "     ▀██▀     "},
+                        {"     ▄██▄     ",
+                         "   ▄██████▄   ",
+                         " ▄████▀▀████▄ ",
+                         "█████ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █"COLOR_SNIPER_CANNON"==="COLOR_SNIPER_HEAD">"COLOR_SNIPER_BASE,
+                         " ▀████▄▄████▀ ",
+                         "   ▀██████▀   ",
+                         "     ▀██▀     "},
+                        {"     ▄██▄     ",
+                         "   ▄█████"COLOR_SNIPER_HEAD"▔▔▏  "COLOR_SNIPER_BASE,
+                         " ▄████▀▀"COLOR_SNIPER_CANNON"//"COLOR_SNIPER_BASE"██▄ ",
+                         "█████ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █████",
+                         " ▀████▄▄████▀ ",
+                         "   ▀██████▀   ",
+                         "     ▀██▀     "},
+                        {"     ▄"COLOR_SNIPER_HEAD"/\\"COLOR_SNIPER_BASE"▄     ",
+                         "   ▄██"COLOR_SNIPER_CANNON"||"COLOR_SNIPER_BASE"██▄   ",
+                         " ▄████▀▀████▄ ",
+                         "█████ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █████",
+                         " ▀████▄▄████▀ ",
+                         "   ▀██████▀   ",
+                         "     ▀██▀     "},
+                        {"     ▄██▄     ",
+                         COLOR_SNIPER_HEAD"  ▕▔▔"COLOR_SNIPER_BASE"█████▄   ",
+                         " ▄██"COLOR_SNIPER_CANNON"\\\\"COLOR_SNIPER_BASE"▀▀████▄ ",
+                         "█████ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █████",
+                         " ▀████▄▄████▀ ",
+                         "   ▀██████▀   ",
+                         "     ▀██▀     "},
                     },
                     {
-                        {" ▄ ▄██▄ ▄ ",
-                         " ▄██████▄ ",
-                         COLOR_SNIPER_HEAD "⊃" COLOR_SNIPER_CANNON "≡≡≡⋐⋑" COLOR_SNIPER_BASE "████",
-                         " ▀██████▀ ",
-                         " ▀ ▀██▀ ▀ "},
-                        {" ▄ ▄██▄ ▄ ",
-                         " ▄██████▄ ",
-                         "████" COLOR_SNIPER_CANNON "⋐⋑" COLOR_SNIPER_BASE "████",
-                         " ▀█" COLOR_SNIPER_CANNON "⎳/" COLOR_SNIPER_BASE "███▀ ",
-                         COLOR_SNIPER_BASE " ▀" COLOR_SNIPER_HEAD "⊃ " COLOR_SNIPER_BASE "██▀ ▀ "},
-                        {" ▄ ▄██▄ ▄ ",
-                         " ▄██████▄ ",
-                         "████" COLOR_SNIPER_CANNON "⋐⋑" COLOR_SNIPER_BASE "████",
-                         " ▀██" COLOR_SNIPER_CANNON "∥∥" COLOR_SNIPER_BASE "██▀ ",
-                         " ▀ ▀" COLOR_SNIPER_HEAD "⎾⏋" COLOR_SNIPER_BASE "▀ ▀ "},
-                        {" ▄ ▄██▄ ▄ ",
-                         " ▄██████▄ ",
-                         "████" COLOR_SNIPER_CANNON "⋐⋑" COLOR_SNIPER_BASE "████",
-                         " ▀███" COLOR_SNIPER_CANNON "\\ܠ" COLOR_SNIPER_BASE "█▀ ",
-                         " ▀ ▀██" COLOR_SNIPER_HEAD "⊂" COLOR_SNIPER_BASE " ▀ "},
-                        {" ▄ ▄██▄ ▄ ",
-                         " ▄██████▄ ",
-                         "████" COLOR_SNIPER_CANNON "⋐⋑≡≡≡" COLOR_SNIPER_HEAD "⊂" COLOR_SNIPER_BASE,
-                         " ▀██████▀ ",
-                         " ▀ ▀██▀ ▀ "},
-                        {" ▄ ▄██" COLOR_SNIPER_HEAD "⊂" COLOR_SNIPER_BASE " ▄ ",
-                         " ▄███" COLOR_SNIPER_CANNON "/7" COLOR_SNIPER_BASE "█▄ ",
-                         "████" COLOR_SNIPER_CANNON "⋐⋑" COLOR_SNIPER_BASE "████",
-                         " ▀██████▀ ",
-                         " ▀ ▀██▀ ▀ "},
-                        {" ▄ ▄" COLOR_SNIPER_HEAD "⎿⏌" COLOR_SNIPER_BASE "▄ ▄ ",
-                         " ▄██" COLOR_SNIPER_CANNON "∥∥" COLOR_SNIPER_BASE "██▄ ",
-                         "████" COLOR_SNIPER_CANNON "⋐⋑" COLOR_SNIPER_BASE "████",
-                         " ▀██████▀ ",
-                         " ▀ ▀██▀ ▀ "},
-                        {COLOR_SNIPER_BASE " ▄" COLOR_SNIPER_HEAD "⊃ " COLOR_SNIPER_BASE "██▄ ▄ ",
-                         " ▄█" COLOR_SNIPER_CANNON "⎲\\" COLOR_SNIPER_BASE "███▄ ",
-                         "████" COLOR_SNIPER_CANNON "⋐⋑" COLOR_SNIPER_BASE "████",
-                         " ▀██████▀ ",
-                         " ▀ ▀██▀ ▀ "},
+                        {" ▄▄  ▄██▄  ▄▄ ",
+                         " ▀▀▄██▀▀██▄▀▀ ",
+                         " ▄████▀▀████▄ ",
+                         COLOR_SNIPER_HEAD"⊃"COLOR_SNIPER_CANNON" =="COLOR_SNIPER_BASE"█ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █ ███",
+                         " ▀████▄▄████▀ ",
+                         " ▄▄▀██▄▄██▀▄▄ ",
+                         " ▀▀  ▀██▀  ▀▀ "},
+                        {" ▄▄  ▄██▄  ▄▄ ",
+                         " ▀▀▄██▀▀██▄▀▀ ",
+                         " ▄████▀▀████▄ ",
+                         "███▄█ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █ ███",
+                         " ▀██"COLOR_SNIPER_CANNON"//"COLOR_SNIPER_BASE"▄▄████▀ ",
+                         COLOR_SNIPER_HEAD"   ⊃ "COLOR_SNIPER_BASE"██▄██▀▄▄ ",
+                         "     ▀██▀  ▀▀ "},
+                        {" ▄▄  ▄██▄  ▄▄ ",
+                         " ▀▀▄██▀▀██▄▀▀ ",
+                         " ▄████▀▀████▄ ",
+                         "███ █ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █ ███",
+                         " ▀████▄▄████▀ ",
+                         " ▄▄▀██"COLOR_SNIPER_CANNON"||"COLOR_SNIPER_BASE"██▀▄▄ ",
+                         " ▀▀  ▀"COLOR_SNIPER_HEAD"⎾⏋"COLOR_SNIPER_BASE"▀  ▀▀ "},
+                        {" ▄▄  ▄██▄  ▄▄ ",
+                         " ▀▀▄██▀▀██▄▀▀ ",
+                         " ▄████▀▀████▄ ",
+                         "███ █ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █▄███",
+                         " ▀████▄▄"COLOR_SNIPER_CANNON"\\\\"COLOR_SNIPER_BASE"██▀ ",
+                         " ▄▄▀██▄██"COLOR_SNIPER_HEAD"⊂    "COLOR_SNIPER_BASE,
+                         " ▀▀  ▀██▀     "},
+                        {" ▄▄  ▄██▄  ▄▄ ",
+                         " ▀▀▄██▀▀██▄▀▀ ",
+                         " ▄████▀▀████▄ ",
+                         "███ █ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █"COLOR_SNIPER_CANNON"==="COLOR_SNIPER_HEAD"⊂"COLOR_SNIPER_BASE,
+                         " ▀████▄▄████▀ ",
+                         " ▄▄▀██▄▄██▀▄▄ ",
+                         " ▀▀  ▀██▀  ▀▀ "},
+                        {" ▄▄  ▄██▄     ",
+                         " ▀▀▄██▀██"COLOR_SNIPER_HEAD"⊂    "COLOR_SNIPER_BASE,
+                         " ▄████▀▀"COLOR_SNIPER_CANNON"//"COLOR_SNIPER_BASE"██▄ ",
+                         "███ █ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █▀███",
+                         " ▀████▄▄████▀ ",
+                         " ▄▄▀██▄▄██▀▄▄ ",
+                         " ▀▀  ▀██▀  ▀▀ "},
+                        {" ▄▄  ▄"COLOR_SNIPER_HEAD"⎿⏌"COLOR_SNIPER_BASE"▄  ▄▄ ",
+                         " ▀▀▄██"COLOR_SNIPER_CANNON"||"COLOR_SNIPER_BASE"██▄▀▀ ",
+                         " ▄████▀▀████▄ ",
+                         "███ █ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █ ███",
+                         " ▀████▄▄████▀ ",
+                         " ▄▄▀██▄▄██▀▄▄ ",
+                         " ▀▀  ▀██▀  ▀▀ "},
+                        {"     ▄██▄  ▄▄ ",
+                         COLOR_SNIPER_HEAD"   ⊃ "COLOR_SNIPER_BASE"██▀██▄▀▀ ",
+                         " ▄██"COLOR_SNIPER_CANNON"\\\\"COLOR_SNIPER_BASE"▀▀████▄ ",
+                         "███▀█ "COLOR_SNIPER_CANNON"[]"COLOR_SNIPER_BASE" █ ███",
+                         " ▀████▄▄████▀ ",
+                         " ▄▄▀██▄▄██▀▄▄ ",
+                         " ▀▀  ▀██▀  ▀▀ "},
                     }};
 
                 // angle est approché au PI/le plus proche sous forme d'index
@@ -326,9 +358,9 @@ void drawCell(struct Cell cell, Grid grid)
                 size_t index = MIN(round(((angle + PI) / (2 * PI)) * 8), 7);
                 assert(index < 8);
 
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < 7; i++)
                 {
-                    move_to(x_current_sniper, y_current_sniper + i);
+                    move_to(x_current_sniper+2, y_current_sniper +1+ i);
                     printf(sprite[cell.turret.lvl][index][i]);
                 }
 
@@ -341,22 +373,27 @@ void drawCell(struct Cell cell, Grid grid)
 
                 printf(COLOR_INFERNO_BASE);
 
-                char *sprite[2][5] = {
-                    {"   ▄" COLOR_INFERNO_HEAD "/\\" COLOR_INFERNO_BASE "▄   ",
-                     " ▄██" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "██▄ ",
-                     COLOR_INFERNO_HEAD "<" COLOR_INFERNO_CANNON "===[]===" COLOR_INFERNO_HEAD ">",
-                     COLOR_INFERNO_BASE " ▀██" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "██▀ ",
-                     "   ▀" COLOR_INFERNO_HEAD "\\/" COLOR_INFERNO_BASE "▀   "},
+                char *sprite[2][7] = {
+                    {"     ▄" COLOR_INFERNO_HEAD "/\\" COLOR_INFERNO_BASE "▄     ",
+                     "  ▄███" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "███▄  ",
+                     " ▄██▄█" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "█▄██▄ ",
+                     COLOR_INFERNO_HEAD "<" COLOR_INFERNO_CANNON "=====[]=====" COLOR_INFERNO_HEAD ">" COLOR_INFERNO_BASE,
+                     " ▀██▀█" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "█▀██▀ ",
+                     "  ▀███" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "███▀  ",
+                     "     ▀" COLOR_INFERNO_HEAD "\\/" COLOR_INFERNO_BASE "▀     "},
 
-                    {"   ▄" COLOR_INFERNO_HEAD "/\\" COLOR_INFERNO_BASE "▄   ",
-                     " ▄" COLOR_INFERNO_HEAD "⇖ " COLOR_INFERNO_CANNON "||" COLOR_INFERNO_HEAD "⇗ " COLOR_INFERNO_BASE "▄ ",
-                     COLOR_INFERNO_HEAD "<" COLOR_INFERNO_CANNON "===[]===" COLOR_INFERNO_HEAD ">",
-                     COLOR_INFERNO_BASE " ▀" COLOR_INFERNO_HEAD "⇙ " COLOR_INFERNO_CANNON "||" COLOR_INFERNO_HEAD "⇘ " COLOR_INFERNO_BASE "▀ ",
-                     "   ▀" COLOR_INFERNO_HEAD "\\/" COLOR_INFERNO_BASE "▀   "}};
+                    {"     ▄" COLOR_INFERNO_HEAD "/\\" COLOR_INFERNO_BASE "▄     ",
+                     COLOR_INFERNO_HEAD "  ⇖ " COLOR_INFERNO_BASE "▀█" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "█▀" COLOR_INFERNO_HEAD "⇗   ",
+                     COLOR_INFERNO_BASE " ▄█▄" COLOR_INFERNO_CANNON "⇖ ||⇗ " COLOR_INFERNO_BASE "▄█▄ ",
+                     COLOR_INFERNO_HEAD "<"
+                                        "=====[]=====" COLOR_INFERNO_HEAD ">",
+                     COLOR_INFERNO_BASE " ▀█▀" COLOR_INFERNO_CANNON "⇙ ||⇘ " COLOR_INFERNO_BASE "▀█▀ ",
+                     COLOR_INFERNO_HEAD "  ⇙ " COLOR_INFERNO_BASE "▄█" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "█▄" COLOR_INFERNO_HEAD "⇘   ",
+                     COLOR_INFERNO_BASE "     ▀" COLOR_INFERNO_HEAD "\\/" COLOR_INFERNO_BASE "▀     "}};
 
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < 7; i++)
                 {
-                    move_to(x_current_inferno, y_current_inferno + i);
+                    move_to(x_current_inferno + 2, y_current_inferno + 1 + i);
                     printf(sprite[cell.turret.lvl][i]);
                 }
 
@@ -369,27 +406,35 @@ void drawCell(struct Cell cell, Grid grid)
 
                 printf(COLOR_MORTIER_BASE);
 
-                char *sprite[2][2][5] = {
-                    {{"  ██████  ",
-                      "███▀  ▀███",
-                      "██      ██",
-                      "███▄  ▄███",
-                      "  ██████  "},
-                     {"  ██▀▀██  ",
-                      "███▀" COLOR_MORTIER_FIRING "▄▄" COLOR_MORTIER_BASE "▀███",
-                      "█  " COLOR_MORTIER_FIRING "█" COLOR_MORTIER_FIRING_CENTER "██" COLOR_MORTIER_FIRING "█" COLOR_MORTIER_BASE "  █",
-                      "███▄" COLOR_MORTIER_FIRING "▀▀" COLOR_MORTIER_BASE "▄███",
-                      "  ██▄▄██  "}},
-                    {{"▄█▀▀██▀▀█▄",
-                      "█ ██▀▀██ █",
-                      "███    ███",
-                      "█ ██▄▄██ █",
-                      "▀█▄▄██▄▄█▀"},
-                     {"▄█▀█▀▀█▀█▄",
-                      "█▄█▀" COLOR_MORTIER_FIRING "▄▄" COLOR_MORTIER_BASE "▀█▄█",
-                      "█  " COLOR_MORTIER_FIRING "█" COLOR_MORTIER_FIRING_CENTER "██" COLOR_MORTIER_FIRING "█" COLOR_MORTIER_BASE "  █",
-                      "█▀█▄" COLOR_MORTIER_FIRING "▀▀" COLOR_MORTIER_BASE "▄█▀█",
-                      "▀█▄█▄▄█▄█▀"}}};
+                char *sprite[2][2][7] = {
+                    {{"  ██████████  ",
+                      "██ ▄██████▄ ██",
+                      "████▀    ▀████",
+                      "████      ████",
+                      "████▄    ▄████",
+                      "██ ▀██████▀ ██",
+                      "  ██████████  "},
+                     {"  ██████████  ",
+                      "██ ▄█▀▀▀▀█▄ ██",
+                      "███▀ " COLOR_MORTIER_FIRING "▄██▄" COLOR_MORTIER_BASE " ▀███",
+                      "███ " COLOR_MORTIER_FIRING "██" COLOR_MORTIER_FIRING_CENTER "██" COLOR_MORTIER_FIRING "██" COLOR_MORTIER_BASE " ███",
+                      "███▄ " COLOR_MORTIER_FIRING "▀██▀" COLOR_MORTIER_BASE " ▄███",
+                      "██ ▀█▄▄▄▄█▀ ██",
+                      "  ██████████  "}},
+                    {{"▄█▀▀▀▀██▀▀▀▀█▄",
+                      "█  ▄██████▄  █",
+                      "█ ██▀    ▀██ █",
+                      "████      ████",
+                      "█ ██▄    ▄██ █",
+                      "█  ▀██████▀  █",
+                      "▀█▄▄▄▄██▄▄▄▄█▀"},
+                     {"▄█▀▀▀▀██▀▀▀▀█▄",
+                      "█  ▄██▄▄██▄  █",
+                      "█ ██▀ " COLOR_MORTIER_FIRING "▄▄" COLOR_MORTIER_BASE " ▀██ █",
+                      "██ █ " COLOR_MORTIER_FIRING "█" COLOR_MORTIER_FIRING_CENTER "██" COLOR_MORTIER_FIRING "█" COLOR_MORTIER_BASE " █ ██",
+                      "█ ██▄ " COLOR_MORTIER_FIRING "▀▀" COLOR_MORTIER_BASE " ▄██ █",
+                      "█  ▀██▀▀██▀  █",
+                      "▀█▄▄▄▄██▄▄▄▄█▀"}}};
                 int mortier_shooting;
                 if (cell.turret.compteur < 0.5)
                 {
@@ -399,9 +444,9 @@ void drawCell(struct Cell cell, Grid grid)
                 {
                     mortier_shooting = 0;
                 }
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < 7; i++)
                 {
-                    move_to(x_current_mortier, y_current_mortier + i);
+                    move_to(x_current_mortier + 2, y_current_mortier + 1 + i);
                     printf(sprite[cell.turret.lvl][mortier_shooting][i]);
                 }
 
@@ -413,7 +458,54 @@ void drawCell(struct Cell cell, Grid grid)
             }
             else if (cell.turret.type == Freezer)
             {
-                printf("Freezer");
+                int x_current_freezer = cell.x * (CELL_WIDTH + GAP) + 3;
+                int y_current_freezer = cell.y * (CELL_HEIGHT + GAP / 2) + 2;
+
+                printf(COLOR_FREEZER_BASE);
+
+                char *sprite[2][2][7] = {
+                    {{"   ▄  ██  ▄   ",
+                      " ▄  ██▀▀██  ▄ ",
+                      "  ██▀    ▀██  ",
+                      "███        ███",
+                      "  ██▄    ▄██  ",
+                      " ▀  ██▄▄██  ▀ ",
+                      "   ▀  ██  ▀   "},
+                     {"   ▄  ██  ▄   ",
+                      " ▄  ██▀▀██  ▄ ",
+                      "  ██▀ " COLOR_FREEZER_FIRING "▄▄" COLOR_FREEZER_BASE " ▀██  ",
+                      "███  " COLOR_FREEZER_FIRING "█" COLOR_FREEZER_FIRING_CENTER "██" COLOR_FREEZER_FIRING "█" COLOR_FREEZER_BASE "  ███",
+                      "  ██▄ " COLOR_FREEZER_FIRING "▀▀" COLOR_FREEZER_BASE " ▄██  ",
+                      " ▀  ██▄▄██  ▀ ",
+                      "   ▀  ██  ▀   "}},
+                    {{"  ▀▄ ▄▀▀▄ ▄▀  ",
+                      "▀▄ ▄██▀▀██▄ ▄▀",
+                      " ▄██▄▀▀▀▀▄██▄ ",
+                      "█ █ █    █ █ █",
+                      " ▀██▀▄▄▄▄▀██▀ ",
+                      "▄▀ ▀██▄▄██▀ ▀▄",
+                      "  ▄▀ ▀▄▄▀ ▀▄  "},
+                     {"  ▀▄ ▄▀▀▄ ▄▀  ",
+                      "▀▄ ▄██▀▀██▄ ▄▀",
+                      " ▄██  " COLOR_FREEZER_FIRING "▄▄" COLOR_FREEZER_BASE "  ██▄ ",
+                      "█ █  " COLOR_FREEZER_FIRING "█" COLOR_FREEZER_FIRING_CENTER "██" COLOR_FREEZER_FIRING "█" COLOR_FREEZER_BASE "  █ █",
+                      " ▀██  " COLOR_FREEZER_FIRING "▀▀" COLOR_FREEZER_BASE "  ██▀ ",
+                      "▄▀ ▀██▄▄██▀ ▀▄",
+                      "  ▄▀ ▀▄▄▀ ▀▄  "}}};
+                int freezer_shooting;
+                if (cell.turret.compteur < 0.5)
+                {
+                    freezer_shooting = 1;
+                }
+                else
+                {
+                    freezer_shooting = 0;
+                }
+                for (int i = 0; i < 7; i++)
+                {
+                    move_to(x_current_freezer + 2, y_current_freezer + 1 + i);
+                    printf(sprite[cell.turret.lvl][freezer_shooting][i]);
+                }
             }
             else if (cell.turret.type == Petrificateur)
             {
@@ -426,107 +518,177 @@ void drawCell(struct Cell cell, Grid grid)
 
                 printf(COLOR_BANQUE_BASE);
 
-                char *sprite[2][8][5] = {
-                    {{"  ▄▄▄▄▄▄  ",
-                      " ██▄▄▄▄██ ",
-                      " ██" COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_BASE "██ ",
-                      " ████████ ",
-                      "          "},
-                     {"  ▄▄▄▄▄▄  ",
-                      " ██▄▄▄▄██ ",
-                      " ██" COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_BASE "██ ",
-                      " ████████ ",
-                      "          "},
-                     {COLOR_BANQUE_MONEY"          ",
-                      "          ",
-                      "    ██    ",
-                      "          ",
-                      "          "},
-                     {COLOR_BANQUE_MONEY"          ",
-                      "   ▄▄▄▄   ",
-                      "   █  █   ",
-                      "   ▀▀▀▀   ",
-                      "          "},
-                     {COLOR_BANQUE_MONEY"          ",
-                      "  █▀▀▀▀█  ",
-                      "  █+10 █  ",
-                      "  █▄▄▄▄█  ",
-                      "          "},
-                     {COLOR_BANQUE_MONEY" ▄▄▄▄▄▄▄▄ ",
-                      " █      █ ",
-                      " █ +10  █ ",
-                      " █      █ ",
-                      " ▀▀▀▀▀▀▀▀ "},
-                     {COLOR_BANQUE_MONEY"█▀▀▀▀▀▀▀▀█",
-                      "█        █",
-                      "█  +10   █",
-                      "█        █",
-                      "█▄▄▄▄▄▄▄▄█"},
-                     {COLOR_BANQUE_GENERATION"█▀▀▀▀▀▀▀▀█",
-                      "█        █",
-                      "█  +10   █",
-                      "█        █",
-                      "█▄▄▄▄▄▄▄▄█"}},
-                    {{"  ▄▄▄ █ █ ",
-                      " ████████ ",
-                      " █" COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_BASE "█ ",
-                      " █▀▀█▀▀▀█ ",
-                      " ▀▀▀▀▀▀▀▀ "},
-                     {"  ▄▄▄ █ █ ",
-                      " ████████ ",
-                      " █" COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_GENERATION"$"COLOR_BANQUE_MONEY"$"COLOR_BANQUE_BASE "█ ",
-                      " █▀▀█▀▀▀█ ",
-                      " ▀▀▀▀▀▀▀▀ "},
-                     {COLOR_BANQUE_MONEY"          ",
-                      "          ",
-                      "    ██    ",
-                      "          ",
-                      "          "},
-                     {COLOR_BANQUE_MONEY"          ",
-                      "   ▄▄▄▄   ",
-                      "   █  █   ",
-                      "   ▀▀▀▀   ",
-                      "          "},
-                     {COLOR_BANQUE_MONEY"          ",
-                      "  █▀▀▀▀█  ",
-                      "  █+30 █  ",
-                      "  █▄▄▄▄█  ",
-                      "          "},
-                     {COLOR_BANQUE_MONEY" ▄▄▄▄▄▄▄▄ ",
-                      " █      █ ",
-                      " █ +30  █ ",
-                      " █      █ ",
-                      " ▀▀▀▀▀▀▀▀ "},
-                     {COLOR_BANQUE_MONEY"█▀▀▀▀▀▀▀▀█",
-                      "█        █",
-                      "█  +30   █",
-                      "█        █",
-                      "█▄▄▄▄▄▄▄▄█"},
-                     {COLOR_BANQUE_GENERATION"█▀▀▀▀▀▀▀▀█",
-                      "█        █",
-                      "█  +30   █",
-                      "█        █",
-                      "█▄▄▄▄▄▄▄▄█"}}};
+                char *sprite[2][10][7] = {
+                    {{"    ▄▄▄▄▄▄    ",
+                      " ▄███▄▄▄▄███▄ ",
+                      " ███" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_BASE "██▄▄█ ",
+                      " ███" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_BASE "██▄▄█ ",
+                      " ██▀▀▀▀▀██▀▀█ ",
+                      " ████████████ ",
+                      "              "},
+                     {"    ▄▄▄▄▄▄    ",
+                      " ▄███▄▄▄▄███▄ ",
+                      " ███" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_BASE "██▄▄█ ",
+                      " ███" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_BASE "██▄▄█ ",
+                      " ██▀▀▀▀▀██▀▀█ ",
+                      " ████████████ ",
+                      "              "},
+                     {COLOR_BANQUE_MONEY "              ",
+                      "              ",
+                      "              ",
+                      "      ██      ",
+                      "              ",
+                      "              ",
+                      "              "},
+                     {COLOR_BANQUE_MONEY "              ",
+                      "              ",
+                      "     ▄▄▄▄     ",
+                      "     █  █     ",
+                      "     ▀▀▀▀     ",
+                      "              ",
+                      "              "},
+                     {COLOR_BANQUE_MONEY "              ",
+                      "              ",
+                      "    █▀▀▀▀█    ",
+                      "    █+10 █    ",
+                      "    █▄▄▄▄█    ",
+                      "              ",
+                      "              "},
+                     {COLOR_BANQUE_MONEY "              ",
+                      "   ▄▄▄▄▄▄▄▄   ",
+                      "   █      █   ",
+                      "   █ +10  █   ",
+                      "   █      █   ",
+                      "   ▀▀▀▀▀▀▀▀   ",
+                      "              "},
+                     {COLOR_BANQUE_MONEY "              ",
+                      "  █▀▀▀▀▀▀▀▀█  ",
+                      "  █        █  ",
+                      "  █  +10   █  ",
+                      "  █        █  ",
+                      "  █▄▄▄▄▄▄▄▄█  ",
+                      "              "},
+                     {COLOR_BANQUE_MONEY " ▄▄▄▄▄▄▄▄▄▄▄▄ ",
+                      " █          █ ",
+                      " █    ▄▜ ▛▜ █ ",
+                      " █ ▟▙  ▐ ▌▐ █ ",
+                      " █ ▜▛  ▐ ▙▟ █ ",
+                      " █          █ ",
+                      " ▀▀▀▀▀▀▀▀▀▀▀▀ "},
+                     {COLOR_BANQUE_MONEY "█▀▀▀▀▀▀▀▀▀▀▀▀█",
+                      "█            █",
+                      "█     ▄▜ ▛▜  █",
+                      "█  ▟▙  ▐ ▌▐  █",
+                      "█  ▜▛  ▐ ▙▟  █",
+                      "█            █",
+                      "█▄▄▄▄▄▄▄▄▄▄▄▄█"},
+                     {COLOR_BANQUE_GENERATION "█▀▀▀▀▀▀▀▀▀▀▀▀█",
+                      "█            █",
+                      "█     ▄▜ ▛▜  █",
+                      "█  ▟▙  ▐ ▌▐  █",
+                      "█  ▜▛  ▐ ▙▟  █",
+                      "█            █",
+                      "█▄▄▄▄▄▄▄▄▄▄▄▄█"}},
+                    {{" ▄▄▄▄▄▄▄ ██ ██",
+                      "██████████████",
+                      "███" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_BASE "███",
+                      "███" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_BASE "███",
+                      "█▀▀▀██▀▀▀▀██▀█",
+                      "█▀██▀▀▀██▀▀▀▀█",
+                      "▀▀▀▀▀▀▀▀▀▀▀▀▀▀"},
+                     {" ▄▄▄▄▄▄▄ ██ ██",
+                      "██████████████",
+                      "███" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_BASE "███",
+                      "███" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_BASE "███",
+                      "█▀▀▀██▀▀▀▀██▀█",
+                      "█▀██▀▀▀██▀▀▀▀█",
+                      "▀▀▀▀▀▀▀▀▀▀▀▀▀▀"},
+                     {COLOR_BANQUE_MONEY "              ",
+                      "              ",
+                      "              ",
+                      "      ██      ",
+                      "              ",
+                      "              ",
+                      "              "},
+                     {COLOR_BANQUE_MONEY "              ",
+                      "              ",
+                      "     ▄▄▄▄     ",
+                      "     █  █     ",
+                      "     ▀▀▀▀     ",
+                      "              ",
+                      "              "},
+                     {COLOR_BANQUE_MONEY "              ",
+                      "              ",
+                      "    █▀▀▀▀█    ",
+                      "    █+30 █    ",
+                      "    █▄▄▄▄█    ",
+                      "              ",
+                      "              "},
+                     {COLOR_BANQUE_MONEY "              ",
+                      "   ▄▄▄▄▄▄▄▄   ",
+                      "   █      █   ",
+                      "   █ +30  █   ",
+                      "   █      █   ",
+                      "   ▀▀▀▀▀▀▀▀   ",
+                      "              "},
+                     {COLOR_BANQUE_MONEY "              ",
+                      "  █▀▀▀▀▀▀▀▀█  ",
+                      "  █        █  ",
+                      "  █  +30   █  ",
+                      "  █        █  ",
+                      "  █▄▄▄▄▄▄▄▄█  ",
+                      "              "},
+                     {COLOR_BANQUE_MONEY " ▄▄▄▄▄▄▄▄▄▄▄▄ ",
+                      " █          █ ",
+                      " █    ▀▜ ▛▜ █ ",
+                      " █ ▟▙ ▄▟ ▌▐ █ ",
+                      " █ ▜▛ ▄▟ ▙▟ █ ",
+                      " █          █ ",
+                      " ▀▀▀▀▀▀▀▀▀▀▀▀ "},
+                     {COLOR_BANQUE_MONEY "█▀▀▀▀▀▀▀▀▀▀▀▀█",
+                      "█            █",
+                      "█     ▀▜ ▛▜  █",
+                      "█  ▟▙ ▄▟ ▌▐  █",
+                      "█  ▜▛ ▄▟ ▙▟  █",
+                      "█            █",
+                      "█▄▄▄▄▄▄▄▄▄▄▄▄█"},
+                     {COLOR_BANQUE_GENERATION "█▀▀▀▀▀▀▀▀▀▀▀▀█",
+                      "█            █",
+                      "█     ▀▜ ▛▜  █",
+                      "█  ▟▙ ▄▟ ▌▐  █",
+                      "█  ▜▛ ▄▟ ▙▟  █",
+                      "█            █",
+                      "█▄▄▄▄▄▄▄▄▄▄▄▄█"}}};
                 int banque_generating;
-                float d = cell.turret.compteur;
-                float fractionnaire_d = d-floor(d);
-                if (0<fractionnaire_d && fractionnaire_d<0.5){banque_generating=1;}
-                else {banque_generating=0;}
-                if (1.1<d && d<1.2){banque_generating=7;}
-                else if (1<d && d<1.1){banque_generating=6;}
-                else if (0.9<d && d<1){banque_generating=7;}
-                else if (0.8<d && d<0.9){banque_generating=6;}
-                else if (0.7<d && d<0.8){banque_generating=7;}
-                else if (0.6<d && d<0.7){banque_generating=6;}
-                else if (0.5<d && d<0.6){banque_generating=7;}
-                else if (0.4<d && d<0.5){banque_generating=6;}
-                else if (0.3<d && d<0.4){banque_generating=5;}
-                else if (0.2<d && d<0.3){banque_generating=4;}
-                else if (0.1<d && d<0.2){banque_generating=3;}
-                else if (0<d && d<0.1){banque_generating=2;}
-                for (int i = 0; i < 5; i++)
+                double d = cell.turret.compteur;
+                double fractionnaire_d = d - floor(d);
+                if (0 < fractionnaire_d && fractionnaire_d < 0.5)
                 {
-                    move_to(x_current_banque, y_current_banque + i);
+                    banque_generating = 1;
+                }
+                else
+                {
+                    banque_generating = 0;
+                }
+                if (floor(d) == 1)
+                {
+                    banque_generating = fractionnaire_d * 10;
+                }
+                int fracd10 = fractionnaire_d * 10;
+                if (floor(d) == 2)
+                {
+                    if (fracd10 % 2 == 1)
+                    {
+                        banque_generating = 8;
+                    }
+                    else
+                    {
+                        banque_generating = 9;
+                    }
+                }
+                for (int i = 0; i < 7; i++)
+                {
+                    move_to(x_current_banque + 2, y_current_banque + 1 + i);
                     printf(sprite[cell.turret.lvl][banque_generating][i]);
                 }
 
