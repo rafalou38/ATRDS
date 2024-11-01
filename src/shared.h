@@ -191,6 +191,10 @@ int msleep(long ms);
     #define COLOR_FREEZER_BASE "\033[38;5;14m"
     #define COLOR_FREEZER_FIRING "\033[38;5;50m"
     #define COLOR_FREEZER_FIRING_CENTER "\033[38;5;15m"
+    //Gatling colors
+    #define COLOR_GATLING_BASE "\033[38;5;238m"
+    #define COLOR_GATLING_FIRING "\033[38;5;125m"
+    #define COLOR_GATLING_COOLING "\033[38;5;50m"
 // Terrain colors
 #define COLOR_STANDARD_BG "\033[48;5;233m"
 #define COLOR_TOWER_SLOT_BG "\033[48;5;236m"
