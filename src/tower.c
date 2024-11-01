@@ -364,8 +364,8 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.range_max[1] = 1.5;
         tur.damage[0] = 0;
         tur.damage[1] = 0;
-        tur.reload_delay[0] = 4;
-        tur.reload_delay[1] = 4;
+        tur.reload_delay[0] = 2;
+        tur.reload_delay[1] = 2;
         tur.splash[0] = 0;
         tur.splash[1] = 0;
         tur.nb_ennemi[0] = 1;

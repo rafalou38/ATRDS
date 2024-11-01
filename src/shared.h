@@ -195,6 +195,11 @@ int msleep(long ms);
     #define COLOR_GATLING_BASE "\033[38;5;238m"
     #define COLOR_GATLING_FIRING "\033[38;5;125m"
     #define COLOR_GATLING_COOLING "\033[38;5;50m"
+    //Gatling colors
+    #define COLOR_PETRIFICATEUR_BASE "\033[38;5;22m"
+    #define COLOR_PETRIFICATEUR_FIRING "\033[38;5;34m"
+    #define COLOR_PETRIFICATEUR_SORON "\033[38;5;214m"
+    #define COLOR_BG_SORON "\033[48;5;214m"
 // Terrain colors
 #define COLOR_STANDARD_BG "\033[48;5;233m"
 #define COLOR_TOWER_SLOT_BG "\033[48;5;236m"
