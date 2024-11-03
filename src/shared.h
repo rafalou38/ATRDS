@@ -199,6 +199,7 @@ int msleep(long ms);
     #define COLOR_PETRIFICATEUR_BASE "\033[38;5;22m"
     #define COLOR_PETRIFICATEUR_FIRING "\033[38;5;34m"
     #define COLOR_PETRIFICATEUR_SORON "\033[38;5;214m"
+    #define COLOR_PETRIFICATEUR_BASE_LVL2 "\033[38;5;82m"
     #define COLOR_BG_SORON "\033[48;5;214m"
 // Terrain colors
 #define COLOR_STANDARD_BG "\033[48;5;233m"
