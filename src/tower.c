@@ -73,6 +73,29 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                 } 
                             }
                         }
+                        else if (grid.cells[x][y].turret.effet == Fire)
+                        {
+                            for (int i = 0; i < ep.count; i++)
+                            {
+                                int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2)); // A completer
+                                if (d <= grid.cells[x][y].turret.range_max[lvl]
+                                && d >= grid.cells[x][y].turret.range_min[lvl])
+                                {
+                                    float dx = ep.enemies[i].grid_x - x;
+                                    float dy = ep.enemies[i].grid_y - y;
+                                    float d = sqrt(dx * dx + dy * dy);
+
+                                    grid.cells[x][y].turret.last_shot_dx = dx / d;
+                                    grid.cells[x][y].turret.last_shot_dy = dy / d;
+                                    ep.enemies[i].has_effect = true;
+                                    ep.enemies[i].effet = Fire;
+                                    ep.enemies[i].temps_rest = lvl + 1;
+                                    ep.enemies[i].temps_recharge = grid.cells[x][y].turret.puissance_effet[lvl];
+                                    ep.enemies[i].last_hit = 10;
+                                    enemies_hit++;
+                                } 
+                            }
+                        }
                     }
                     else
                     {
@@ -328,15 +351,18 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.range_min[1] = 0;
         tur.range_max[0] = 1;
         tur.range_max[1] = 2;
-        tur.damage[0] = 0.2;
-        tur.damage[1] = 0.3;
-        tur.reload_delay[0] = 1.5;
-        tur.reload_delay[1] = 2;
+        tur.damage[0] = 0.5;
+        tur.damage[1] = 0.5;
+        tur.reload_delay[0] = 1;
+        tur.reload_delay[1] = 0.5;
         tur.splash[0] = 0.0;
         tur.splash[1] = 0.0;
         tur.nb_ennemi[0] = 4;
         tur.nb_ennemi[1] = 8;
-        tur.has_effect = false;
+        tur.has_effect = true;
+        tur.effet = Fire;
+        tur.puissance_effet[0] = 0.5;
+        tur.puissance_effet[1] = 0.5;
     }
     else if (type == Mortier)
     {

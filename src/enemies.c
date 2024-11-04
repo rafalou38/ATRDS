@@ -295,6 +295,19 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
                     enemy->has_effect = false;
                 }
             }
+            else if (enemy->effet == Fire)
+            {
+                enemy->temps_rest -= dt_sec;
+                if (enemy->temps_recharge < enemy->last_hit - enemy->temps_rest)
+                {
+                    enemy->last_hit = enemy->temps_rest;
+                    enemy->hp -= 0.5;
+                }
+                if (enemy->temps_rest <= 0)
+                {
+                    enemy->has_effect = false;
+                }
+            }
         }
 
         enemy->grid_x += dx;
