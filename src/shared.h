@@ -58,7 +58,8 @@ enum EffectType
 {
     Money,
     Stun,
-    Slow
+    Slow,
+    Fire
 };
 
 struct Turret
