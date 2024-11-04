@@ -1,9 +1,9 @@
 #include "tower.h"
 
-// Tous les bouts de programmes avec des # comme #if,#else... sont des morceaux de programmes utilisés uniquement sous l'activation d'un paramètre dans [A completer]
+// Tous les bouts de programmes avec des # comme #if,#else... sont des morceaux de programmes utilisés uniquement sous l'activation du parametre BULLETS_ON dans ./src/tower.h
 
 #if BULLETS_ON
-void updateTowers(Grid grid, EnemyPool ep, BulletPool *bp, float dt)
+void updateTowers(Grid grid, EnemyPool ep, BulletPool *bp, float dt, GameStats *gs)
 {
 #else
 void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
@@ -35,12 +35,13 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                         {
                             for (int i = 0; i < ep.count; i++)
                             {
-                                int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2)); // A completer (supposée la position vectorisée d'un ennemi)
+                                // Calcul du vecteur entre la tourelle et l’ennemi
+                                float dx = ep.enemies[i].grid_x - (x + 0.5);
+                                float dy = ep.enemies[i].grid_y - (y + 0.5);
+
+                                float d = sqrt(dx * dx + dy * dy);
                                 if (d <= grid.cells[x][y].turret.range_max[lvl] && d >= grid.cells[x][y].turret.range_min[lvl])
                                 {
-                                    float dx = ep.enemies[i].grid_x - x;
-                                    float dy = ep.enemies[i].grid_y - y;
-                                    float d = sqrt(dx * dx + dy * dy);
 
                                     grid.cells[x][y].turret.last_shot_dx = dx / d;
                                     grid.cells[x][y].turret.last_shot_dy = dy / d;
@@ -56,13 +57,13 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                         {
                             for (int i = 0; i < ep.count; i++)
                             {
-                                int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2)); // A completer
+                                // Calcul du vecteur entre la tourelle et l’ennemi
+                                float dx = ep.enemies[i].grid_x - (x + 0.5);
+                                float dy = ep.enemies[i].grid_y - (y + 0.5);
+
+                                float d = sqrt(dx * dx + dy * dy);
                                 if (d <= grid.cells[x][y].turret.range_max[lvl] && d >= grid.cells[x][y].turret.range_min[lvl])
                                 {
-                                    float dx = ep.enemies[i].grid_x - x;
-                                    float dy = ep.enemies[i].grid_y - y;
-                                    float d = sqrt(dx * dx + dy * dy);
-
                                     grid.cells[x][y].turret.last_shot_dx = dx / d;
                                     grid.cells[x][y].turret.last_shot_dy = dy / d;
                                     ep.enemies[i].has_effect = true;
@@ -77,13 +78,13 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                         {
                             for (int i = 0; i < ep.count; i++)
                             {
-                                int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2)); // A completer
-                                if (d <= grid.cells[x][y].turret.range_max[lvl]
-                                && d >= grid.cells[x][y].turret.range_min[lvl])
+                                // Calcul du vecteur entre la tourelle et l’ennemi
+                                float dx = ep.enemies[i].grid_x - (x + 0.5);
+                                float dy = ep.enemies[i].grid_y - (y + 0.5);
+                                float d = sqrt(dx * dx + dy * dy);
+
+                                if (d <= grid.cells[x][y].turret.range_max[lvl] && d >= grid.cells[x][y].turret.range_min[lvl])
                                 {
-                                    float dx = ep.enemies[i].grid_x - x;
-                                    float dy = ep.enemies[i].grid_y - y;
-                                    float d = sqrt(dx * dx + dy * dy);
 
                                     grid.cells[x][y].turret.last_shot_dx = dx / d;
                                     grid.cells[x][y].turret.last_shot_dy = dy / d;
@@ -93,7 +94,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                     ep.enemies[i].temps_recharge = grid.cells[x][y].turret.puissance_effet[lvl];
                                     ep.enemies[i].last_hit = 10;
                                     enemies_hit++;
-                                } 
+                                }
                             }
                         }
                     }
@@ -101,8 +102,9 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                     {
                         for (int i = 0; i < ep.count; i++)
                         {
-                            float dx = ep.enemies[i].grid_x - (x+0.5);
-                            float dy = ep.enemies[i].grid_y - (y+0.5);
+                            // Calcul du vecteur entre la tourelle et l’ennemi
+                            float dx = ep.enemies[i].grid_x - (x + 0.5);
+                            float dy = ep.enemies[i].grid_y - (y + 0.5);
                             float d = sqrt(dx * dx + dy * dy);
 
                             // Test pour que l'ennemi soit dans la portée de la tourelle
@@ -111,17 +113,6 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
 
                                 grid.cells[x][y].turret.last_shot_dx = dx / d;
                                 grid.cells[x][y].turret.last_shot_dy = dy / d;
-
-#if BULLETS_ON
-                                bp->bullets[bp->count].hit = false;
-                                bp->bullets[bp->count].grid_x = x + 0.5 + (dx / d) / 4;
-                                bp->bullets[bp->count].grid_y = y + 0.5 + (dy / d) / 4;
-                                bp->bullets[bp->count].target = &(ep.enemies[i]);
-                                bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage[lvl];
-                                bp->count++;
-#else
-                                // Changements des points de vie de l'ennemi touché, perdant ainsi le nombre de dégats infligés par l'attaque
-                                ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
 
                                 // Fonctionnement du splash damage (dégats de zone)
                                 if (grid.cells[x][y].turret.splash[lvl] != 0.0)
@@ -139,8 +130,29 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                             }
                                         }
                                     }
+                                    ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
+                                    int w;
+                                    int h;
+                                    get_terminal_size(&w, &h);
+                                    printf(COLOR_MORTIER_FIRING);
+                                    drawRange(w, h, d_min, ep.enemies[i].grid_x, ep.enemies[i].grid_y, false);
+                                    printf(RESET);
+                                    // msleep(400);
                                 }
+                                else // Tir standard
+                                {
+#if BULLETS_ON
+                                    bp->bullets[bp->count].hit = false;
+                                    bp->bullets[bp->count].grid_x = x + 0.5 + (dx / d) / 4;
+                                    bp->bullets[bp->count].grid_y = y + 0.5 + (dy / d) / 4;
+                                    bp->bullets[bp->count].target = &(ep.enemies[i]);
+                                    bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage[lvl];
+                                    bp->count++;
+#else
+                                    // Changements des points de vie de l'ennemi touché, perdant ainsi le nombre de dégats infligés par l'attaque
+                                    ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
 #endif
+                                }
                                 // Fonctionnement du nombre d'ennemi pouvant être touché
                                 enemies_hit++;
                                 if (enemies_hit >= grid.cells[x][y].turret.nb_ennemi[lvl])
@@ -370,10 +382,10 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.range_min[1] = 1;
         tur.range_max[0] = 5;
         tur.range_max[1] = 6;
-        tur.damage[0] = 1.3;
-        tur.damage[1] = 1.5;
-        tur.reload_delay[0] = 3;
-        tur.reload_delay[1] = 2.8;
+        tur.damage[0] = 4; // 4/4 -> 1dps
+        tur.damage[1] = 5; // 5/3 -> 1.42dps
+        tur.reload_delay[0] = 4;
+        tur.reload_delay[1] = 3.5;
         tur.splash[0] = 1.0;
         tur.splash[1] = 1.5;
         tur.nb_ennemi[0] = 1;

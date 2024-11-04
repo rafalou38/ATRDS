@@ -222,4 +222,4 @@ void show_cursor();
 void printCritical(char *errorMessage);
 void get_terminal_size(int *width, int *height);
 void checkTerminalSize(int *width, int *height);
-void drawRange(int term_width, int term_height, float range, float grid_x, float grid_y);
+void drawRange(int term_width, int term_height, float range, float grid_x, float grid_y, bool fill);
