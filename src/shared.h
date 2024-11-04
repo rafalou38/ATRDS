@@ -67,12 +67,11 @@ struct Turret
     int lvl;
     float compteur;
     bool in_range;
-    int range_min[2];
-    int range_max[2];
+    float range_min[2];
+    float range_max[2];
     float damage[2];
     float reload_delay[2];
     float splash[2];
-    int direction;
     int nb_ennemi[2];
     bool has_effect;
     enum EffectType effet;

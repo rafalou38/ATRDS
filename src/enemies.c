@@ -256,7 +256,6 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
 
         // Le déplacement se fait dans le repère orthonormé de la grille, indépendant de la dimension du terminal.
         // L'écart est calculé sous forme de vecteur normalisé puis multiplié par la vitesse pour obtenir un déplacement convenable.
-
         float dx = (enemy->next_cell.x + rand_factor) - enemy->grid_x;
         float dy = (enemy->next_cell.y + rand_factor) - enemy->grid_y;
 

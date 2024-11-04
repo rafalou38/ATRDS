@@ -9,19 +9,21 @@ void updateTowers(Grid grid, EnemyPool ep, BulletPool *bp, float dt)
 void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
 {
 #endif
-    for (int x = 0; x < grid.width; x++) 
+    for (int x = 0; x < grid.width; x++)
     {
         for (int y = 0; y < grid.height; y++) // Pour chaque cellules du terrain (de taille grid.width*grid.height)
         {
-            if (grid.cells[x][y].hasTurret) // Affecte à une tourelles ses caractéristiques
+            // La cellule est de type tourelle, on va la mettre a jour.
+            if (grid.cells[x][y].hasTurret)
             {
-                int lvl = grid.cells[x][y].turret.lvl; // Son niveau
+                int lvl = grid.cells[x][y].turret.lvl;  // Son niveau
                 grid.cells[x][y].turret.compteur += dt; // Son horloge interne / son compteur
 
-                // Lorsque l'horloge interne dépasse la vitesse de rechargement (reload) de la tourelle, elle applique son effet :
-                if (grid.cells[x][y].turret.compteur >= grid.cells[x][y].turret.reload_delay[lvl]) 
+                // Lorsque l'horloge interne dépasse la vitesse de rechargement (reload) de la tourelle, elle tire sur les enemies/applique son effet :
+                if (grid.cells[x][y].turret.compteur >= grid.cells[x][y].turret.reload_delay[lvl])
                 {
                     int enemies_hit = 0;
+                    // Tourelle avec effet
                     if (grid.cells[x][y].turret.has_effect)
                     {
                         if (grid.cells[x][y].turret.effet == Money) // Génération d'argent (Banque)
@@ -34,8 +36,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                             for (int i = 0; i < ep.count; i++)
                             {
                                 int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2)); // A completer (supposée la position vectorisée d'un ennemi)
-                                if (d <= grid.cells[x][y].turret.range_max[lvl]
-                                && d >= grid.cells[x][y].turret.range_min[lvl])
+                                if (d <= grid.cells[x][y].turret.range_max[lvl] && d >= grid.cells[x][y].turret.range_min[lvl])
                                 {
                                     float dx = ep.enemies[i].grid_x - x;
                                     float dy = ep.enemies[i].grid_y - y;
@@ -56,8 +57,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                             for (int i = 0; i < ep.count; i++)
                             {
                                 int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2)); // A completer
-                                if (d <= grid.cells[x][y].turret.range_max[lvl]
-                                && d >= grid.cells[x][y].turret.range_min[lvl])
+                                if (d <= grid.cells[x][y].turret.range_max[lvl] && d >= grid.cells[x][y].turret.range_min[lvl])
                                 {
                                     float dx = ep.enemies[i].grid_x - x;
                                     float dy = ep.enemies[i].grid_y - y;
@@ -70,23 +70,21 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                     ep.enemies[i].temps_rest = lvl + 1;
                                     ep.enemies[i].puissance_effet = grid.cells[x][y].turret.puissance_effet[lvl];
                                     enemies_hit++;
-                                } 
+                                }
                             }
                         }
                     }
-                    else
+                    else // tourelle sans effet
                     {
                         for (int i = 0; i < ep.count; i++)
                         {
-                            int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2)); // A completer
-                            
+                            float dx = ep.enemies[i].grid_x - (x+0.5);
+                            float dy = ep.enemies[i].grid_y - (y+0.5);
+                            float d = sqrt(dx * dx + dy * dy);
+
                             // Test pour que l'ennemi soit dans la portée de la tourelle
-                            if (d <= grid.cells[x][y].turret.range_max[lvl]
-                            && d >= grid.cells[x][y].turret.range_min[lvl])
+                            if (d <= grid.cells[x][y].turret.range_max[lvl] && d >= grid.cells[x][y].turret.range_min[lvl])
                             {
-                                float dx = ep.enemies[i].grid_x - x;
-                                float dy = ep.enemies[i].grid_y - y;
-                                float d = sqrt(dx * dx + dy * dy);
 
                                 grid.cells[x][y].turret.last_shot_dx = dx / d;
                                 grid.cells[x][y].turret.last_shot_dy = dy / d;
@@ -103,24 +101,23 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                 ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
 
                                 // Fonctionnement du splash damage (dégats de zone)
-                                if (grid.cells[x][y].turret.splash[lvl] != 0.0)  
+                                if (grid.cells[x][y].turret.splash[lvl] != 0.0)
                                 {
                                     float d_min = grid.cells[x][y].turret.splash[lvl];
-                                    for (int j = 0 ; j < ep.count ; j++)
+                                    for (int j = 0; j < ep.count; j++)
                                     {
                                         if (j != i)
                                         {
-                                            int d_enemy = sqrt(pow(ep.enemies[i].grid_x - ep.enemies[j].grid_x, 2) + 
-                                            pow(ep.enemies[i].grid_y - ep.enemies[j].grid_y, 2));
+                                            int d_enemy = sqrt(pow(ep.enemies[i].grid_x - ep.enemies[j].grid_x, 2) +
+                                                               pow(ep.enemies[i].grid_y - ep.enemies[j].grid_y, 2));
                                             if (d_enemy < d_min)
                                             {
                                                 ep.enemies[j].hp -= grid.cells[x][y].turret.damage[lvl];
                                             }
                                         }
                                     }
-
                                 }
-    #endif
+#endif
                                 // Fonctionnement du nombre d'ennemi pouvant être touché
                                 enemies_hit++;
                                 if (enemies_hit >= grid.cells[x][y].turret.nb_ennemi[lvl])
@@ -212,7 +209,7 @@ void updateBullets(BulletPool *bp, float dt)
 
 #endif
 
-// Prix des tourelles 
+// Prix des tourelles
 int getTurretPrice(enum TurretType type, int level)
 {
     if (type == Sniper)
@@ -364,9 +361,9 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.compteur = 0;
         tur.range_min[0] = 0;
         tur.range_min[1] = 0;
-        tur.range_max[0] = 0.5;
-        tur.range_max[1] = 1;
-        tur.damage[0] = 0.2;
+        tur.range_max[0] = 1.5;
+        tur.range_max[1] = 2.5;
+        tur.damage[0] = 1;
         tur.damage[1] = 0.3;
         tur.reload_delay[0] = 0.2;
         tur.reload_delay[1] = 0.1;
@@ -473,7 +470,7 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
                 printf(" ");
         }
     }
-    
+
     // Test pour voir si une tourelle est présente, dans ce cas proposer l'amélioration ou la vente
     if (hasTurret)
     {
@@ -494,7 +491,7 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
         move_to(x0 + 1 + width - 8, y0 + 2);
         printf(COLOR_GREEN "+% 3d €" RESET, getTurretPrice(selectedTurret.type, selectedTurret.lvl));
     }
-    //Sinon, proposer la construction des autres tourelles
+    // Sinon, proposer la construction des autres tourelles
     else
     {
         move_to(x0 + 1, y0 + 1);
@@ -506,7 +503,7 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
         printf(" 🔥 Inferno");
         move_to(x0 + 1 + width - 10, y0 + 2);
         printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Inferno, 0));
-        
+
         move_to(x0 + 1, y0 + 3);
         printf(" 🔬 Mortier ");
         move_to(x0 + 1 + width - 10, y0 + 3);
