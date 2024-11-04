@@ -72,7 +72,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                 } 
                             }
                         }
-                        else if (grid.cells[x][y].turret.effet == Fire)
+                        else if (grid.cells[x][y].turret.effet == Fire) // Fire = dégats sur la durée (Inferno)
                         {
                             for (int i = 0; i < ep.count; i++)
                             {

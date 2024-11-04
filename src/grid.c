@@ -456,7 +456,7 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
                     printf(sprite[cell.turret.lvl][mortier_shooting][i]);
                 }
             }
-            else if (cell.turret.type == Gatling) // Sprites de la gatling, le sprite avec COOLING est inutilisé (pour l'instant)
+            else if (cell.turret.type == Gatling) // Sprites de la gatling
             {
                 printf(COLOR_GATLING_BASE);
 

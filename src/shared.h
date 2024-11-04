@@ -64,20 +64,20 @@ enum EffectType
 
 struct Turret
 {
-    enum TurretType type;
-    int lvl;
-    float compteur;
-    bool in_range;
-    float range_min[2];
-    float range_max[2];
-    float damage[2];
-    float reload_delay[2];
-    float splash[2];
-    int nb_ennemi[2];
-    bool has_effect;
-    enum EffectType effet;
-    float puissance_effet[2];
-    float last_shot_dx;
+    enum TurretType type;           //Type de tourelle
+    int lvl;                        //Niveau de la tourelle et également l'indice des différente valeurs qui changent lors de l'upgrade
+    float compteur;                 //Compteur pour savoir quand la tourelle doit tirer
+    bool in_range;                  //sert a savoir si un ennemi est a portée de la tourrelle
+    float range_min[2];             //détermine la portée minimale de la tourelle
+    float range_max[2];             //détermine la portée maximale de la tourelle
+    float damage[2];                //détermine les dégats de la tourelle
+    float reload_delay[2];          //détermine la fréquence de tir de la tourelle
+    float splash[2];                //détermine la taille des dégats de zone de la tourelle
+    int nb_ennemi[2];               //détermine le nombre d'ennemi que la tourelle peut toucher lors de son attaque
+    bool has_effect;                //determine si la tourelle possède un effet particulier
+    enum EffectType effet;          //Type de l'effet
+    float puissance_effet[2];       //determine la puissance de l'effet (a un role different selon les effets)
+    float last_shot_dx;             
     float last_shot_dy;
 };
 
