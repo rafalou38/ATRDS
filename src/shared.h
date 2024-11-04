@@ -66,6 +66,7 @@ struct Turret
     enum TurretType type;
     int lvl;
     float compteur;
+    bool in_range;
     int range_min[2];
     int range_max[2];
     float damage[2];

@@ -21,11 +21,13 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                 // Lorsque l'horloge interne dépasse la vitesse de rechargement (reload) de la tourelle, elle applique son effet :
                 if (grid.cells[x][y].turret.compteur >= grid.cells[x][y].turret.reload_delay[lvl]) 
                 {
+                    int enemies_hit = 0;
                     if (grid.cells[x][y].turret.has_effect)
                     {
                         if (grid.cells[x][y].turret.effet == Money) // Génération d'argent (Banque)
                         {
                             gs->cash += grid.cells[x][y].turret.puissance_effet[lvl];
+                            enemies_hit++;
                         }
                         else if (grid.cells[x][y].turret.effet == Stun) // Stun = Pétrification (Pétrificateur)
                         {
@@ -44,6 +46,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                     ep.enemies[i].has_effect = true;
                                     ep.enemies[i].effet = Stun;
                                     ep.enemies[i].temps_rest = grid.cells[x][y].turret.puissance_effet[lvl];
+                                    enemies_hit++;
                                     break;
                                 }
                             }
@@ -66,13 +69,13 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                     ep.enemies[i].effet = Slow;
                                     ep.enemies[i].temps_rest = lvl + 1;
                                     ep.enemies[i].puissance_effet = grid.cells[x][y].turret.puissance_effet[lvl];
+                                    enemies_hit++;
                                 } 
                             }
                         }
                     }
                     else
                     {
-                        int enemies_hit = 0;
                         for (int i = 0; i < ep.count; i++)
                         {
                             int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2)); // A completer
@@ -124,6 +127,14 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                     break;
                             }
                         }
+                    }
+                    if (enemies_hit == 0)
+                    {
+                        grid.cells[x][y].turret.in_range = false;
+                    }
+                    else
+                    {
+                        grid.cells[x][y].turret.in_range = true;
                     }
                     grid.cells[x][y].turret.compteur = 0;
                 }
