@@ -1,10 +1,12 @@
 #include "enemies.h"
 
-EnemyPool AllocEnemyPool() // A completer
+EnemyPool AllocEnemyPool() // pré-Alloue le tableau d’ennemis avec une taille initiale prédéterminée
 {
     EnemyPool ep;
-    ep.length = 0xff; // 256
-    ep.count = 0x0;
+    // Correspond au nombre maximal d’ennemis pouvant exister simultanément
+    ep.length = 255;
+    // Correspond au nombre d’ennemis en vie et actifs.
+    ep.count = 0;
     ep.enemies = (struct Enemy *)malloc(sizeof(struct Enemy) * ep.length);
     if (ep.enemies == NULL)
     {
@@ -15,7 +17,7 @@ EnemyPool AllocEnemyPool() // A completer
     return ep;
 }
 
-void freeEnemyPool(EnemyPool ep) // A completer
+void freeEnemyPool(EnemyPool ep) // On libère le tableau des enemies.
 {
     printf(COLOR_GRAY);
     printf(" $ ");
@@ -26,7 +28,7 @@ void freeEnemyPool(EnemyPool ep) // A completer
     printf("%s Done %s\n", COLOR_GREEN, RESET);
 }
 
-// Definitions des differents types d'ennemis et de leurs caractéristiques
+// Definitions des différents types d'ennemis et de leurs caractéristiques
 struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
 {
     struct Enemy enemy;
@@ -78,7 +80,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
     return enemy;
 }
 
-void addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int start_y) // A completer
+void addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int start_y) // Ajoute un nouvel ennemi au tableau des enemies
 {
     if (ep->count < ep->length)
     {
@@ -88,7 +90,9 @@ void addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int st
     }
     else
     {
+        // Dans le cas ou le nombre d’ennemis dépasse la capacité du tableau 
         printCritical("Overflow not yet implemented\n");
+        exit(EXIT_FAILURE);
     }
 }
 

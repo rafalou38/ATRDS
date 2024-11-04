@@ -2,8 +2,8 @@
 
 #include "shared.h"
 #include "enemies.h"
-// A completer
-#define BULLETS_ON false
+// false: les balles tirées par les tourelles seront affichées
+#define BULLETS_ON true
 
 #if BULLETS_ON
 
@@ -28,7 +28,7 @@ struct Turret getTurretStruct(enum TurretType type);
 int getTurretPrice(enum TurretType type, int level);
 
 #if BULLETS_ON
-void updateTowers(Grid grid, EnemyPool ep, BulletPool *bp, float dt);
+void updateTowers(Grid grid, EnemyPool ep, BulletPool *bp, float dt, GameStats *gs);
 void drawBullets(BulletPool bp);
 void updateBullets(BulletPool *bp, float dt);
 #else

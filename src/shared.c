@@ -1,6 +1,6 @@
 #include "shared.h"
 
-int msleep(long ms) // Fonction de repos (temps pendant lequel le terminal ne lis pas la suit du programme), ici en micro-secondes
+int msleep(long ms) // Fonction de repos (temps pendant lequel le terminal ne lis pas la suite du programme), ici en millisecondes
 {
     struct timespec ts;
     ts.tv_sec = ms / 1000;
@@ -8,7 +8,7 @@ int msleep(long ms) // Fonction de repos (temps pendant lequel le terminal ne li
     return nanosleep(&ts, &ts);
 }
 
-void updateLabels(Labels *labels, float dt) // A completer (c'est quoi les labels wtf ?)
+void updateLabels(Labels *labels, float dt) // Mets a jour les labels (+1$)
 {
     for (int i = 0; i < labels->count; i++)
     {
@@ -46,7 +46,7 @@ void updateLabels(Labels *labels, float dt) // A completer (c'est quoi les label
         labels->count = 0;
 };
 
-void drawLabels(Labels labels) // A completer
+void drawLabels(Labels labels) // affiche tous les labels
 {
     for (int i = 0; i < labels.count; i++)
     {
@@ -56,7 +56,7 @@ void drawLabels(Labels labels) // A completer
     }
 };
 
-void freeLabels(Labels labels) // A completer
+void freeLabels(Labels labels) // nettoie le tableau des labels
 {
     printf(COLOR_GRAY " $ " RESET "Freeing %s%d%s labels:\t", COLOR_YELLOW, labels.count, RESET);
     free(labels.labels);
@@ -148,11 +148,9 @@ void checkTerminalSize(int *width, int *height)
     }
 }
 
-// Dessine les cercles de portée des tourelles (A completer + refaire car les range sont buggées (essayer gatling lvl 2 par exemple))
-void drawRange(int term_width, int term_height, float range, float grid_x, float grid_y)
+// Dessine les cercles de portée des tourelles
+void drawRange(int term_width, int term_height, float range, float grid_x, float grid_y, bool fill)
 {
-    // float center_term_x = grid_x * (CELL_WIDTH + GAP) + 3;
-    // float center_term_x = grid_y * (CELL_HEIGHT + GAP / 2) + 2;
     printf(COLOR_STANDARD_BG);
 
     for (int y = 0; y < term_height; y++)
@@ -166,10 +164,10 @@ void drawRange(int term_width, int term_height, float range, float grid_x, float
             float dy = grid_y - current_grid_y;
             float d = sqrt(dx * dx + dy * dy);
 
-            if (d < range + 0.05 && d > range - 0.06)
+            if (d < range + 0.05 && (d > range - 0.06 || fill))
             {
-                int term_x = x + CELL_WIDTH / 2.0f;
-                int term_y = y + CELL_HEIGHT / 2.0f;
+                int term_x = x;
+                int term_y = y;
                 if (term_x > 0 && term_y > 0 && term_x < term_width && term_y < term_height)
                 {
                     move_to(term_x, term_y);

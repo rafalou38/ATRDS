@@ -195,7 +195,7 @@ int main()
                     clearUsedPath(grid, enemyPool);
                 }
 
-                updateTowers(grid, enemyPool, &bulletPool, delta_t);
+                updateTowers(grid, enemyPool, &bulletPool, delta_t, &gameStats);
                 updateBullets(&bulletPool, delta_t);
 
                 drawBullets(bulletPool);
@@ -205,7 +205,7 @@ int main()
 #endif
                 updateLabels(&labels, delta_t);
                 drawLabels(labels);
-
+                
                 // Mise à jour des ennemis existants
                 updateEnemies(&enemyPool, grid, &gameStats, &labels, delta_t);
                 // Affichage des ennemis
@@ -217,9 +217,9 @@ int main()
                     float range_min = grid.cells[selected_cell_x][selected_cell_y].turret.range_min[grid.cells[selected_cell_x][selected_cell_y].turret.lvl];
                     float range_max = grid.cells[selected_cell_x][selected_cell_y].turret.range_max[grid.cells[selected_cell_x][selected_cell_y].turret.lvl];
                     if (range_min > 0)
-                        drawRange(width, height, range_min, selected_cell_x, selected_cell_y);
+                        drawRange(width, height, range_min, selected_cell_x+0.5, selected_cell_y+0.5, false);
                     if (range_max > 0)
-                        drawRange(width, height, range_max, selected_cell_x, selected_cell_y);
+                        drawRange(width, height, range_max, selected_cell_x+0.5, selected_cell_y+0.5, false);
 
                     was_range_visible = true;
                 }else if(was_range_visible){
