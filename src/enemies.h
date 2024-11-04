@@ -35,6 +35,8 @@ struct Enemy
     bool has_effect;
     enum EffectType effet;
     float puissance_effet;
+    float temps_recharge;
+    float last_hit;
     float temps_rest;
 
     // Indice intentionnellement flottant pour permette un positionnement dynamique dans chaque cellule
