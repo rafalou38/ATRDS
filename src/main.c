@@ -408,7 +408,7 @@ int main()
                 {
                     if (grid.cells[selected_cell_x][selected_cell_y].hasTurret)
                     {
-                        int upgrade_price = getTurretPrice(Sniper, grid.cells[selected_cell_x][selected_cell_y].turret.lvl + 1);
+                        int upgrade_price = getTurretPrice(grid.cells[selected_cell_x][selected_cell_y].turret.type, grid.cells[selected_cell_x][selected_cell_y].turret.lvl + 1);
                         if (ligne == 1 && upgrade_price > 0 && gameStats.cash >= upgrade_price)
                         {
                             // Upgrade
@@ -417,7 +417,7 @@ int main()
                         }
                         else if (ligne == 2)
                         {
-                            gameStats.cash += getTurretPrice(Sniper, grid.cells[selected_cell_x][selected_cell_y].turret.lvl);
+                            gameStats.cash += getTurretPrice(grid.cells[selected_cell_x][selected_cell_y].turret.type, grid.cells[selected_cell_x][selected_cell_y].turret.lvl);
                             grid.cells[selected_cell_x][selected_cell_y].hasTurret = false;
                         }
                     }
