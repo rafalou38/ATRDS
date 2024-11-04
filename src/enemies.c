@@ -36,6 +36,8 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.hp = 10;
         enemy.maxHP = 10;
         enemy.speed = 0.8f;
+        enemy.damage = 1;
+        enemy.money = 1;
         enemy.state = ENEMY_STATE_ALIVE;
         enemy.grid_x = (float)start_x;
         enemy.grid_y = (float)start_y;
@@ -49,6 +51,23 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.hp = 5;
         enemy.maxHP = 5;
         enemy.speed = 1.8f;
+        enemy.damage = 1;
+        enemy.money = 2;
+        enemy.state = ENEMY_STATE_ALIVE;
+        enemy.grid_x = (float)start_x;
+        enemy.grid_y = (float)start_y;
+        enemy.previous_cell = grid.cells[start_x][start_y];
+        enemy.next_cell = grid.cells[start_x][start_y];
+        enemy.on_last_cell = false;
+    }
+    else if (type == ENEMY_BOSS) // Boss ennemi
+    {
+        enemy.type = ENEMY_BOSS;
+        enemy.hp = 50;
+        enemy.maxHP = 50;
+        enemy.speed = 0.5f;
+        enemy.damage = 5;
+        enemy.money = 10;
         enemy.state = ENEMY_STATE_ALIVE;
         enemy.grid_x = (float)start_x;
         enemy.grid_y = (float)start_y;
@@ -157,6 +176,10 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
             printf("∑ ∑");
             move_to(px, py + 1);
             printf("/▔\\");
+        }
+        else if (enemy->type == ENEMY_BOSS)
+        {
+            printf("bos");
         }
 
         // move_to((enemy->next_cell.x * (CELL_WIDTH + GAP) + 3), (enemy->next_cell.y * (CELL_HEIGHT + GAP / 2) + 2));
@@ -316,7 +339,7 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
         {
             enemy->state = ENEMY_STATE_ARRIVED;
             defragNeeded = true;
-            gs->health -= 1;
+            gs->health -= enemy->damage;
         }
 
         if (enemy->hp <= 0) // Effets liés à la mort d'un ennemi
@@ -324,10 +347,12 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
             enemy->state = ENEMY_STATE_DEAD;
             drawCell(enemy->previous_cell, grid);
             defragNeeded = true;
-            gs->cash += 1;
+            gs->cash += enemy->money;
+            char * label = (char *)malloc(sizeof(char) * 30);
+            sprintf(label, COLOR_STANDARD_BG COLOR_YELLOW "%d" RESET , enemy->money);
             labels->labels[labels->count].counter = 0;
             labels->labels[labels->count].duration = 2;
-            labels->labels[labels->count].text = COLOR_STANDARD_BG COLOR_YELLOW "+1€" RESET;
+            labels->labels[labels->count].text = label;
             labels->labels[labels->count].x = (enemy->grid_x * (CELL_WIDTH + GAP) + 3);
             labels->labels[labels->count].y = (enemy->grid_y * (CELL_HEIGHT + GAP / 2) + 2);
             labels->count++;

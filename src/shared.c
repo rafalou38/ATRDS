@@ -25,6 +25,7 @@ void updateLabels(Labels *labels, float dt) // A completer (c'est quoi les label
             {
                 assert(left >= 0);
                 // assert(left < labels->length);
+                free(labels->labels[left].text);
 
                 labels->labels[left] = labels->labels[right];
                 left++;

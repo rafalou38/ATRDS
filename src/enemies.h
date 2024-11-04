@@ -8,7 +8,8 @@
 enum EnemyType 
 {
     ENEMY_TUX,
-    ENEMY_SPEED
+    ENEMY_SPEED,
+    ENEMY_BOSS
 };
 
 enum EnemyState 
@@ -24,7 +25,8 @@ struct Enemy
     float hp;
     float maxHP;
     float speed;
-    float damage;
+    int damage;
+    int money;
 
     enum EnemyState state;
 

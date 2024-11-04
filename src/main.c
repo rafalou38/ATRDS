@@ -167,7 +167,7 @@ int main()
                         nb_ennemy -= 1;
                         if (gameStats.wave / 5 == 0)
                         {
-                            addEnemy(grid, &enemyPool, ENEMY_TUX, grid.start_x, grid.start_y);
+                            addEnemy(grid, &enemyPool, ENEMY_BOSS, grid.start_x, grid.start_y);
                             spawnTimer = 0.0;
                         }
                         else
