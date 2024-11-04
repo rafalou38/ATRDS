@@ -1,5 +1,7 @@
 #include "tower.h"
 
+// Tous les bouts de programmes avec des # comme #if,#else... sont des morceaux de programmes utilisés uniquement sous l'activation d'un paramètre dans [A completer]
+
 #if BULLETS_ON
 void updateTowers(Grid grid, EnemyPool ep, BulletPool *bp, float dt)
 {
@@ -7,27 +9,29 @@ void updateTowers(Grid grid, EnemyPool ep, BulletPool *bp, float dt)
 void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
 {
 #endif
-    for (int x = 0; x < grid.width; x++)
+    for (int x = 0; x < grid.width; x++) 
     {
-        for (int y = 0; y < grid.height; y++)
+        for (int y = 0; y < grid.height; y++) // Pour chaque cellules du terrain (de taille grid.width*grid.height)
         {
-            if (grid.cells[x][y].hasTurret)
+            if (grid.cells[x][y].hasTurret) // Affecte à une tourelles ses caractéristiques
             {
-                int lvl = grid.cells[x][y].turret.lvl;
-                grid.cells[x][y].turret.compteur += dt;
-                if (grid.cells[x][y].turret.compteur >= grid.cells[x][y].turret.reload_delay[lvl])
+                int lvl = grid.cells[x][y].turret.lvl; // Son niveau
+                grid.cells[x][y].turret.compteur += dt; // Son horloge interne / son compteur
+
+                // Lorsque l'horloge interne dépasse la vitesse de rechargement (reload) de la tourelle, elle applique son effet :
+                if (grid.cells[x][y].turret.compteur >= grid.cells[x][y].turret.reload_delay[lvl]) 
                 {
                     if (grid.cells[x][y].turret.has_effect)
                     {
-                        if (grid.cells[x][y].turret.effet == Money)
+                        if (grid.cells[x][y].turret.effet == Money) // Génération d'argent (Banque)
                         {
                             gs->cash += grid.cells[x][y].turret.puissance_effet[lvl];
                         }
-                        else if (grid.cells[x][y].turret.effet == Stun)
+                        else if (grid.cells[x][y].turret.effet == Stun) // Stun = Pétrification (Pétrificateur)
                         {
                             for (int i = 0; i < ep.count; i++)
                             {
-                                int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2));
+                                int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2)); // A completer (supposée la position vectorisée d'un ennemi)
                                 if (d <= grid.cells[x][y].turret.range_max[lvl]
                                 && d >= grid.cells[x][y].turret.range_min[lvl])
                                 {
@@ -44,11 +48,11 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                 }
                             }
                         }
-                        else if (grid.cells[x][y].turret.effet == Slow)
+                        else if (grid.cells[x][y].turret.effet == Slow) // Slow = Ralentissement (Freezer)
                         {
                             for (int i = 0; i < ep.count; i++)
                             {
-                                int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2));
+                                int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2)); // A completer
                                 if (d <= grid.cells[x][y].turret.range_max[lvl]
                                 && d >= grid.cells[x][y].turret.range_min[lvl])
                                 {
@@ -71,7 +75,9 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                         int enemies_hit = 0;
                         for (int i = 0; i < ep.count; i++)
                         {
-                            int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2));
+                            int d = sqrt(pow(ep.enemies[i].grid_x - x, 2) + pow(ep.enemies[i].grid_y - y, 2)); // A completer
+                            
+                            // Test pour que l'ennemi soit dans la portée de la tourelle
                             if (d <= grid.cells[x][y].turret.range_max[lvl]
                             && d >= grid.cells[x][y].turret.range_min[lvl])
                             {
@@ -90,8 +96,11 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                 bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage[lvl];
                                 bp->count++;
 #else
+                                // Changements des points de vie de l'ennemi touché, perdant ainsi le nombre de dégats infligés par l'attaque
                                 ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
-                                if (grid.cells[x][y].turret.splash[lvl] != 0.0)
+
+                                // Fonctionnement du splash damage (dégats de zone)
+                                if (grid.cells[x][y].turret.splash[lvl] != 0.0)  
                                 {
                                     float d_min = grid.cells[x][y].turret.splash[lvl];
                                     for (int j = 0 ; j < ep.count ; j++)
@@ -109,6 +118,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
 
                                 }
     #endif
+                                // Fonctionnement du nombre d'ennemi pouvant être touché
                                 enemies_hit++;
                                 if (enemies_hit >= grid.cells[x][y].turret.nb_ennemi[lvl])
                                     break;
@@ -191,6 +201,7 @@ void updateBullets(BulletPool *bp, float dt)
 
 #endif
 
+// Prix des tourelles 
 int getTurretPrice(enum TurretType type, int level)
 {
     if (type == Sniper)
@@ -274,6 +285,7 @@ int getTurretPrice(enum TurretType type, int level)
     return -1;
 }
 
+// Definition de toutes les caractéristiques de chaque tourelle
 struct Turret getTurretStruct(enum TurretType type)
 {
     struct Turret tur;
@@ -412,6 +424,7 @@ struct Turret getTurretStruct(enum TurretType type)
     return tur;
 }
 
+// Fonction qui pause le jeu et ouvre le panneau de séléction
 void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
 {
     int terminal_width, terminal_height;
@@ -428,6 +441,7 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
     printf(RESET);
     printf(COLOR_STANDARD_BG);
 
+    // Bordures et coeur de la fenêtre
     for (int y = 0; y < height; y++)
     {
         move_to(x0, y0 + y);
@@ -448,7 +462,8 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
                 printf(" ");
         }
     }
-
+    
+    // Test pour voir si une tourelle est présente, dans ce cas proposer l'amélioration ou la vente
     if (hasTurret)
     {
         int next_price = getTurretPrice(selectedTurret.type, selectedTurret.lvl + 1);
@@ -468,41 +483,42 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
         move_to(x0 + 1 + width - 8, y0 + 2);
         printf(COLOR_GREEN "+% 3d €" RESET, getTurretPrice(selectedTurret.type, selectedTurret.lvl));
     }
+    //Sinon, proposer la construction des autres tourelles
     else
     {
         move_to(x0 + 1, y0 + 1);
         printf(" 🔫 Sniper");
-        move_to(x0 + 1 + width - 8, y0 + 1);
+        move_to(x0 + 1 + width - 10, y0 + 1);
         printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Sniper, 0));
 
         move_to(x0 + 1, y0 + 2);
         printf(" 🔥 Inferno");
-        move_to(x0 + 1 + width - 8, y0 + 2);
+        move_to(x0 + 1 + width - 10, y0 + 2);
         printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Inferno, 0));
         
         move_to(x0 + 1, y0 + 3);
-        printf(" Mortier ");
-        move_to(x0 + 1 + width - 8, y0 + 3);
+        printf(" 🔬 Mortier ");
+        move_to(x0 + 1 + width - 10, y0 + 3);
         printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Mortier, 0));
 
         move_to(x0 + 1, y0 + 4);
-        printf(" Gatling ");
-        move_to(x0 + 1 + width - 8, y0 + 4);
+        printf(" ⚙️  Gatling ");
+        move_to(x0 + 1 + width - 10, y0 + 4);
         printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Gatling, 0));
 
         move_to(x0 + 1, y0 + 5);
-        printf(" Petrificateur ");
-        move_to(x0 + 1 + width - 8, y0 + 5);
+        printf(" ⏳ Petrificateur ");
+        move_to(x0 + 1 + width - 10, y0 + 5);
         printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Petrificateur, 0));
 
         move_to(x0 + 1, y0 + 6);
-        printf(" Freezer ");
-        move_to(x0 + 1 + width - 8, y0 + 6);
+        printf(" ❄️  Freezer ");
+        move_to(x0 + 1 + width - 10, y0 + 6);
         printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Freezer, 0));
 
         move_to(x0 + 1, y0 + 7);
-        printf(" Banque ");
-        move_to(x0 + 1 + width - 8, y0 + 7);
+        printf(" 💲 Banque ");
+        move_to(x0 + 1 + width - 10, y0 + 7);
         printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Banque, 0));
     }
     printf(RESET);

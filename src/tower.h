@@ -2,7 +2,7 @@
 
 #include "shared.h"
 #include "enemies.h"
-
+// A completer
 #define BULLETS_ON false
 
 #if BULLETS_ON

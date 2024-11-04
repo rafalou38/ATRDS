@@ -22,7 +22,7 @@ void allocateGridCells(Grid *grid)
             exit(EXIT_FAILURE);
         }
 
-        for (int y = 0; y < grid->height; y++)
+        for (int y = 0; y < grid->height; y++) // Initialisation d'un terrain vierge de x*y
         {
             cells[x][y].x = x;
             cells[x][y].y = y;
@@ -51,12 +51,12 @@ void freeGrid(Grid grid)
     printf("%s Done %s\n", COLOR_GREEN, RESET);
 }
 
-void genBasicPath(Grid *grid)
+void genBasicPath(Grid *grid) // Génération du terrain par rapport a la seed (rand())
 
 {
     int chemin_x = 1;
     int chemin_y = (rand() % (grid->height));
-    if (chemin_y == grid->height - 1) // Rectifications du random pour pas la 1ere ni la derniere ligne
+    if (chemin_y == grid->height - 1) // Rectifications du random pour ne pas être sur les extrémités hautes et basses
         chemin_y = chemin_y - 1;
 
     if (chemin_y == 0)
@@ -67,10 +67,10 @@ void genBasicPath(Grid *grid)
     grid->start_x = 0;
     grid->start_y = chemin_y;
 
-    cells[0][chemin_y].type = CHEMIN; // 2 premieres cases sans les autres options, fixées à une hauteur aléatoire
-    cells[chemin_x][chemin_y].type = CHEMIN;
+    cells[0][chemin_y].type = CHEMIN; // Les 2 premiers chemins sont à la même hauteur fixée aléatoirement
+    cells[1][chemin_y].type = CHEMIN;
 
-    int **historique;
+    int **historique; // Création d'un historique du chemin qui permet de ne pas tourner en boucle lors de sa génération
     historique = (int **)malloc(HISTORY_SIZE * (sizeof(int *)));
     for (size_t i = 0; i < HISTORY_SIZE; i++)
     {
@@ -79,7 +79,7 @@ void genBasicPath(Grid *grid)
 
     int history_index = 0;
 
-    while (chemin_x != grid->width - 1)
+    while (chemin_x != grid->width - 1) // Conditions pour la création d'une case chemin (POur ne pas que les chemins soient collés)
     {
         bool posible_bas = chemin_y < grid->height - 2                         //
                            && cells[chemin_x - 1][chemin_y + 1].type != CHEMIN // bas gauche
@@ -112,7 +112,7 @@ void genBasicPath(Grid *grid)
                                && cells[chemin_x - 2][chemin_y - 1].type != CHEMIN // gauche gauche bas
                                && !cells[chemin_x - 1][chemin_y].visited;
 
-        if (!posible_bas && !possible_haut && !possible_droite && !possible_gauche)
+        if (!posible_bas && !possible_haut && !possible_droite && !possible_gauche) // Si aucun chemin n'est possible, on remonte dans l'historique jusqu'à ce qu'il le soit
         {
             cells[chemin_x][chemin_y].type = TERRAIN;
             history_index -= 1;
@@ -122,7 +122,7 @@ void genBasicPath(Grid *grid)
             continue;
         }
 
-        while (true)
+        while (true) // Application des chemins
         {
             int random_chemin = rand() % 7;
             if (random_chemin <= 1 && posible_bas)
@@ -146,7 +146,7 @@ void genBasicPath(Grid *grid)
                 break;
             }
         }
-
+        // Mise à jour de l'historique
         history_index++;
         assert(history_index < HISTORY_SIZE);
 
@@ -161,13 +161,13 @@ void genBasicPath(Grid *grid)
     grid->end_x = chemin_x;
     grid->end_y = chemin_y;
 
-    for (size_t i = 0; i < HISTORY_SIZE; i++)
+    for (size_t i = 0; i < HISTORY_SIZE; i++) // Libération de l'historique à la fin de la création de chemin
     {
         free(historique[i]);
     }
     free(historique);
 }
-void fillBG(int xmin, int ymin, int xmax, int ymax)
+void fillBG(int xmin, int ymin, int xmax, int ymax) // Efface tout
 {
     printf(COLOR_STANDARD_BG);
     for (int x = xmin; x < xmax; x++)
@@ -179,59 +179,75 @@ void fillBG(int xmin, int ymin, int xmax, int ymax)
         }
     }
 }
-void drawCell(struct Cell cell, Grid grid)
+void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur status
 {
-    if (cell.type == TERRAIN)
+    if (cell.type == TERRAIN) // Si la cellule est un terrain
     {
-
-        for (int y = 0; y < CELL_HEIGHT; y++)
+        if (cell.hasTurret == false) // Et qu'elle est sans tourelle, elle met du vide sur toute la case
         {
+            for (int y = 0; y < CELL_HEIGHT; y++)
+            {
 
+                int terminal_x = cell.x * (CELL_WIDTH + GAP) + 3;
+                int terminal_y = cell.y * (CELL_HEIGHT + GAP / 2) + 2;
+
+                printf(COLOR_TOWER_SLOT_BG);
+                move_to(terminal_x, terminal_y + y);
+
+                {
+                    for (int x = 0; x < CELL_WIDTH; x++)
+                    {
+                        printf(" ");
+                    }
+                }
+                printf(RESET);
+            }
+        }
+        if (cell.selected) // La cellule selectionnée est dessinée avec un cadre autour
+        {
             int terminal_x = cell.x * (CELL_WIDTH + GAP) + 3;
             int terminal_y = cell.y * (CELL_HEIGHT + GAP / 2) + 2;
-
+            printf(COLOR_SELECTED_SLOT);
             printf(COLOR_TOWER_SLOT_BG);
-            move_to(terminal_x, terminal_y + y);
-
+            for (int y = 0; y < CELL_HEIGHT; y++)
             {
+                move_to(terminal_x, terminal_y + y);
                 for (int x = 0; x < CELL_WIDTH; x++)
                 {
-                    printf(" ");
+                    if (cell.selected)
+                    {
+                        if (x == 0)
+                        {
+                            printf("█");
+                        }
+                        if (x == 1 && y != 0 && y != CELL_HEIGHT - 1)
+                        {
+                            printf(" ");
+                        }
+                        if (x == CELL_WIDTH - 2 && y != 0 && y != CELL_HEIGHT - 1)
+                        {
+                            move_to(terminal_x + x, terminal_y + y);
+                            printf(" ");
+                        }
+                        else if (x == CELL_WIDTH - 1)
+                        {
+                            move_to(terminal_x + x, terminal_y + y);
+                            printf("█");
+                        }
+                        else if (y == 0)
+                            printf("▀");
+                        else if (y == CELL_HEIGHT - 1)
+                            printf("▄");
+                    }
                 }
             }
-
-            if (cell.selected)
-            {
-                printf(COLOR_SELECTED_SLOT);
-            }
-            move_to(terminal_x, terminal_y + y);
-            for (int x = 0; x < CELL_WIDTH; x++)
-            {
-                if (cell.selected)
-                {
-                    if (x == 0)
-                    {
-                        printf("█");
-                    }
-                    else if (x == CELL_WIDTH - 1)
-                    {
-                        move_to(terminal_x + x, terminal_y + y);
-                        printf("█");
-                    }
-                    else if (y == 0)
-                        printf("▀");
-                    else if (y == CELL_HEIGHT - 1)
-                        printf("▄");
-                }
-            }
-            printf(RESET);
         }
-        if (cell.hasTurret)
+        if (cell.hasTurret) // Si la cellule est une tourelle, elle va être déssinée selon son sprite, donc ci dessous la liste des sprites
         {
             int x_current_turret = cell.x * (CELL_WIDTH + GAP) + 3 + 2;
             int y_current_turret = cell.y * (CELL_HEIGHT + GAP / 2) + 2 + 1;
-
-            if (cell.turret.type == Sniper)
+            printf(COLOR_TOWER_SLOT_BG);
+            if (cell.turret.type == Sniper) // Sniper, 8 sprites pour les 8 directions
             {
                 printf(COLOR_SNIPER_BASE);
                 char *sprite[2][8][7] = {
@@ -294,6 +310,7 @@ void drawCell(struct Cell cell, Grid grid)
                          "     ▀██▀     "},
                     },
                     {
+                        // Sniper de niveau 2 (niveau 1 et le sniper de base est de niveau 0 dans le programme)
                         {" ▄▄  ▄██▄  ▄▄ ",
                          " ▀▀▄██▀▀██▄▀▀ ",
                          " ▄████▀▀████▄ ",
@@ -352,7 +369,7 @@ void drawCell(struct Cell cell, Grid grid)
                          " ▀▀  ▀██▀  ▀▀ "},
                     }};
 
-                // angle est approché au PI/le plus proche sous forme d'index
+                // Angle est approché au PI/le plus proche sous forme d'index, qui sert à afficher le bon sprite du sniper par rapport à sa direction
                 float angle = atan2f(-cell.turret.last_shot_dy, cell.turret.last_shot_dx);
                 size_t index = MIN(round(((angle + PI) / (2 * PI)) * 8), 7);
                 assert(index < 8);
@@ -363,7 +380,7 @@ void drawCell(struct Cell cell, Grid grid)
                     printf(sprite[cell.turret.lvl][index][i]);
                 }
             }
-            else if (cell.turret.type == Inferno)
+            else if (cell.turret.type == Inferno) // Sprites de l'inferno, la plus simple des tourelles, seulement 2 sprites pour le niveau 1 et 2
             {
                 printf(COLOR_INFERNO_BASE);
 
@@ -391,7 +408,7 @@ void drawCell(struct Cell cell, Grid grid)
                     printf(sprite[cell.turret.lvl][i]);
                 }
             }
-            else if (cell.turret.type == Mortier)
+            else if (cell.turret.type == Mortier) // Sprites du mortier, 4 sprites pour le mortier normale et le mortier qui tire (de niveau 1 et de niveau 2)
             {
                 printf(COLOR_MORTIER_BASE);
 
@@ -424,7 +441,7 @@ void drawCell(struct Cell cell, Grid grid)
                       "█ ██▄ " COLOR_MORTIER_FIRING "▀▀" COLOR_MORTIER_BASE " ▄██ █",
                       "█  ▀██▀▀██▀  █",
                       "▀█▄▄▄▄██▄▄▄▄█▀"}}};
-                int mortier_shooting;
+                int mortier_shooting; // Détermination du shoot du mortier par rapport à son horloge interne
                 if (cell.turret.compteur < 0.5)
                 {
                     mortier_shooting = 1;
@@ -439,7 +456,7 @@ void drawCell(struct Cell cell, Grid grid)
                     printf(sprite[cell.turret.lvl][mortier_shooting][i]);
                 }
             }
-            else if (cell.turret.type == Gatling)
+            else if (cell.turret.type == Gatling) // Sprites de la gatling, le sprite avec COOLING est inutilisé (pour l'instant)
             {
                 printf(COLOR_GATLING_BASE);
 
@@ -514,7 +531,7 @@ void drawCell(struct Cell cell, Grid grid)
                       "████▄ " COLOR_GATLING_COOLING "▀▀" COLOR_GATLING_BASE " ▄████",
                       " █  ██▀▀██  █ ",
                       "  ▀▀██▄▄██▀▀  "}}};
-                int gatling_shooting;
+                int gatling_shooting; // Calcul du sprite par rapport à l'horloge interne, intervalles reguliers entre chaque sprites
                 gatling_shooting = floor(cell.turret.compteur * (4 / cell.turret.reload_delay[cell.turret.lvl]));
                 if (gatling_shooting > 4.99)
                 {
@@ -527,7 +544,7 @@ void drawCell(struct Cell cell, Grid grid)
                     printf(sprite[cell.turret.lvl][gatling_shooting][i]);
                 }
             }
-            else if (cell.turret.type == Freezer)
+            else if (cell.turret.type == Freezer) // Sprites du freezer, similaire au mortier
             {
                 printf(COLOR_FREEZER_BASE);
 
@@ -575,7 +592,7 @@ void drawCell(struct Cell cell, Grid grid)
                     printf(sprite[cell.turret.lvl][freezer_shooting][i]);
                 }
             }
-            else if (cell.turret.type == Petrificateur)
+            else if (cell.turret.type == Petrificateur) // Sprites du pétrificateur (y'en a beaucoup car c'est la seule tourelle avec une animation compliquée)
             {
                 if (cell.turret.lvl == 0)
                 {
@@ -708,17 +725,17 @@ void drawCell(struct Cell cell, Grid grid)
                       "   ▀▀    ▀▀   "},
                      {"   ▄▄    ▄▄   ",
                       " ▄▀" COLOR_PETRIFICATEUR_SORON "▄" COLOR_PETRIFICATEUR_BASE " █" COLOR_PETRIFICATEUR_SORON "▄▄" COLOR_PETRIFICATEUR_BASE "█ " COLOR_PETRIFICATEUR_SORON "▄" COLOR_PETRIFICATEUR_BASE "▀▄ ",
-                      " ▀▄▄" COLOR_BG_SORON COLOR_PETRIFICATEUR_FIRING "▄" BG_RESET "▀  ▀" COLOR_BG_SORON "▄" BG_RESET COLOR_PETRIFICATEUR_BASE "▄▄▀ " COLOR_PETRIFICATEUR_SORON,
+                      " ▀▄▄" COLOR_BG_SORON COLOR_PETRIFICATEUR_FIRING "▄" COLOR_TOWER_SLOT_BG "▀  ▀" COLOR_BG_SORON "▄" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_BASE "▄▄▀ " COLOR_PETRIFICATEUR_SORON,
                       "   █  ██  █   " COLOR_PETRIFICATEUR_BASE,
-                      " ▄▀▀" COLOR_BG_SORON COLOR_PETRIFICATEUR_FIRING "▀" BG_RESET "▄  ▄" COLOR_BG_SORON "▀" BG_RESET COLOR_PETRIFICATEUR_BASE "▀▀▄ ",
+                      " ▄▀▀" COLOR_BG_SORON COLOR_PETRIFICATEUR_FIRING "▀" COLOR_TOWER_SLOT_BG "▄  ▄" COLOR_BG_SORON "▀" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_BASE "▀▀▄ ",
                       " ▀▄" COLOR_PETRIFICATEUR_SORON "▀" COLOR_PETRIFICATEUR_BASE " █" COLOR_PETRIFICATEUR_SORON "▀▀" COLOR_PETRIFICATEUR_BASE "█ " COLOR_PETRIFICATEUR_SORON "▀" COLOR_PETRIFICATEUR_BASE "▄▀ ",
                       "   ▀▀    ▀▀   "},
                      {"   ▄▄    ▄▄   ",
-                      " ▄▀" COLOR_PETRIFICATEUR_SORON "▄▄" COLOR_PETRIFICATEUR_BASE COLOR_BG_SORON "▄▄▄▄" BG_RESET COLOR_PETRIFICATEUR_SORON "▄▄" COLOR_PETRIFICATEUR_BASE "▀▄ ",
-                      " ▀" COLOR_PETRIFICATEUR_SORON "▄" COLOR_PETRIFICATEUR_BASE COLOR_BG_SORON "▄" BG_RESET COLOR_PETRIFICATEUR_FIRING "█▀  ▀█" COLOR_PETRIFICATEUR_BASE COLOR_BG_SORON "▄" BG_RESET COLOR_PETRIFICATEUR_SORON "▄" COLOR_PETRIFICATEUR_BASE "▀ ",
+                      " ▄▀" COLOR_PETRIFICATEUR_SORON "▄▄" COLOR_PETRIFICATEUR_BASE COLOR_BG_SORON "▄▄▄▄" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_SORON "▄▄" COLOR_PETRIFICATEUR_BASE "▀▄ ",
+                      " ▀" COLOR_PETRIFICATEUR_SORON "▄" COLOR_PETRIFICATEUR_BASE COLOR_BG_SORON "▄" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_FIRING "█▀  ▀█" COLOR_PETRIFICATEUR_BASE COLOR_BG_SORON "▄" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_SORON "▄" COLOR_PETRIFICATEUR_BASE "▀ ",
                       "  " COLOR_PETRIFICATEUR_SORON "█" COLOR_PETRIFICATEUR_BASE "█  " COLOR_PETRIFICATEUR_SORON "██" COLOR_PETRIFICATEUR_BASE "  █" COLOR_PETRIFICATEUR_SORON "█  " COLOR_PETRIFICATEUR_BASE,
-                      " ▄" COLOR_PETRIFICATEUR_SORON "▀" COLOR_PETRIFICATEUR_BASE COLOR_BG_SORON "▀" BG_RESET COLOR_PETRIFICATEUR_FIRING "█▄  ▄█" COLOR_PETRIFICATEUR_BASE COLOR_BG_SORON "▀" BG_RESET COLOR_PETRIFICATEUR_SORON "▀" COLOR_PETRIFICATEUR_BASE "▄ ",
-                      " ▀▄" COLOR_PETRIFICATEUR_SORON "▀▀" COLOR_PETRIFICATEUR_BASE COLOR_BG_SORON "▀▀▀▀" BG_RESET COLOR_PETRIFICATEUR_SORON "▀▀" COLOR_PETRIFICATEUR_BASE "▄▀ ",
+                      " ▄" COLOR_PETRIFICATEUR_SORON "▀" COLOR_PETRIFICATEUR_BASE COLOR_BG_SORON "▀" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_FIRING "█▄  ▄█" COLOR_PETRIFICATEUR_BASE COLOR_BG_SORON "▀" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_SORON "▀" COLOR_PETRIFICATEUR_BASE "▄ ",
+                      " ▀▄" COLOR_PETRIFICATEUR_SORON "▀▀" COLOR_PETRIFICATEUR_BASE COLOR_BG_SORON "▀▀▀▀" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_SORON "▀▀" COLOR_PETRIFICATEUR_BASE "▄▀ ",
                       "   ▀▀    ▀▀   "},
                      {COLOR_PETRIFICATEUR_SORON "   ▄▄▄▄▄▄▄▄   ",
                       COLOR_PETRIFICATEUR_SORON " ▄▀▄" COLOR_PETRIFICATEUR_BASE " █▄▄█ " COLOR_PETRIFICATEUR_SORON "▄▀▄ ",
@@ -850,17 +867,17 @@ void drawCell(struct Cell cell, Grid grid)
                          "   ▀▀    ▀▀   "},
                         {"   ▄▄    ▄▄   ",
                          " ▄▀" COLOR_PETRIFICATEUR_SORON "▄" COLOR_PETRIFICATEUR_BASE_LVL2 " █" COLOR_PETRIFICATEUR_SORON "▄▄" COLOR_PETRIFICATEUR_BASE_LVL2 "█ " COLOR_PETRIFICATEUR_SORON "▄" COLOR_PETRIFICATEUR_BASE_LVL2 "▀▄ ",
-                         " ▀▄▄" COLOR_BG_SORON COLOR_PETRIFICATEUR_FIRING "▄" BG_RESET "▀  ▀" COLOR_BG_SORON "▄" BG_RESET COLOR_PETRIFICATEUR_BASE_LVL2 "▄▄▀ " COLOR_PETRIFICATEUR_SORON,
+                         " ▀▄▄" COLOR_BG_SORON COLOR_PETRIFICATEUR_FIRING "▄" COLOR_TOWER_SLOT_BG "▀  ▀" COLOR_BG_SORON "▄" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_BASE_LVL2 "▄▄▀ " COLOR_PETRIFICATEUR_SORON,
                          "   █  ██  █   " COLOR_PETRIFICATEUR_BASE_LVL2,
-                         " ▄▀▀" COLOR_BG_SORON COLOR_PETRIFICATEUR_FIRING "▀" BG_RESET "▄  ▄" COLOR_BG_SORON "▀" BG_RESET COLOR_PETRIFICATEUR_BASE_LVL2 "▀▀▄ ",
+                         " ▄▀▀" COLOR_BG_SORON COLOR_PETRIFICATEUR_FIRING "▀" COLOR_TOWER_SLOT_BG "▄  ▄" COLOR_BG_SORON "▀" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_BASE_LVL2 "▀▀▄ ",
                          " ▀▄" COLOR_PETRIFICATEUR_SORON "▀" COLOR_PETRIFICATEUR_BASE_LVL2 " █" COLOR_PETRIFICATEUR_SORON "▀▀" COLOR_PETRIFICATEUR_BASE_LVL2 "█ " COLOR_PETRIFICATEUR_SORON "▀" COLOR_PETRIFICATEUR_BASE_LVL2 "▄▀ ",
                          "   ▀▀    ▀▀   "},
                         {"   ▄▄    ▄▄   ",
-                         " ▄▀" COLOR_PETRIFICATEUR_SORON "▄▄" COLOR_PETRIFICATEUR_BASE_LVL2 COLOR_BG_SORON "▄▄▄▄" BG_RESET COLOR_PETRIFICATEUR_SORON "▄▄" COLOR_PETRIFICATEUR_BASE_LVL2 "▀▄ ",
-                         " ▀" COLOR_PETRIFICATEUR_SORON "▄" COLOR_PETRIFICATEUR_BASE_LVL2 COLOR_BG_SORON "▄" BG_RESET COLOR_PETRIFICATEUR_FIRING "█▀  ▀█" COLOR_PETRIFICATEUR_BASE_LVL2 COLOR_BG_SORON "▄" BG_RESET COLOR_PETRIFICATEUR_SORON "▄" COLOR_PETRIFICATEUR_BASE_LVL2 "▀ ",
+                         " ▄▀" COLOR_PETRIFICATEUR_SORON "▄▄" COLOR_PETRIFICATEUR_BASE_LVL2 COLOR_BG_SORON "▄▄▄▄" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_SORON "▄▄" COLOR_PETRIFICATEUR_BASE_LVL2 "▀▄ ",
+                         " ▀" COLOR_PETRIFICATEUR_SORON "▄" COLOR_PETRIFICATEUR_BASE_LVL2 COLOR_BG_SORON "▄" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_FIRING "█▀  ▀█" COLOR_PETRIFICATEUR_BASE_LVL2 COLOR_BG_SORON "▄" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_SORON "▄" COLOR_PETRIFICATEUR_BASE_LVL2 "▀ ",
                          "  " COLOR_PETRIFICATEUR_SORON "█" COLOR_PETRIFICATEUR_BASE_LVL2 "█  " COLOR_PETRIFICATEUR_SORON "██" COLOR_PETRIFICATEUR_BASE_LVL2 "  █" COLOR_PETRIFICATEUR_SORON "█  " COLOR_PETRIFICATEUR_BASE_LVL2,
-                         " ▄" COLOR_PETRIFICATEUR_SORON "▀" COLOR_PETRIFICATEUR_BASE_LVL2 COLOR_BG_SORON "▀" BG_RESET COLOR_PETRIFICATEUR_FIRING "█▄  ▄█" COLOR_PETRIFICATEUR_BASE_LVL2 COLOR_BG_SORON "▀" BG_RESET COLOR_PETRIFICATEUR_SORON "▀" COLOR_PETRIFICATEUR_BASE_LVL2 "▄ ",
-                         " ▀▄" COLOR_PETRIFICATEUR_SORON "▀▀" COLOR_PETRIFICATEUR_BASE_LVL2 COLOR_BG_SORON "▀▀▀▀" BG_RESET COLOR_PETRIFICATEUR_SORON "▀▀" COLOR_PETRIFICATEUR_BASE_LVL2 "▄▀ ",
+                         " ▄" COLOR_PETRIFICATEUR_SORON "▀" COLOR_PETRIFICATEUR_BASE_LVL2 COLOR_BG_SORON "▀" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_FIRING "█▄  ▄█" COLOR_PETRIFICATEUR_BASE_LVL2 COLOR_BG_SORON "▀" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_SORON "▀" COLOR_PETRIFICATEUR_BASE_LVL2 "▄ ",
+                         " ▀▄" COLOR_PETRIFICATEUR_SORON "▀▀" COLOR_PETRIFICATEUR_BASE_LVL2 COLOR_BG_SORON "▀▀▀▀" COLOR_TOWER_SLOT_BG COLOR_PETRIFICATEUR_SORON "▀▀" COLOR_PETRIFICATEUR_BASE_LVL2 "▄▀ ",
                          "   ▀▀    ▀▀   "},
                         {COLOR_PETRIFICATEUR_SORON "   ▄▄▄▄▄▄▄▄   ",
                          COLOR_PETRIFICATEUR_SORON " ▄▀▄" COLOR_PETRIFICATEUR_BASE_LVL2 " █▄▄█ " COLOR_PETRIFICATEUR_SORON "▄▀▄ ",
@@ -869,7 +886,7 @@ void drawCell(struct Cell cell, Grid grid)
                          COLOR_PETRIFICATEUR_SORON " █" COLOR_PETRIFICATEUR_BASE_LVL2 "▀▀" COLOR_PETRIFICATEUR_FIRING "█▄  ▄█" COLOR_PETRIFICATEUR_BASE_LVL2 "▀▀" COLOR_PETRIFICATEUR_SORON "█ ",
                          COLOR_PETRIFICATEUR_SORON " ▀▄▀" COLOR_PETRIFICATEUR_BASE_LVL2 " █▀▀█ " COLOR_PETRIFICATEUR_SORON "▀▄▀ ",
                          COLOR_PETRIFICATEUR_SORON "   ▀▀▀▀▀▀▀▀   "}}};
-                int petrificateur_shooting;
+                int petrificateur_shooting; // Même principe que pour la gatling, calcul de quel sprites par rapport à l'horloge interne mais cette fois pour 20 sprites
                 petrificateur_shooting = floor(cell.turret.compteur * (20 / cell.turret.reload_delay[cell.turret.lvl]));
                 for (int i = 0; i < 7; i++)
                 {
@@ -877,7 +894,7 @@ void drawCell(struct Cell cell, Grid grid)
                     printf(sprite[cell.turret.lvl][petrificateur_shooting][i]);
                 }
             }
-            else if (cell.turret.type == Banque)
+            else if (cell.turret.type == Banque) // Sprites de la banque (avec animation lorsque l'argent apparait)
             {
                 printf(COLOR_BANQUE_BASE);
 
@@ -1022,7 +1039,7 @@ void drawCell(struct Cell cell, Grid grid)
                       "█  ▜▛ ▄▟ ▙▟  █",
                       "█            █",
                       "█▄▄▄▄▄▄▄▄▄▄▄▄█"}}};
-                int banque_generating;
+                int banque_generating; // Calcul de quand l'animation doit être jouée (floor() = partie entière)
                 double d = cell.turret.compteur;
                 double fractionnaire_d = d - floor(d);
                 if (0 < fractionnaire_d && fractionnaire_d < 0.5)
@@ -1059,7 +1076,7 @@ void drawCell(struct Cell cell, Grid grid)
     }
     if (cell.type == CHEMIN)
     {
-        // Détermination du type de chemin
+        // Détermination du type de chemin (pour bien dessiner leurs bordures)
         bool chemin_vers_haut = cell.y - 1 >= 0 && grid.cells[cell.x][cell.y - 1].type == CHEMIN;
         bool chemin_vers_droite = cell.x + 1 < grid.width && grid.cells[cell.x + 1][cell.y].type == CHEMIN;
         bool chemin_vers_bas = cell.y + 1 < grid.height && grid.cells[cell.x][cell.y + 1].type == CHEMIN;
@@ -1079,7 +1096,7 @@ void drawCell(struct Cell cell, Grid grid)
 
             move_to(terminal_x - 1, terminal_y + y - 1);
 
-            for (int x = 0; x < CELL_WIDTH + 2; x++)
+            for (int x = 0; x < CELL_WIDTH + 2; x++) // Dessin des chemins selon leurs status
             {
                 bool side = (cell.x == 0 && x == 0) || (cell.x == grid.width - 1 && x == CELL_WIDTH + 1);
                 if (
@@ -1136,7 +1153,7 @@ void drawCell(struct Cell cell, Grid grid)
     }
 }
 
-void drawFullGrid(Grid grid)
+void drawFullGrid(Grid grid) // Dessine la grille en entière
 {
 
     for (int x = 0; x < grid.width; x++)
@@ -1147,7 +1164,7 @@ void drawFullGrid(Grid grid)
         }
     }
 }
-void clearPath(Grid grid)
+void clearPath(Grid grid) // Dessine uniquement les chemins
 {
     for (int x = 0; x < grid.width; x++)
     {
@@ -1159,7 +1176,7 @@ void clearPath(Grid grid)
     }
 }
 
-void clearUsedPath(Grid grid, EnemyPool ep)
+void clearUsedPath(Grid grid, EnemyPool ep) // Redessine les endroits aves des ennemis
 {
     for (int x = 0; x < grid.width; x++)
     {

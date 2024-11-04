@@ -3,13 +3,15 @@
 #include "shared.h"
 #include "grid.h"
 
-enum EnemyType
+//Enumérations et structures des éléments liées aux ennemis
+
+enum EnemyType 
 {
     ENEMY_TUX,
     ENEMY_SPEED
 };
 
-enum EnemyState
+enum EnemyState 
 {
     ENEMY_STATE_ALIVE,
     ENEMY_STATE_DEAD,

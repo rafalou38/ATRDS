@@ -1,6 +1,6 @@
 #include "enemies.h"
 
-EnemyPool AllocEnemyPool()
+EnemyPool AllocEnemyPool() // A completer
 {
     EnemyPool ep;
     ep.length = 0xff; // 256
@@ -15,7 +15,7 @@ EnemyPool AllocEnemyPool()
     return ep;
 }
 
-void freeEnemyPool(EnemyPool ep)
+void freeEnemyPool(EnemyPool ep) // A completer
 {
     printf(COLOR_GRAY);
     printf(" $ ");
@@ -26,10 +26,11 @@ void freeEnemyPool(EnemyPool ep)
     printf("%s Done %s\n", COLOR_GREEN, RESET);
 }
 
+// Definitions des differents types d'ennemis et de leurs caractéristiques
 struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
 {
     struct Enemy enemy;
-    if (type == ENEMY_TUX)
+    if (type == ENEMY_TUX) // Ennemi de base
     {
         enemy.type = ENEMY_TUX;
         enemy.hp = 10;
@@ -41,9 +42,8 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.previous_cell = grid.cells[start_x][start_y];
         enemy.next_cell = grid.cells[start_x][start_y];
         enemy.on_last_cell = false;
-
     }
-    else if (type == ENEMY_SPEED)
+    else if (type == ENEMY_SPEED) // Ennemi rapide
     {
         enemy.type = ENEMY_SPEED;
         enemy.hp = 5;
@@ -59,7 +59,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
     return enemy;
 }
 
-void addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int start_y)
+void addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int start_y) // A completer
 {
     if (ep->count < ep->length)
     {
@@ -103,10 +103,8 @@ void defragEnemyPool(EnemyPool *ep)
     ep->count -= right - left;
 }
 
-void drawEnemies(EnemyPool ep, Grid grid)
+void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin VIDE
 {
-    // Path must be cleared beforehand
-
     for (int i = 0; i < ep.count; i++)
     {
         struct Enemy *enemy = &(ep.enemies[i]);
@@ -130,28 +128,34 @@ void drawEnemies(EnemyPool ep, Grid grid)
         int px = terminal_x + (CELL_WIDTH + GAP) * (enemy->grid_x - (int)enemy->grid_x);
         int py = terminal_y + (CELL_HEIGHT + GAP / 2) * (enemy->grid_y - (int)enemy->grid_y);
 
-        printf(COLOR_STANDARD_BG);
+        printf(COLOR_STANDARD_BG); // Sprites des ennemis
         if (enemy->type == ENEMY_TUX)
         {
             int sprite_anim;
-            char* sprite_ennemy[2][2]={
+            char *sprite_ennemy[2][2] = {
                 {"X O",
                  "-⎶-"},
                 {"X O",
                  "<=>"}};
-            if ((px%3==0 && py%3==0)||((px%3==1 && py%3==1))){
+            if ((px % 3 == 0 && py % 3 == 0) || ((px % 3 == 1 && py % 3 == 1)))
+            {
                 sprite_anim = 0;
-            }else{sprite_anim = 1;}
-            for (int i = py; i < py+2; i++){
+            }
+            else
+            {
+                sprite_anim = 1;
+            }
+            for (int i = py; i < py + 2; i++)
+            {
                 move_to(px, i);
-                printf(sprite_ennemy[sprite_anim][i-py]);
+                printf(sprite_ennemy[sprite_anim][i - py]);
             }
         }
         else if (enemy->type == ENEMY_SPEED)
         {
             move_to(px, py);
             printf("∑ ∑");
-            move_to(px, py+1);
+            move_to(px, py + 1);
             printf("/▔\\");
         }
 
@@ -162,7 +166,7 @@ void drawEnemies(EnemyPool ep, Grid grid)
 
         move_to(px - 1, py - 1);
 
-        printf(COLOR_HEALTH_BG);
+        printf(COLOR_HEALTH_BG); // Sprites de la barre de vie des ennemis
         float ratio_tot = enemy->hp / (float)enemy->maxHP;
         if (ratio_tot >= 0.75)
             printf(COLOR_HEALTH_75);
@@ -201,7 +205,8 @@ void drawEnemies(EnemyPool ep, Grid grid)
     }
 }
 
-void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, float dt_sec)
+// Mise à jour des ennemis (Points de Vie, Position...)
+void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, float dt_sec) 
 {
     bool defragNeeded = false;
     // Walk
@@ -266,6 +271,8 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
 
         dx *= enemy->speed * dt_sec;
         dy *= enemy->speed * dt_sec;
+
+        // Influence des effet des tourelles comme le stun (pétrification) et le slow (ralentissement) sur les mouvements des ennemis
         if (enemy->has_effect)
         {
             if (enemy->effet == Stun)
@@ -289,17 +296,18 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
                 }
             }
         }
+
         enemy->grid_x += dx;
         enemy->grid_y += dy;
 
-        if (enemy->grid_x >= grid.width)
+        if (enemy->grid_x >= grid.width) // Arrivée d'un ennmi à l'objectif
         {
             enemy->state = ENEMY_STATE_ARRIVED;
             defragNeeded = true;
             gs->health -= 1;
         }
 
-        if (enemy->hp <= 0)
+        if (enemy->hp <= 0) // Effets liés à la mort d'un ennemi
         {
             enemy->state = ENEMY_STATE_DEAD;
             drawCell(enemy->previous_cell, grid);
@@ -314,7 +322,7 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
         }
     }
 
-    if (defragNeeded)
+    if (defragNeeded) // Suppression des ennemis à faire disparaître (morts où arrivés au bout)
     {
         defragEnemyPool(ep);
     }

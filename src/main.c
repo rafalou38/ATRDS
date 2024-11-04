@@ -228,7 +228,7 @@ int main()
                     was_range_visible = false;
                 }
 
-                move_to(width - (7 + 6), 1);
+                move_to(width - (7 + 10), 1);
                 printf(COLOR_RED "%02d ❤" RESET COLOR_STANDARD_BG " | " COLOR_YELLOW " % 4d €" RESET, gameStats.health, gameStats.cash);
                 if (gameStats.health <= 0)
                 {

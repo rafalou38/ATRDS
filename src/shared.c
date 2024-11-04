@@ -1,6 +1,6 @@
 #include "shared.h"
 
-int msleep(long ms)
+int msleep(long ms) // Fonction de repos (temps pendant lequel le terminal ne lis pas la suit du programme), ici en micro-secondes
 {
     struct timespec ts;
     ts.tv_sec = ms / 1000;
@@ -8,7 +8,7 @@ int msleep(long ms)
     return nanosleep(&ts, &ts);
 }
 
-void updateLabels(Labels *labels, float dt)
+void updateLabels(Labels *labels, float dt) // A completer (c'est quoi les labels wtf ?)
 {
     for (int i = 0; i < labels->count; i++)
     {
@@ -44,7 +44,8 @@ void updateLabels(Labels *labels, float dt)
     if (labels->count < 0)
         labels->count = 0;
 };
-void drawLabels(Labels labels)
+
+void drawLabels(Labels labels) // A completer
 {
     for (int i = 0; i < labels.count; i++)
     {
@@ -53,7 +54,8 @@ void drawLabels(Labels labels)
         // printf("%.2f", labels.labels[i].counter);
     }
 };
-void freeLabels(Labels labels)
+
+void freeLabels(Labels labels) // A completer
 {
     printf(COLOR_GRAY " $ " RESET "Freeing %s%d%s labels:\t", COLOR_YELLOW, labels.count, RESET);
     free(labels.labels);
@@ -67,7 +69,8 @@ void freeLabels(Labels labels)
 #############
 */
 
-char get_key_press()
+// Lecture des inputs de l'utilisateur
+char get_key_press() 
 {
     int k = 0;
     // Récupère le nombre de characters en attente d’être lus
@@ -79,22 +82,27 @@ char get_key_press()
         return 0;
 }
 
+// Les fonctions suivantes sont claires de par leurs noms (les "\033[" indiquent des actions sur l'affichage (voir README et les codes ANSI))
 void move_to(int x, int y)
 {
     printf("\033[%d;%dH", y, x);
 }
+
 void clear_screen()
 {
     printf("\033[2J");
 }
+
 void clear_line()
 {
     printf("\033[2K");
 }
+
 void hide_cursor()
 {
     printf("\033[?25l");
 }
+
 void show_cursor()
 {
     printf("\033[?25h");
@@ -105,7 +113,8 @@ void printCritical(char *errorMessage)
     printf("%s%sCRITICAL%s: %s %s %s\n", COLOR_RED, UNDERLINE, UNDERLINE_RST, BOLD, errorMessage, RESET);
 }
 
-void get_terminal_size(int *width, int *height)
+// Récupération de la taille du terminale
+void get_terminal_size(int *width, int *height) 
 {
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -114,7 +123,8 @@ void get_terminal_size(int *width, int *height)
     *height = w.ws_row;
 }
 
-void checkTerminalSize(int *width, int *height)
+// Oblige l'utilisateur à se mettre dans une bonne configuration de terminal pour jouer
+void checkTerminalSize(int *width, int *height) 
 {
     get_terminal_size(width, height);
 
@@ -137,6 +147,7 @@ void checkTerminalSize(int *width, int *height)
     }
 }
 
+// Dessine les cercles de portée des tourelles (A completer + refaire car les range sont buggées (essayer gatling lvl 2 par exemple))
 void drawRange(int term_width, int term_height, float range, float grid_x, float grid_y)
 {
     // float center_term_x = grid_x * (CELL_WIDTH + GAP) + 3;
