@@ -384,35 +384,87 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
             {
                 printf(COLOR_INFERNO_BASE);
 
-                char *sprite[2][7] = {
-                    {"     ▄" COLOR_INFERNO_HEAD "/\\" COLOR_INFERNO_BASE "▄     ",
-                     "  ▄███" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "███▄  ",
-                     " ▄██▄█" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "█▄██▄ ",
-                     COLOR_INFERNO_HEAD "<" COLOR_INFERNO_CANNON "=====[]=====" COLOR_INFERNO_HEAD ">" COLOR_INFERNO_BASE,
-                     " ▀██▀█" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "█▀██▀ ",
-                     "  ▀███" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "███▀  ",
-                     "     ▀" COLOR_INFERNO_HEAD "\\/" COLOR_INFERNO_BASE "▀     "},
-
-                    {"     ▄" COLOR_INFERNO_HEAD "/\\" COLOR_INFERNO_BASE "▄     ",
-                     COLOR_INFERNO_HEAD "  ⇖ " COLOR_INFERNO_BASE "▀█" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "█▀" COLOR_INFERNO_HEAD "⇗   ",
-                     COLOR_INFERNO_BASE " ▄█▄" COLOR_INFERNO_CANNON "⇖ ||⇗ " COLOR_INFERNO_BASE "▄█▄ ",
-                     COLOR_INFERNO_HEAD "<"
-                                        "=====[]=====" COLOR_INFERNO_HEAD ">",
-                     COLOR_INFERNO_BASE " ▀█▀" COLOR_INFERNO_CANNON "⇙ ||⇘ " COLOR_INFERNO_BASE "▀█▀ ",
-                     COLOR_INFERNO_HEAD "  ⇙ " COLOR_INFERNO_BASE "▄█" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "█▄" COLOR_INFERNO_HEAD "⇘   ",
-                     COLOR_INFERNO_BASE "     ▀" COLOR_INFERNO_HEAD "\\/" COLOR_INFERNO_BASE "▀     "}};
-
+                char *sprite[2][4][7] = {
+                    {{"     ▄██▄     ",
+                      "  ▄▀█▀▀▀▀█▀▄  ",
+                      " ▄█▀ "COLOR_INFERNO_FIRE1"▄"COLOR_INFERNO_FIRE2"▀ ▄"COLOR_INFERNO_BASE" ▀█▄ ",
+                      "███  "COLOR_INFERNO_FIRE1"▀▄█"COLOR_INFERNO_FIRE2" ▄"COLOR_INFERNO_BASE" ███",
+                      " ▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀ ",
+                      "  ▀▄█▄▄▄▄█▄▀  ",
+                      "     ▀██▀     "},
+                     {"     ▄██▄     ",
+                      "  ▄▀█▀▀▀▀█▀▄  ",
+                      " ▄█▀"COLOR_INFERNO_FIRE2"▄ ▀ ▄"COLOR_INFERNO_BASE" ▀█▄ ",
+                      "███ "COLOR_INFERNO_FIRE1"▀▄"COLOR_INFERNO_FIRE1"▀"COLOR_INFERNO_FIRE1"▄ █"COLOR_INFERNO_BASE" ███",
+                      " ▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀ ",
+                      "  ▀▄█▄▄▄▄█▄▀  ",
+                      "     ▀██▀     "},
+                     {"     ▄██▄     ",
+                      "  ▄▀█▀▀▀▀█▀▄  ",
+                      " ▄█▀ "COLOR_INFERNO_FIRE2"▄ ▀"COLOR_INFERNO_FIRE1"▄"COLOR_INFERNO_BASE" ▀█▄ ",
+                      "███ "COLOR_INFERNO_FIRE2"▄ "COLOR_INFERNO_FIRE1"█▄▀"COLOR_INFERNO_BASE"  ███",
+                      " ▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀ ",
+                      "  ▀▄█▄▄▄▄█▄▀  ",
+                      "     ▀██▀     "},
+                     {"     █  █     ",
+                      "  ▄▀█▀▀▀▀█▀▄  ",
+                      "▄▄█▀ "COLOR_INFERNO_FIRE2"▄ ▀"COLOR_INFERNO_FIRE1"▄"COLOR_INFERNO_BASE" ▀█▄▄",
+                      "  █ "COLOR_INFERNO_FIRE1"█ ▄"COLOR_INFERNO_FIRE2"▀"COLOR_INFERNO_FIRE1"▄█"COLOR_INFERNO_BASE" █  ",
+                      "▀▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀▀",
+                      "  ▀▄█▄▄▄▄█▄▀  ",
+                      "     █  █     "}},
+                    {{"█▀▄  ▄▀▀▄  ▄▀█",
+                      " ▀▄▀█▀▀▀▀█▀▄▀ ",
+                      " ▄█▀ "COLOR_INFERNO_FIRE1"▄"COLOR_INFERNO_FIRE2"▀ ▄"COLOR_INFERNO_BASE" ▀█▄ ",
+                      "█ █  "COLOR_INFERNO_FIRE1"▀▄█"COLOR_INFERNO_FIRE2" ▄"COLOR_INFERNO_BASE" █ █",
+                      " ▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀ ",
+                      " ▄▀▄█▄▄▄▄█▄▀▄ ",
+                      "█▄▀  ▀▄▄▀  ▀▄█"},
+                     {"█▀▄  ▄▀▀▄  ▄▀█",
+                      " ▀▄▀█▀▀▀▀█▀▄▀ ",
+                      " ▄█▀"COLOR_INFERNO_FIRE2"▄ ▀ ▄"COLOR_INFERNO_BASE" ▀█▄ ",
+                      "█ █ "COLOR_INFERNO_FIRE1"▀▄"COLOR_INFERNO_FIRE1"▀"COLOR_INFERNO_FIRE1"▄ █"COLOR_INFERNO_BASE" █ █",
+                      " ▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀ ",
+                      " ▄▀▄█▄▄▄▄█▄▀▄ ",
+                      "█▄▀  ▀▄▄▀  ▀▄█"},
+                     {"█▀▄  ▄▀▀▄  ▄▀█",
+                      " ▀▄▀█▀▀▀▀█▀▄▀ ",
+                      " ▄█▀ "COLOR_INFERNO_FIRE2"▄ ▀"COLOR_INFERNO_FIRE1"▄"COLOR_INFERNO_BASE" ▀█▄ ",
+                      "█ █ "COLOR_INFERNO_FIRE2"▄ "COLOR_INFERNO_FIRE1"█▄▀"COLOR_INFERNO_BASE"  █ █",
+                      " ▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀ ",
+                      " ▄▀▄█▄▄▄▄█▄▀▄ ",
+                      "█▄▀  ▀▄▄▀  ▀▄█"},
+                     {"▄▀▄  █  █  ▄▀▄",
+                      " ▀▄▀█▀▀▀▀█▀▄▀ ",
+                      "▄▄█▀ "COLOR_INFERNO_FIRE2"▄ ▀"COLOR_INFERNO_FIRE1"▄"COLOR_INFERNO_BASE" ▀█▄▄",
+                      "  █ "COLOR_INFERNO_FIRE1"█ ▄"COLOR_INFERNO_FIRE2"▀"COLOR_INFERNO_FIRE1"▄█"COLOR_INFERNO_BASE" █  ",
+                      "▀▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀▀",
+                      " ▄▀▄█▄▄▄▄█▄▀▄ ",
+                      "▀▄▀  █  █  ▀▄▀"}}};
+                int inferno_shooting;
+                if (cell.turret.compteur < 0.3 && cell.turret.in_range == true)
+                {
+                    inferno_shooting = 3;
+                }
+                else
+                {
+                    inferno_shooting = ((int)floor(cell.turret.compteur * (3*(3-cell.turret.lvl) / cell.turret.reload_delay[cell.turret.lvl])))%3;
+                    if (inferno_shooting > 2)
+                    {
+                        inferno_shooting = 2;
+                    }
+                }
                 for (int i = 0; i < 7; i++)
                 {
                     move_to(x_current_turret, y_current_turret + i);
-                    printf(sprite[cell.turret.lvl][i]);
+                    printf(sprite[cell.turret.lvl][inferno_shooting][i]);
                 }
             }
             else if (cell.turret.type == Mortier) // Sprites du mortier, 4 sprites pour le mortier normale et le mortier qui tire (de niveau 1 et de niveau 2)
             {
                 printf(COLOR_MORTIER_BASE);
 
-                char *sprite[2][2][7] = {
+                char *sprite[2][3][7] = {
                     {{"  ██████████  ",
                       "██ ▄██████▄ ██",
                       "████▀    ▀████",
@@ -426,6 +478,13 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
                       "███ " COLOR_MORTIER_FIRING "██" COLOR_MORTIER_FIRING_CENTER "██" COLOR_MORTIER_FIRING "██" COLOR_MORTIER_BASE " ███",
                       "███▄ " COLOR_MORTIER_FIRING "▀██▀" COLOR_MORTIER_BASE " ▄███",
                       "██ ▀█▄▄▄▄█▀ ██",
+                      "  ██████████  "},
+                     {"  ██████████  ",
+                      "██ ▄██▀▀██▄ ██",
+                      "████  " COLOR_MORTIER_COOLING "▄▄" COLOR_MORTIER_BASE "  ████",
+                      "███  " COLOR_MORTIER_COOLING "█  █" COLOR_MORTIER_BASE "  ███",
+                      "████  " COLOR_MORTIER_COOLING "▀▀" COLOR_MORTIER_BASE "  ████",
+                      "██ ▀██▄▄██▀ ██",
                       "  ██████████  "}},
                     {{"▄█▀▀▀▀██▀▀▀▀█▄",
                       "█  ▄██████▄  █",
@@ -440,9 +499,22 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
                       "██ █ " COLOR_MORTIER_FIRING "█" COLOR_MORTIER_FIRING_CENTER "██" COLOR_MORTIER_FIRING "█" COLOR_MORTIER_BASE " █ ██",
                       "█ ██▄ " COLOR_MORTIER_FIRING "▀▀" COLOR_MORTIER_BASE " ▄██ █",
                       "█  ▀██▀▀██▀  █",
+                      "▀█▄▄▄▄██▄▄▄▄█▀"},
+                     {"▄█▀▀▀▀██▀▀▀▀█▄",
+                      "█  ▄██▀▀██▄  █",
+                      "█ ██  " COLOR_MORTIER_COOLING "▄▄" COLOR_MORTIER_BASE "  ██ █",
+                      "███  " COLOR_MORTIER_COOLING "█  █" COLOR_MORTIER_BASE "  ███",
+                      "█ ██  " COLOR_MORTIER_COOLING "▀▀" COLOR_MORTIER_BASE "  ██ █",
+                      "█  ▀██▄▄██▀  █",
                       "▀█▄▄▄▄██▄▄▄▄█▀"}}};
+
                 int mortier_shooting; // Détermination du shoot du mortier par rapport à son horloge interne
-                if (cell.turret.compteur < 0.5)
+
+                if (cell.turret.in_range == false)
+                {
+                    mortier_shooting = 2;
+                }
+                else if (cell.turret.compteur < 0.5)
                 {
                     mortier_shooting = 1;
                 }
@@ -568,29 +640,29 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
                       "   ▀  ██  ▀   "},
                      {"      ██      ",
                       " ▄  ██▀▀██  ▄ ",
-                      "  ██▀  "COLOR_FREEZER_FIRING_CENTER"▄"COLOR_FREEZER_BASE" ▀██  ",
-                      "███  "COLOR_FREEZER_FIRING_CENTER"▀  ▄"COLOR_FREEZER_BASE"  ███",
-                      "  ██▄ "COLOR_FREEZER_FIRING_CENTER"▀"COLOR_FREEZER_BASE"  ▄██  ",
+                      "  ██▀  " COLOR_FREEZER_FIRING_CENTER "▄" COLOR_FREEZER_BASE " ▀██  ",
+                      "███  " COLOR_FREEZER_FIRING_CENTER "▀  ▄" COLOR_FREEZER_BASE "  ███",
+                      "  ██▄ " COLOR_FREEZER_FIRING_CENTER "▀" COLOR_FREEZER_BASE "  ▄██  ",
                       " ▀  ██▄▄██  ▀ ",
                       "      ██      "},
                      {"      ██      ",
                       " ▄  ██▀▀██  ▄ ",
-                      "  ██▀ "COLOR_FREEZER_FIRING_CENTER"▄"COLOR_FREEZER_BASE"  ▀██  ",
-                      "███  "COLOR_FREEZER_FIRING_CENTER"▄  ▀"COLOR_FREEZER_BASE"  ███",
-                      "  ██▄  "COLOR_FREEZER_FIRING_CENTER"▀"COLOR_FREEZER_BASE" ▄██  ",
+                      "  ██▀ " COLOR_FREEZER_FIRING_CENTER "▄" COLOR_FREEZER_BASE "  ▀██  ",
+                      "███  " COLOR_FREEZER_FIRING_CENTER "▄  ▀" COLOR_FREEZER_BASE "  ███",
+                      "  ██▄  " COLOR_FREEZER_FIRING_CENTER "▀" COLOR_FREEZER_BASE " ▄██  ",
                       " ▀  ██▄▄██  ▀ ",
                       "      ██      "},
                      {"      ██      ",
                       " ▄  ██▀▀██  ▄ ",
-                      "  ██▀"COLOR_FREEZER_FIRING_CENTER"▄  ▄"COLOR_FREEZER_BASE"▀██  ",
+                      "  ██▀" COLOR_FREEZER_FIRING_CENTER "▄  ▄" COLOR_FREEZER_BASE "▀██  ",
                       "███        ███",
-                      "  ██▄"COLOR_FREEZER_FIRING_CENTER"▀  ▀"COLOR_FREEZER_BASE"▄██  ",
+                      "  ██▄" COLOR_FREEZER_FIRING_CENTER "▀  ▀" COLOR_FREEZER_BASE "▄██  ",
                       " ▀  ██▄▄██  ▀ ",
                       "      ██      "},
                      {"      ██      ",
                       " ▄  ██▀▀██  ▄ ",
                       "  ██▀    ▀██  ",
-                      "███   "COLOR_FREEZER_FIRING_CENTER"██"COLOR_FREEZER_BASE"   ███",
+                      "███   " COLOR_FREEZER_FIRING_CENTER "██" COLOR_FREEZER_BASE "   ███",
                       "  ██▄    ▄██  ",
                       " ▀  ██▄▄██  ▀ ",
                       "      ██      "}},
@@ -610,29 +682,29 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
                       "  ▄▀ ▀▄▄▀ ▀▄  "},
                      {"     ▄▀▀▄     ",
                       "   ▄██▀▀██▄   ",
-                      " ▄██   "COLOR_FREEZER_FIRING_CENTER"▄"COLOR_FREEZER_BASE"  ██▄ ",
-                      "█ █  "COLOR_FREEZER_FIRING_CENTER"▀  ▄"COLOR_FREEZER_BASE"  █ █",
-                      " ▀██  "COLOR_FREEZER_FIRING_CENTER"▀"COLOR_FREEZER_BASE"   ██▀ ",
+                      " ▄██   " COLOR_FREEZER_FIRING_CENTER "▄" COLOR_FREEZER_BASE "  ██▄ ",
+                      "█ █  " COLOR_FREEZER_FIRING_CENTER "▀  ▄" COLOR_FREEZER_BASE "  █ █",
+                      " ▀██  " COLOR_FREEZER_FIRING_CENTER "▀" COLOR_FREEZER_BASE "   ██▀ ",
                       "   ▀██▄▄██▀   ",
                       "     ▀▄▄▀     "},
                      {"     ▄▀▀▄     ",
                       "   ▄██▀▀██▄   ",
-                      " ▄██  "COLOR_FREEZER_FIRING_CENTER"▄"COLOR_FREEZER_BASE"   ██▄ ",
-                      "█ █  "COLOR_FREEZER_FIRING_CENTER"▄  ▀"COLOR_FREEZER_BASE"  █ █",
-                      " ▀██   "COLOR_FREEZER_FIRING_CENTER"▀"COLOR_FREEZER_BASE"  ██▀ ",
+                      " ▄██  " COLOR_FREEZER_FIRING_CENTER "▄" COLOR_FREEZER_BASE "   ██▄ ",
+                      "█ █  " COLOR_FREEZER_FIRING_CENTER "▄  ▀" COLOR_FREEZER_BASE "  █ █",
+                      " ▀██   " COLOR_FREEZER_FIRING_CENTER "▀" COLOR_FREEZER_BASE "  ██▀ ",
                       "   ▀██▄▄██▀   ",
                       "     ▀▄▄▀     "},
                      {"     ▄▀▀▄     ",
                       "   ▄██▀▀██▄   ",
-                      " ▄██ "COLOR_FREEZER_FIRING_CENTER"▄  ▄"COLOR_FREEZER_BASE" ██▄ ",
+                      " ▄██ " COLOR_FREEZER_FIRING_CENTER "▄  ▄" COLOR_FREEZER_BASE " ██▄ ",
                       "█ █        █ █",
-                      " ▀██ "COLOR_FREEZER_FIRING_CENTER"▀  ▀"COLOR_FREEZER_BASE" ██▀ ",
+                      " ▀██ " COLOR_FREEZER_FIRING_CENTER "▀  ▀" COLOR_FREEZER_BASE " ██▀ ",
                       "   ▀██▄▄██▀   ",
                       "     ▀▄▄▀     "},
                      {"     ▄▀▀▄     ",
                       "   ▄██▀▀██▄   ",
                       " ▄██      ██▄ ",
-                      "█ █   "COLOR_FREEZER_FIRING_CENTER"██"COLOR_FREEZER_BASE"   █ █",
+                      "█ █   " COLOR_FREEZER_FIRING_CENTER "██" COLOR_FREEZER_BASE "   █ █",
                       " ▀██      ██▀ ",
                       "   ▀██▄▄██▀   ",
                       "     ▀▄▄▀     "}}};
@@ -645,9 +717,10 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
                 {
                     if (cell.turret.in_range == false)
                     {
-                        freezer_shooting = floor(cell.turret.compteur * (4 / cell.turret.reload_delay[cell.turret.lvl]))+2;
-                        if (freezer_shooting>5){
-                            freezer_shooting=5;
+                        freezer_shooting = floor(cell.turret.compteur * (4 / cell.turret.reload_delay[cell.turret.lvl])) + 2;
+                        if (freezer_shooting > 5)
+                        {
+                            freezer_shooting = 5;
                         }
                     }
                     else
@@ -1150,7 +1223,6 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
                     move_to(x_current_turret, y_current_turret + i);
                     printf(sprite[cell.turret.lvl][banque_generating][i]);
                 }
-                
             }
             printf(RESET);
         }

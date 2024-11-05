@@ -212,6 +212,87 @@ RATIO JE METS MES DESIGN LA POUR L INSTANT
  "  ▀⇙ █||█⇘ ▀  ",
  "     ▀\/▀     "
 
+"     ▄" COLOR_INFERNO_HEAD "/\\" COLOR_INFERNO_BASE "▄     ",
+"  ▄███" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "███▄  ",
+" ▄██▄█" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "█▄██▄ ",
+COLOR_INFERNO_HEAD "<" COLOR_INFERNO_CANNON "=====[]=====" COLOR_INFERNO_HEAD ">" COLOR_INFERNO_BASE,
+" ▀██▀█" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "█▀██▀ ",
+"  ▀███" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "███▀  ",
+"     ▀" COLOR_INFERNO_HEAD "\\/" COLOR_INFERNO_BASE "▀     "
+
+"     ▄" COLOR_INFERNO_HEAD "/\\" COLOR_INFERNO_BASE "▄     ",
+COLOR_INFERNO_HEAD "  ⇖ " COLOR_INFERNO_BASE "▀█" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "█▀" COLOR_INFERNO_HEAD "⇗   ",
+COLOR_INFERNO_BASE " ▄█▄" COLOR_INFERNO_CANNON "⇖ ||⇗ " COLOR_INFERNO_BASE "▄█▄ ",
+COLOR_INFERNO_HEAD "<"
+                   "=====[]=====" COLOR_INFERNO_HEAD ">",
+COLOR_INFERNO_BASE " ▀█▀" COLOR_INFERNO_CANNON "⇙ ||⇘ " COLOR_INFERNO_BASE "▀█▀ ",
+COLOR_INFERNO_HEAD "  ⇙ " COLOR_INFERNO_BASE "▄█" COLOR_INFERNO_CANNON "||" COLOR_INFERNO_BASE "█▄" COLOR_INFERNO_HEAD "⇘   ",
+COLOR_INFERNO_BASE "     ▀" COLOR_INFERNO_HEAD "\\/" COLOR_INFERNO_BASE "▀     "
+
+ "     ▄██▄     ",
+ "  ▄▀█▀▀▀▀█▀▄  ",
+ " ▄█▀ ▄▀ ▄ ▀█▄ ",
+ "███  ▀▄█ ▄ ███",
+ " ▀█▄ ▀██▀ ▄█▀ ",
+ "  ▀▄█▄▄▄▄█▄▀  ",
+ "     ▀██▀     "
+
+ "     ▄██▄     ",
+ "  ▄▀█▀▀▀▀█▀▄  ",
+ " ▄█▀▄ ▀ ▄ ▀█▄ ",
+ "███ ▀▄▀▄ █ ███",
+ " ▀█▄ ▀██▀ ▄█▀ ",
+ "  ▀▄█▄▄▄▄█▄▀  ",
+ "     ▀██▀     "
+
+ "     ▄██▄     ",
+ "  ▄▀█▀▀▀▀█▀▄  ",
+ " ▄█▀ ▄ ▀▄ ▀█▄ ",
+ "███ ▄ █▄▀  ███",
+ " ▀█▄ ▀██▀ ▄█▀ ",
+ "  ▀▄█▄▄▄▄█▄▀  ",
+ "     ▀██▀     "
+
+ "     █  █     ",
+ "  ▄▀█▀▀▀▀█▀▄  ",
+ "▄▄█▀▄ ▀ ▄ ▀█▄▄",
+ "  █ ▀▄▀▄ █ █  ",
+ "▀▀█▄ ▀██▀ ▄█▀▀",
+ "  ▀▄█▄▄▄▄█▄▀  ",
+ "     █  █     "
+
+ "█▀▄  ▄▀▀▄  ▄▀█",
+ " ▀▄▀█▀▀▀▀█▀▄▀ ",
+ " ▄█▀ ▄▀ ▄ ▀█▄ ",
+ "█ █  ▀▄█ ▄ █ █",
+ " ▀█▄ ▀██▀ ▄█▀ ",
+ " ▄▀▄█▄▄▄▄█▄▀▄ ",
+ "█▄▀  ▀▄▄▀  ▀▄█"
+
+ "█▀▄  ▄▀▀▄  ▄▀█",
+ " ▀▄▀█▀▀▀▀█▀▄▀ ",
+ " ▄█▀▄ ▀ ▄ ▀█▄ ",
+ "█ █ ▀▄▀▄ █ █ █",
+ " ▀█▄ ▀██▀ ▄█▀ ",
+ " ▄▀▄█▄▄▄▄█▄▀▄ ",
+ "█▄▀  ▀▄▄▀  ▀▄█"
+
+ "█▀▄  ▄▀▀▄  ▄▀█",
+ " ▀▄▀█▀▀▀▀█▀▄▀ ",
+ " ▄█▀ ▄ ▀▄ ▀█▄ ",
+ "█ █ ▄ █▄▀  █ █",
+ " ▀█▄ ▀██▀ ▄█▀ ",
+ " ▄▀▄█▄▄▄▄█▄▀▄ ",
+ "█▄▀  ▀▄▄▀  ▀▄█"
+
+ "▄▀▄  █  █  ▄▀▄",
+ " ▀▄▀█▀▀▀▀█▀▄▀ ",
+ "▄▄█▀▄ ▀ ▄ ▀█▄▄",
+ "  █ ▀▄▀▄ █ █  ",
+ "▀▀█▄ ▀██▀ ▄█▀▀",
+ " ▄▀▄█▄▄▄▄█▄▀▄ ",
+ "▀▄▀  █  █  ▀▄▀"
+
  "▄█▀▀▀▀██▀▀▀▀█▄",
  "█  ▄██████▄  █",
  "█ ██▀    ▀██ █",

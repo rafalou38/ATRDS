@@ -176,13 +176,15 @@ int msleep(long ms);
     #define COLOR_SNIPER_CANNON "\033[38;5;33m"
     #define COLOR_SNIPER_HEAD "\033[38;5;196m"
     //Inferno colors
-    #define COLOR_INFERNO_BASE "\033[38;5;88m"
-    #define COLOR_INFERNO_CANNON "\033[38;5;202m"
-    #define COLOR_INFERNO_HEAD "\033[38;5;226m"
+    #define COLOR_INFERNO_BASE "\033[38;5;202m"
+    #define COLOR_INFERNO_FIRE1 "\033[38;5;196m"
+    #define COLOR_INFERNO_FIRE2 "\033[38;5;227m"
+    #define COLOR_INFERNO_TORCH "\033[38;5;243m"
     //Mortier colors
     #define COLOR_MORTIER_BASE "\033[38;5;243m"
     #define COLOR_MORTIER_FIRING "\033[38;5;208m"
     #define COLOR_MORTIER_FIRING_CENTER "\033[38;5;184m"
+    #define COLOR_MORTIER_COOLING "\033[38;5;14m"
     //Banque colors
     #define COLOR_BANQUE_BASE "\033[38;5;130m"
     #define COLOR_BANQUE_MONEY "\033[38;5;184m"
