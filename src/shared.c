@@ -71,7 +71,7 @@ void freeLabels(Labels labels) // nettoie le tableau des labels
 */
 
 // Lecture des inputs de l'utilisateur
-char get_key_press() 
+char get_key_press()
 {
     int k = 0;
     // Récupère le nombre de characters en attente d’être lus
@@ -115,7 +115,7 @@ void printCritical(char *errorMessage)
 }
 
 // Récupération de la taille du terminale
-void get_terminal_size(int *width, int *height) 
+void get_terminal_size(int *width, int *height)
 {
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -125,7 +125,7 @@ void get_terminal_size(int *width, int *height)
 }
 
 // Oblige l'utilisateur à se mettre dans une bonne configuration de terminal pour jouer
-void checkTerminalSize(int *width, int *height) 
+void checkTerminalSize(int *width, int *height)
 {
     get_terminal_size(width, height);
 
@@ -176,4 +176,175 @@ void drawRange(int term_width, int term_height, float range, float grid_x, float
             }
         }
     }
+}
+
+// Animation de début de jeu
+
+void anim_debut(int term_width, int term_height)
+{
+    int bro_this_variable_is_actually_an_easter_egg = 0;
+    if (term_width % 2 == 1)
+    {
+        bro_this_variable_is_actually_an_easter_egg = 1;
+        term_width -= 1;
+    }
+    int x_wanted = 0;
+    int y_wanted = 0;
+    for (int n = 0; n < term_width / 2; n++)
+    {
+        for (int y = 0; y < term_height - 1; y++)
+        {
+            for (int x = 0; x < term_width - 1; x = x + 2)
+            {
+                move_to(x, y);
+                if (x == x_wanted || y == y_wanted || x == term_width - x_wanted || y == term_height - y_wanted)
+                {
+                    printf("██");
+                }
+                else
+                {
+                    printf("  ");
+                }
+                //move_to(term_width / 2, term_height / 2);
+                //printf("%d|%d", x_wanted, y_wanted);
+            }
+        }
+        x_wanted += 2;
+        y_wanted += 1;
+        fflush(stdout);
+        msleep(5);
+    }
+    x_wanted = term_height * 2;
+    y_wanted = term_height / 2;
+    for (int n = 0; n < term_width / 4; n++)
+    {
+        for (int y = 0; y < term_height - 1; y++)
+        {
+            for (int x = 0; x < term_width - 1; x = x + 2)
+            {
+                move_to(x, y);
+                if ((x == x_wanted && y < y_wanted) || (y == y_wanted && x < x_wanted) || (x == term_width - x_wanted && y > term_height - y_wanted) || (y == term_height - y_wanted && x > term_width - x_wanted))
+                {
+                    printf("██");
+                }
+                else
+                {
+                    printf("  ");
+                }
+                //move_to(term_width / 2, term_height / 2);
+                //printf("%d|%d", x_wanted, y_wanted);
+            }
+        }
+        x_wanted += 2;
+        y_wanted += 1;
+        fflush(stdout);
+        msleep(5);
+    }
+    x_wanted = term_height * 2;
+    y_wanted = term_height / 2;
+    for (int n = 0; n < term_width / 4; n++)
+    {
+        for (int y = 0; y < term_height - 1; y++)
+        {
+            for (int x = 0; x < term_width - 1; x = x + 2)
+            {
+                move_to(x, y);
+                if ((x == x_wanted && y > term_height - y_wanted) || (y == y_wanted && x > term_width - x_wanted) || (x == term_width - x_wanted && y < y_wanted) || (y == term_height - y_wanted && x < x_wanted))
+                {
+                    printf("██");
+                }
+                else
+                {
+                    printf("  ");
+                }
+                //move_to(term_width / 2, term_height / 2);
+                //printf("%d|%d", x_wanted, y_wanted);
+            }
+        }
+        x_wanted += 2;
+        y_wanted += 1;
+        fflush(stdout);
+        msleep(5);
+    }
+
+    x_wanted = term_height * 2;
+    y_wanted = term_height / 2;
+    int x_wanted2 = x_wanted - 10;
+    int y_wanted2 = y_wanted - 5;
+    int x_wanted3 = x_wanted - 20;
+    int y_wanted3 = y_wanted - 10;
+
+    for (int n = 0; n < term_width / 3; n++)
+    {
+        for (int y = 0; y < term_height - 1; y++)
+        {
+            for (int x = 0; x < term_width - 1; x = x + 2)
+            {
+                move_to(x, y);
+                if ((x == x_wanted && y < y_wanted && y > term_height - y_wanted) || (y == y_wanted && x < x_wanted && x > term_width - x_wanted) || (x == term_width - x_wanted && y > term_height - y_wanted && y < y_wanted) || (y == term_height - y_wanted && x > term_width - x_wanted && x < x_wanted) || (x == x_wanted2 && y < y_wanted2 && y > term_height - y_wanted2) || (y == y_wanted2 && x < x_wanted2 && x > term_width - x_wanted2) || (x == term_width - x_wanted2 && y > term_height - y_wanted2 && y < y_wanted2) || (y == term_height - y_wanted2 && x > term_width - x_wanted2 && x < x_wanted2) || (x == x_wanted3 && y < y_wanted3 && y > term_height - y_wanted3) || (y == y_wanted3 && x < x_wanted3 && x > term_width - x_wanted3) || (x == term_width - x_wanted3 && y > term_height - y_wanted3 && y < y_wanted3) || (y == term_height - y_wanted3 && x > term_width - x_wanted3 && x < x_wanted3))
+                {
+                    printf("██");
+                }
+                else
+                {
+                    printf("  ");
+                }
+                //move_to(term_width / 2, term_height / 2);
+                //printf("%d|%d", x_wanted, y_wanted);
+                //move_to(term_width / 2, term_height / 2 + 1);
+                //printf("%d|%d", x_wanted2, y_wanted2);
+                //move_to(term_width / 2, term_height / 2 + 2);
+                //printf("%d|%d", x_wanted3, y_wanted3);
+            }
+        }
+        x_wanted += 2;
+        y_wanted += 1;
+        x_wanted2 = x_wanted - 16;
+        y_wanted2 = y_wanted - 8;
+        x_wanted3 = x_wanted - 32;
+        y_wanted3 = y_wanted - 16;
+        fflush(stdout);
+        msleep(5);
+    }
+
+    char *sprite[2][9] = {
+        {
+            COLOR_GRAY"   ▄████████     ███        ▄████████    ▄████████ ████████▄     ▄████████    ▄████████ ",
+            "   ███    ███ ▀█████████▄   ███    ███   ███    ███ ███   ▀███   ███    ███   ███    ███",
+            "   ███    ███    ▀███▀▀██   ███    ███   ███    ███ ███    ███   ███    █▀    ███    █▀ ",
+            "   ███    ███     ███   ▀   ███    ███  ▄███▄▄▄▄██▀ ███    ███  ▄███▄▄▄       ███       ",
+            " ▀███████████     ███     ▀███████████ ▀▀███▀▀▀▀▀   ███    ███ ▀▀███▀▀▀     ▀███████████",
+            "   ███    ███     ███       ███    ███ ▀███████████ ███    ███   ███    █▄           ███",
+            "   ███    ███     ███       ███    ███   ███    ███ ███   ▄███   ███    ███    ▄█    ███",
+            "   ███    █▀     ▄████▀     ███    █▀    ███    ███ ████████▀    ██████████  ▄████████▀ ",
+            "                                         ███    ███                                     ",
+        },
+        {
+            COLOR_GREEN"   ▄████████     ███        ▄████████    ▄████████ ████████▄     ▄████████    ▄████████ ",
+            "   ███    ███ ▀█████████▄   ███    ███   ███    ███ ███   ▀███   ███    ███   ███    ███",
+            "   ███    ███    ▀███▀▀██   ███    ███   ███    ███ ███    ███   ███    █▀    ███    █▀ ",
+            "   ███    ███     ███   ▀   ███    ███  ▄███▄▄▄▄██▀ ███    ███  ▄███▄▄▄       ███       ",
+            " ▀███████████     ███     ▀███████████ ▀▀███▀▀▀▀▀   ███    ███ ▀▀███▀▀▀     ▀███████████",
+            "   ███    ███     ███       ███    ███ ▀███████████ ███    ███   ███    █▄           ███",
+            "   ███    ███     ███       ███    ███   ███    ███ ███   ▄███   ███    ███    ▄█    ███",
+            "   ███    █▀     ▄████▀     ███    █▀    ███    ███ ████████▀    ██████████  ▄████████▀ ",
+            "                                         ███    ███                                     ",
+        }};
+    for (int n = 0; n < 21; n++)
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            move_to(term_width / 2 - 44, term_height / 2 - 5 + i);
+            printf(sprite[n%2][i]);
+            fflush(stdout);
+        }
+        msleep(100);
+    }
+
+    if (bro_this_variable_is_actually_an_easter_egg == 1)
+    {
+        term_width += 1;
+    }
+
+    msleep(200);
 }

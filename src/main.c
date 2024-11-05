@@ -72,6 +72,8 @@ int main()
     int height = 0;
     checkTerminalSize(&width, &height);
 
+    anim_debut(width,height);
+
     grid.width = (width - 2) / (CELL_WIDTH + 2);
     grid.height = (height - 2) / (CELL_HEIGHT + 1);
     allocateGridCells(&grid);
