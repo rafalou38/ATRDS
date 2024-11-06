@@ -41,14 +41,9 @@ int height = 0;
 void handle_arrow_keys();
 void handle_enter_key();
 
-void cleanup()
-{
-    show_cursor();
-    printf("Bye.\n");
-    fflush(stdout);
-    exit(0);
-}
 
+
+struct termios base_t_settings;
 void configTerminal()
 {
     // Cette fonction si on l'active n'affichera pas le résultat des printf en direct mais tout d'un coup apres avoir appelé fflush(stdout); (meilleures performances)
@@ -58,8 +53,8 @@ void configTerminal()
     hide_cursor();
 
     // https://man7.org/linux/man-pages/man3/termios.3.html
-    static struct termios t_settings;
-    tcgetattr(STDIN_FILENO, &t_settings);
+    tcgetattr(STDIN_FILENO, &base_t_settings);
+    struct termios t_settings = base_t_settings;
 
     // Place le terminal en mode non canonique (entrées envoyées sans enter)
     t_settings.c_lflag &= ~(ICANON);
@@ -70,6 +65,15 @@ void configTerminal()
     t_settings.c_lflag &= ~(ECHONL);
 
     tcsetattr(STDIN_FILENO, TCSANOW, &t_settings);
+}
+
+void cleanup()
+{
+    show_cursor();
+    printf("Bye.\n");
+    fflush(stdout);
+    tcsetattr(STDIN_FILENO, TCSANOW, &base_t_settings);
+    exit(0);
 }
 
 /**
