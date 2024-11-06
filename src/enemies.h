@@ -82,7 +82,8 @@ typedef struct WaveSystem
     WavePattern current_wave_pattern;
 
     float wave_HP_left;
-    float prev_spawn_counter;
+    float next_spawn_timer;
+    float wave_timer;
 
     struct Enemy prev_spawn;
 } WaveSystem;
@@ -107,7 +108,7 @@ WavePattern getWaveByIndex(int waveIndex);
  * - ajoute l'ennemi a l'EnemyPool
  * - wave_HP_left -= E.hp
  * - Attendre T = E.hp / target_HPPS (période avant le prochain spawn)
- *      ici on utilisera prev_spawn_counter et prev_spawn=E, ainsi, le prochain spawn arrivera après un certain nombre de frames.
+ *      ici on utilisera next_spawn_timer et prev_spawn=E, ainsi, le prochain spawn arrivera après un certain nombre de frames.
  * fin tant que
  */
 int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt);

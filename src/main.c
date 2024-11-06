@@ -165,6 +165,7 @@ int main(int argc, char *argv[])
 
     // size_t est un int de capacité plus élevée.
     size_t frame_index;
+    int fps = 0;
 
     // Le jeu tourne tant que la vie n'atteint pas 0
     while (gameStats.health > 0)
@@ -180,6 +181,8 @@ int main(int argc, char *argv[])
             msleep((1.0 / TARGET_FPS - delta_t) * 1000);
         if (delta_t > 3.0 / TARGET_FPS) // ici on évite d'avoir un dt trop énorme ce qui peut poser des problèmes
             delta_t = 3.0 / TARGET_FPS;
+        if (1.0f / delta_t * 10.0f < TARGET_FPS * 2)
+            fps = TARGET_FPS;
 
         frame_index++;
 
@@ -225,6 +228,8 @@ int main(int argc, char *argv[])
             updateLabels(&labels, delta_t);
             drawLabels(labels);
 
+            updateWaveSystem(&waveSystem, grid, &enemyPool, delta_t);
+
             // Mise à jour des ennemis existants
             updateEnemies(&enemyPool, grid, &gameStats, &labels, delta_t);
             // Affichage des ennemis
@@ -258,21 +263,22 @@ int main(int argc, char *argv[])
         AFFICHAGE DE LA RANGÉE DU HAUT
         ##############################
         */
-        if (1.0f / delta_t < 2 * TARGET_FPS) // evite d'afficher les valeurs aberrantes de FPS
-        {
-            move_to(0, 0);
-            printf(COLOR_STANDARD_BG);
-            info = mallinfo2();
-            printf("Enemies: %d/%d | Labels: %d/%d | (%.1f fps) | runtime: %lds | Heap: %zuKo | wave: %d",
-                   enemyPool.count,                      //
-                   enemyPool.length,                     //
-                   labels.count,                         //
-                   labels.size,                          //
-                   round(1.0f / delta_t * 10.0f) / 10.0, //
-                   current_time.tv_sec - time_start,     //
-                   info.uordblks / 1000,
-                   0);
-        }
+        move_to(0, 0);
+        printf(COLOR_STANDARD_BG);
+        info = mallinfo2();
+        printf(ERASE_LINE "Enemies: %d/%d | Labels: %d/%d | (%d fps) | runtime: %lds | Heap: %zuKo | wave: %d",
+               enemyPool.count,                  //
+               enemyPool.length,                 //
+               labels.count,                     //
+               labels.size,                      //
+               (int)fps,                         //
+               current_time.tv_sec - time_start, //
+               info.uordblks / 1000,
+               waveSystem.current_wave_index);
+
+        if (waveSystem.wave_timer > 0)
+            printf(" | Prochaine vague: %.1fs", waveSystem.wave_timer);
+
         // Affichage des stats de jeu (vie et argent)
         move_to(width - (7 + 10), 1);
         printf(COLOR_RED "%02d ❤" RESET COLOR_STANDARD_BG " | " COLOR_YELLOW " % 4d €" RESET, gameStats.health, gameStats.cash);

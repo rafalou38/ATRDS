@@ -400,7 +400,8 @@ void switchToWave(WaveSystem *ws, int waveIndex)
     ws->current_wave_index = waveIndex;
     ws->current_wave_pattern = getWaveByIndex(waveIndex);
     ws->wave_HP_left = ws->current_wave_pattern.target_HP;
-    ws->prev_spawn_counter = -1;
+    ws->next_spawn_timer = -1;
+    ws->wave_timer = -1;
 }
 
 /**
@@ -414,7 +415,7 @@ void switchToWave(WaveSystem *ws, int waveIndex)
  * - ajoute l'ennemi a l'EnemyPool
  * - wave_HP_left -= E.hp
  * - Attendre T = E.hp / target_HPPS (période avant le prochain spawn)
- *      ici on utilisera prev_spawn_counter et prev_spawn=E, ainsi, le prochain spawn arrivera après un certain nombre de frames.
+ *      ici on utilisera next_spawn_timer et prev_spawn=E, ainsi, le prochain spawn arrivera après un certain nombre de frames.
  * fin tant que
  *
  * Renvoie:
@@ -424,8 +425,8 @@ void switchToWave(WaveSystem *ws, int waveIndex)
  */
 int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
 {
-    ws->prev_spawn_counter -= dt;
-    if (ws->prev_spawn_counter > 0)
+    ws->next_spawn_timer -= dt;
+    if (ws->next_spawn_timer > 0)
         return -1;
 
     // Détermination de la liste des ennemis choisissables
@@ -435,6 +436,7 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
     bool valid = false;
     for (int i = 0; i < ENEMY_COUNT; i++)
     {
+        // Cet ennemi ne va pas ètre ajouté, on le récupère juste pour connaître ses HP
         ennemi_courant = defEnemy(grid, i, 0, 0);
         if (ennemi_courant.maxHP <= ws->wave_HP_left)
         {
@@ -443,14 +445,31 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
         }
     }
 
-    // On vérifie qu'au moins un ennemi peut être spawn sinon, prochaine vague
-    if (!valid)
+    if (!valid) // Si tous les ennemis de la vague on été spawnés.
     {
-        switchToWave(ws, ws->current_wave_index + 1);
-        return -2;
+        if (ep->count == 0) // Dans le cas ou tous les ennemis sont morts, on peut démarrer le comptage pour la prochaine vague
+        {
+            if (ws->wave_timer == -1)
+            {
+                ws->wave_timer = WAVE_DELAY;
+            }
+            else if (ws->wave_timer == 0)
+            {
+                switchToWave(ws, ws->current_wave_index + 1);
+            }
+            else
+            {
+                ws->wave_timer = MAX(0, ws->wave_timer - dt);
+            }
+            return -2;
+        }
+        else // s'il reste des ennemis en vie, on ne fait rien
+        {
+            return -1;
+        }
     }
 
-    // Choix aléatoire de l’ennemi a spawn
+    // Choix aléatoire de l’ennemi a spawn en fonction des coefficients
     enum EnemyType ennemi_choisi_id;
     struct Enemy *ennemi_choisi;
     size_t i = rand() % ENEMY_COUNT;
@@ -467,10 +486,10 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
         i++;
     }
 
-    ennemi_choisi = addEnemy(grid, ep, ennemi_choisi_id, 0, 0);
+    ennemi_choisi = addEnemy(grid, ep, ennemi_choisi_id, grid.start_x, grid.start_y + 0.5);
 
     ws->wave_HP_left -= ennemi_choisi->maxHP;
-    ws->prev_spawn_counter = ennemi_choisi->maxHP / pattern->target_HPPS;
+    ws->next_spawn_timer = ennemi_choisi->maxHP / pattern->target_HPPS;
 
     return ennemi_choisi_id;
 }
@@ -526,30 +545,29 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
         fprintf(fptr, "%d,%d,%d,%.1f,%d,%d\n", i, ws.current_wave_pattern.target_HP, ws.current_wave_pattern.target_HPPS, t, cnt, argent_cumul);
         fflush(fptr);
 
-
         fflush(stdout);
 
         for (int i = 0; i < ep->count; i++)
         {
             argent_cumul += ep->enemies[i].money;
         }
-        
+
         ep->count = 0;
 
         i++;
 
-
-        if(n <=0){
-
-        while (1)
+        if (n <= 0)
         {
-            int c = get_key_press();
-            if (c == 'q')
-                return;
-            if (c != 0)
-                break;
-        }
+
+            while (1)
+            {
+                int c = get_key_press();
+                if (c == 'q')
+                    return;
+                if (c != 0)
+                    break;
+            }
         }
     }
-    fclose(fptr); 
+    fclose(fptr);
 }

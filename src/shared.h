@@ -25,6 +25,7 @@ CONFIGURATION
 #define MIN_TERMINAL_HEIGHT 20
 
 #define TARGET_FPS 40
+#define WAVE_DELAY 4 // (secondes)
 
 #define CELL_WIDTH 18
 #define CELL_HEIGHT 9
@@ -158,6 +159,7 @@ int msleep(long ms);
 */
 
 // Colors and styles
+#define ERASE_LINE "\33[2K"
 #define RESET "\033[0m"
 #define UNDERLINE "\033[4m"
 #define UNDERLINE_RST "\033[24m"
