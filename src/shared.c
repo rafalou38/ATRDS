@@ -17,29 +17,44 @@ void updateLabels(Labels *labels, float dt) // Mets a jour les labels (+1$)
     int right = 0;
     int left = -1;
 
+    // On parcourt le tableau des labels, on supprime les labels qui ont
+    // dépassé leur durée de vie, et on décale les labels restants
+    // vers la gauche.
     while (right < labels->count)
     {
         if (labels->labels[right].counter < labels->labels[right].duration)
         {
+            // Si le label est encore valide et que celui de gauche est un un trou, on déplace celui de droite vers la gauche.
             if (left != -1)
             {
+                // On copie le label de droite dans le label de gauche,
+                // car on va libérer la mémoire du label de gauche.
                 assert(left >= 0);
-                // assert(left < labels->length);
-                free(labels->labels[left].text);
-
                 labels->labels[left] = labels->labels[right];
                 left++;
             }
         }
         else if (left == -1)
         {
+            // Si c'est le premier label invalide, on le note comme étant
+            // le premier label que l'on va supprimer.
             left = right;
+
+            free(labels->labels[left].text);
+        }
+        else
+        {
+            // On libère la mémoire du label de gauche, car on l'a déjà
+            // déplacé.
+            free(labels->labels[left].text);
         }
 
         right++;
     }
     if (left != -1)
     {
+        // On met a jour le compteur du nombre de labels,
+        // car on a supprimé des labels.
         labels->count -= right - left;
     }
     if (labels->count < 0)
@@ -59,6 +74,11 @@ void drawLabels(Labels labels) // affiche tous les labels
 void freeLabels(Labels labels) // nettoie le tableau des labels
 {
     printf(COLOR_GRAY " $ " RESET "Freeing %s%d%s labels:\t", COLOR_YELLOW, labels.count, RESET);
+    for (int i = 0; i < labels.count; i++)
+    {
+        free(labels.labels[i].text);
+    }
+
     free(labels.labels);
 
     printf("%s Done %s\n", COLOR_GREEN, RESET);
@@ -205,8 +225,8 @@ void anim_debut(int term_width, int term_height)
                 {
                     printf("  ");
                 }
-                //move_to(term_width / 2, term_height / 2);
-                //printf("%d|%d", x_wanted, y_wanted);
+                // move_to(term_width / 2, term_height / 2);
+                // printf("%d|%d", x_wanted, y_wanted);
             }
         }
         x_wanted += 2;
@@ -231,8 +251,8 @@ void anim_debut(int term_width, int term_height)
                 {
                     printf("  ");
                 }
-                //move_to(term_width / 2, term_height / 2);
-                //printf("%d|%d", x_wanted, y_wanted);
+                // move_to(term_width / 2, term_height / 2);
+                // printf("%d|%d", x_wanted, y_wanted);
             }
         }
         x_wanted += 2;
@@ -257,8 +277,8 @@ void anim_debut(int term_width, int term_height)
                 {
                     printf("  ");
                 }
-                //move_to(term_width / 2, term_height / 2);
-                //printf("%d|%d", x_wanted, y_wanted);
+                // move_to(term_width / 2, term_height / 2);
+                // printf("%d|%d", x_wanted, y_wanted);
             }
         }
         x_wanted += 2;
@@ -289,12 +309,12 @@ void anim_debut(int term_width, int term_height)
                 {
                     printf("  ");
                 }
-                //move_to(term_width / 2, term_height / 2);
-                //printf("%d|%d", x_wanted, y_wanted);
-                //move_to(term_width / 2, term_height / 2 + 1);
-                //printf("%d|%d", x_wanted2, y_wanted2);
-                //move_to(term_width / 2, term_height / 2 + 2);
-                //printf("%d|%d", x_wanted3, y_wanted3);
+                // move_to(term_width / 2, term_height / 2);
+                // printf("%d|%d", x_wanted, y_wanted);
+                // move_to(term_width / 2, term_height / 2 + 1);
+                // printf("%d|%d", x_wanted2, y_wanted2);
+                // move_to(term_width / 2, term_height / 2 + 2);
+                // printf("%d|%d", x_wanted3, y_wanted3);
             }
         }
         x_wanted += 2;
@@ -309,7 +329,7 @@ void anim_debut(int term_width, int term_height)
 
     char *sprite[2][9] = {
         {
-            COLOR_GRAY"   ▄████████     ███        ▄████████    ▄████████ ████████▄     ▄████████    ▄████████ ",
+            COLOR_GRAY "   ▄████████     ███        ▄████████    ▄████████ ████████▄     ▄████████    ▄████████ ",
             "   ███    ███ ▀█████████▄   ███    ███   ███    ███ ███   ▀███   ███    ███   ███    ███",
             "   ███    ███    ▀███▀▀██   ███    ███   ███    ███ ███    ███   ███    █▀    ███    █▀ ",
             "   ███    ███     ███   ▀   ███    ███  ▄███▄▄▄▄██▀ ███    ███  ▄███▄▄▄       ███       ",
@@ -320,7 +340,7 @@ void anim_debut(int term_width, int term_height)
             "                                         ███    ███                                     ",
         },
         {
-            COLOR_GREEN"   ▄████████     ███        ▄████████    ▄████████ ████████▄     ▄████████    ▄████████ ",
+            COLOR_GREEN "   ▄████████     ███        ▄████████    ▄████████ ████████▄     ▄████████    ▄████████ ",
             "   ███    ███ ▀█████████▄   ███    ███   ███    ███ ███   ▀███   ███    ███   ███    ███",
             "   ███    ███    ▀███▀▀██   ███    ███   ███    ███ ███    ███   ███    █▀    ███    █▀ ",
             "   ███    ███     ███   ▀   ███    ███  ▄███▄▄▄▄██▀ ███    ███  ▄███▄▄▄       ███       ",
@@ -335,7 +355,7 @@ void anim_debut(int term_width, int term_height)
         for (int i = 0; i < 9; i++)
         {
             move_to(term_width / 2 - 44, term_height / 2 - 5 + i);
-            printf(sprite[n%2][i]);
+            printf(sprite[n % 2][i]);
             fflush(stdout);
         }
         msleep(100);

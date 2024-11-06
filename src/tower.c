@@ -405,7 +405,7 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.range_max[1] = 2;
         tur.damage[0] = 0.2;
         tur.damage[1] = 0.3;
-        tur.reload_delay[0] = 0.2;
+        tur.reload_delay[0] = 0.05;
         tur.reload_delay[1] = 0.1;
         tur.splash[0] = 0;
         tur.splash[1] = 0;
