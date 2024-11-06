@@ -443,6 +443,8 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
         {
             enemy_choice_pool[i] = true;
             valid = true;
+        }else{
+            enemy_choice_pool[i] = false;
         }
     }
 
