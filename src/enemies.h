@@ -87,6 +87,8 @@ typedef struct WaveSystem
     struct Enemy prev_spawn;
 } WaveSystem;
 
+
+void switchToWave(WaveSystem *ws, int waveIndex);
 /**
  * Renvoie le pattern de wave correspondant a l'index, la structure des vagues est soi calculée soit prédéfinie dans cette fonction
  * Initialise target_HP et target_HPPS selon des fonctions ajustées au tableur
