@@ -32,6 +32,7 @@ void freeEnemyPool(EnemyPool ep) // On libère le tableau des enemies.
 struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
 {
     struct Enemy enemy;
+    enemy.has_effect = false;
     if (type == ENEMY_TUX) // Ennemi de base
     {
         enemy.type = ENEMY_TUX;
