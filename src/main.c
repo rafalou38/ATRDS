@@ -161,7 +161,6 @@ int main(int argc, char *argv[])
     struct timespec prev_time;
     clock_gettime(CLOCK_MONOTONIC, &prev_time);
     time_t time_start = prev_time.tv_sec;
-    struct mallinfo2 info;
 
     // size_t est un int de capacité plus élevée.
     size_t frame_index;
@@ -265,15 +264,13 @@ int main(int argc, char *argv[])
         */
         move_to(0, 0);
         printf(COLOR_STANDARD_BG);
-        info = mallinfo2();
-        printf(ERASE_LINE "Enemies: %d/%d | Labels: %d/%d | (%d fps) | runtime: %lds | Heap: %zuKo | wave: %d",
+        printf(ERASE_LINE "Enemies: %d/%d | Labels: %d/%d | (%d fps) | runtime: %lds | wave: %d",
                enemyPool.count,                  //
                enemyPool.length,                 //
                labels.count,                     //
                labels.size,                      //
                (int)fps,                         //
                current_time.tv_sec - time_start, //
-               info.uordblks / 1000,
                waveSystem.current_wave_index);
 
         if (waveSystem.wave_timer > 0)
