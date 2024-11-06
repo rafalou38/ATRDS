@@ -6,11 +6,19 @@
         "${workspaceFolder}/**"
       ],
       "compilerPath": "/usr/bin/gcc",
-      "cStandard": "${default}",
+      "cStandard": "c99",
       "cppStandard": "${default}",
       "intelliSenseMode": "linux-gcc-x64",
       "compilerArgs": [
-        ""
+        "-lm",
+        "-std=c99",
+        "-Werror",
+        "-Wall",
+        "-Wextra",
+        "-Wvla",
+        "-fsanitize=address,undefined",
+        "-O0",
+        "-g"
       ]
     }
   ],

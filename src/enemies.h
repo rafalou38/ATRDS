@@ -53,7 +53,7 @@ struct Enemy
 EnemyPool AllocEnemyPool();
 void freeEnemyPool(EnemyPool ep);
 struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y);
-void addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int start_y);
+struct Enemy *addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int start_y);
 void defragEnemyPool(EnemyPool *ep);
 void drawEnemies(EnemyPool ep, Grid grid);
 void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, float dt_sec);
@@ -66,12 +66,13 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
 
 typedef struct WavePattern
 {
-    int target_HP; // le nombre de HP ennemis qui doivent être spawnées durant cette vague
+    int target_HP;   // le nombre de HP ennemis qui doivent être spawnées durant cette vague
     int target_HPPS; // a quelle vitesse les HP ennemis doivent spawn (Health Points Per Second)
     // float HPPS_factor; // facteur sur le target_HPPS pour un unique ennemi: 1 => 1 ennemi a target_HPPS HP par seconde max; 0.5 => 1 ennemi a target_HPPS*0.5 HP par seconde max
     // Plutôt utile si PV des ennemis variable car sinon, seulement les ennemis choisis spawnent, si on a choisi de spawn un gros, il ne faut pas l’empêcher
 
     float random_coeffs[ENEMY_COUNT]; // coefficients de spawn pour chaque ennemi
+    float coeff_sum;
     float min_spawns[ENEMY_COUNT]; // si nécessaire de faire spawn un minimum/nombre fixe d'un certain ennemi (ex: Boss)
 } WavePattern;
 
@@ -86,17 +87,16 @@ typedef struct WaveSystem
     struct Enemy prev_spawn;
 } WaveSystem;
 
-
 /**
- * Renvoie le pattern de wave correspondant a l'index, la structure des vagues est soi calculée soit prédéfinie dans cette fonction 
+ * Renvoie le pattern de wave correspondant a l'index, la structure des vagues est soi calculée soit prédéfinie dans cette fonction
  * Initialise target_HP et target_HPPS selon des fonctions ajustées au tableur
- * 
+ *
  * */
 WavePattern getWaveByIndex(int waveIndex);
 
 /**
  * Mets a jour le système de vagues
- * tant que wave_HP_left > 0 
+ * tant que wave_HP_left > 0
  * alors
  * - choisit un ennemi E aléatoirement selon:
  *      - les coeff
@@ -108,4 +108,7 @@ WavePattern getWaveByIndex(int waveIndex);
  *      ici on utilisera prev_spawn_counter et prev_spawn=E, ainsi, le prochain spawn arrivera après un certain nombre de frames.
  * fin tant que
  */
-void updateWaveSystem(WaveSystem *ws, EnemyPool *ep, float dt);
+int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt);
+
+// Réalise et affiche un simulation sur plusieurs vagues
+void testWaveSystem(Grid grid, EnemyPool *ep, int n);

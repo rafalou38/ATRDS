@@ -80,19 +80,21 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
     return enemy;
 }
 
-void addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int start_y) // Ajoute un nouvel ennemi au tableau des enemies
+struct Enemy *addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_x, int start_y) // Ajoute un nouvel ennemi au tableau des enemies
 {
     if (ep->count < ep->length)
     {
         ep->enemies[ep->count] = defEnemy(grid, type, start_x, start_y);
 
-        ep->count++;
+        return &(ep->enemies[ep->count++]);
     }
     else
     {
-        // Dans le cas ou le nombre d’ennemis dépasse la capacité du tableau 
+        // Dans le cas ou le nombre d’ennemis dépasse la capacité du tableau
         printCritical("Overflow not yet implemented\n");
         exit(EXIT_FAILURE);
+
+        return NULL;
     }
 }
 
@@ -233,7 +235,7 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
 }
 
 // Mise à jour des ennemis (Points de Vie, Position...)
-void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, float dt_sec) 
+void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, float dt_sec)
 {
     bool defragNeeded = false;
     // Walk
@@ -352,8 +354,8 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
             drawCell(enemy->previous_cell, grid);
             defragNeeded = true;
             gs->cash += enemy->money;
-            char * label = (char *)malloc(sizeof(char) * 30);
-            sprintf(label, COLOR_STANDARD_BG COLOR_YELLOW "%d" RESET , enemy->money);
+            char *label = (char *)malloc(sizeof(char) * 30);
+            sprintf(label, COLOR_STANDARD_BG COLOR_YELLOW "%d" RESET, enemy->money);
             labels->labels[labels->count].counter = 0;
             labels->labels[labels->count].duration = 2;
             labels->labels[labels->count].text = label;
@@ -367,4 +369,187 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
     {
         defragEnemyPool(ep);
     }
+}
+
+/**
+ * Renvoie le pattern de wave correspondant a l'index, la structure des vagues est soi calculée soit prédéfinie dans cette fonction
+ * Initialise target_HP et target_HPPS selon des fonctions ajustées au tableur
+ *
+ * */
+WavePattern getWaveByIndex(int waveIndex)
+{
+    WavePattern wp = {
+        .target_HP = (10 + 5 * waveIndex),
+        .target_HPPS = 5 + 2 * waveIndex,
+        .random_coeffs = {0},
+        .min_spawns = {0}};
+
+    wp.random_coeffs[ENEMY_TUX] = 1;
+    wp.random_coeffs[ENEMY_SPEED] = 1;
+
+    for (int i = 0; i < ENEMY_COUNT; i++)
+    {
+        wp.coeff_sum += wp.random_coeffs[i];
+    }
+
+    return wp;
+}
+
+void switchToWave(WaveSystem *ws, int waveIndex)
+{
+    ws->current_wave_index = waveIndex;
+    ws->current_wave_pattern = getWaveByIndex(waveIndex);
+    ws->wave_HP_left = ws->current_wave_pattern.target_HP;
+    ws->prev_spawn_counter = -1;
+}
+
+/**
+ * Mets a jour le système de vagues
+ * tant que wave_HP_left > 0
+ * alors
+ * - choisit un ennemi E aléatoirement selon:
+ *      - les coeff
+ *      - de sorte a ce que E.hp < target_HP (un ennemi ne doit pas avoir plus de PV qu'une vague entière)
+ *      - ( de sorte a ce que E.hp < target_HPPS * HPPS_factor pour empêcher de placer de gros ennemis involontairement)
+ * - ajoute l'ennemi a l'EnemyPool
+ * - wave_HP_left -= E.hp
+ * - Attendre T = E.hp / target_HPPS (période avant le prochain spawn)
+ *      ici on utilisera prev_spawn_counter et prev_spawn=E, ainsi, le prochain spawn arrivera après un certain nombre de frames.
+ * fin tant que
+ *
+ * Renvoie:
+ *  -2 = fin de la vague
+ *  -1 = pas de spawn
+ *  n  = id du mob spawné
+ */
+int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
+{
+    ws->prev_spawn_counter -= dt;
+    if (ws->prev_spawn_counter > 0)
+        return -1;
+
+    // Détermination de la liste des ennemis choisissables
+    bool enemy_choice_pool[ENEMY_COUNT];
+    struct Enemy ennemi_courant;
+    WavePattern *pattern = &ws->current_wave_pattern;
+    bool valid = false;
+    for (int i = 0; i < ENEMY_COUNT; i++)
+    {
+        ennemi_courant = defEnemy(grid, i, 0, 0);
+        if (ennemi_courant.maxHP <= ws->wave_HP_left)
+        {
+            enemy_choice_pool[i] = true;
+            valid = true;
+        }
+    }
+
+    // On vérifie qu'au moins un ennemi peut être spawn sinon, prochaine vague
+    if (!valid)
+    {
+        switchToWave(ws, ws->current_wave_index + 1);
+        return -2;
+    }
+
+    // Choix aléatoire de l’ennemi a spawn
+    enum EnemyType ennemi_choisi_id;
+    struct Enemy *ennemi_choisi;
+    size_t i = rand() % ENEMY_COUNT;
+    while (true)
+    {
+        if (enemy_choice_pool[i % ENEMY_COUNT])
+        {
+            if (rand() / (float)RAND_MAX <= pattern->random_coeffs[i % ENEMY_COUNT] / pattern->coeff_sum)
+            {
+                ennemi_choisi_id = i % ENEMY_COUNT;
+                break;
+            }
+        }
+        i++;
+    }
+
+    ennemi_choisi = addEnemy(grid, ep, ennemi_choisi_id, 0, 0);
+
+    ws->wave_HP_left -= ennemi_choisi->maxHP;
+    ws->prev_spawn_counter = ennemi_choisi->maxHP / pattern->target_HPPS;
+
+    return ennemi_choisi_id;
+}
+
+void testWaveSystem(Grid grid, EnemyPool *ep, int n)
+{
+
+    printf("SIMULATEUR\n");
+    printf("Appuie sur une touche quelquonque pour générer une vague, q pour quitter\n");
+    WaveSystem ws;
+    int i = 0;
+    int argent_cumul = 0;
+    FILE *fptr;
+    fptr = fopen("testing/waves.csv", "w");
+    fprintf(fptr, "wave,hp,hpps,duration,ennemiesSpawned,argentCumul\n");
+    while (n <= 0 || i < n)
+    {
+        printf("\n");
+        printf("\n");
+        printf("Wave " COLOR_GREEN "%d" RESET, i);
+
+        switchToWave(&ws, i);
+
+        printf("\t HP: " COLOR_RED "%d" RESET " HPPS: " COLOR_YELLOW "%d" RESET " \t", ws.current_wave_pattern.target_HP, ws.current_wave_pattern.target_HPPS);
+        for (int j = 0; j < ENEMY_COUNT; j++)
+        {
+            printf("%.1f%% ", ws.current_wave_pattern.random_coeffs[j] / ws.current_wave_pattern.coeff_sum * 100);
+        }
+
+        printf("\n");
+
+        int result = 0;
+        float t = 0;
+        int cnt = 0;
+        do
+        {
+            float dt = (1.0f / TARGET_FPS);
+            // msleep(dt * 1000);
+            t += (dt);
+
+            result = updateWaveSystem(&ws, grid, ep, dt);
+            if (result >= 0)
+            {
+                cnt++;
+                printf("\t %02d. t=%.1fs SPAWN %d (%fHP) -> HP_LEFT=%.1f\n", cnt, t, result, ep->enemies[ep->count - 1].hp, ws.wave_HP_left);
+            }
+
+            // fflush(stdout);
+        } while (result != -2);
+
+        printf("\tDurée de la vague:" COLOR_FREEZER_BASE " %.1fs " RESET ", %d ennemis", t, cnt);
+        // wave,hp,hpps,duration,ennemiesSpawned
+        fprintf(fptr, "%d,%d,%d,%.1f,%d,%d\n", i, ws.current_wave_pattern.target_HP, ws.current_wave_pattern.target_HPPS, t, cnt, argent_cumul);
+        fflush(fptr);
+
+
+        fflush(stdout);
+
+        for (int i = 0; i < ep->count; i++)
+        {
+            argent_cumul += ep->enemies[i].money;
+        }
+        
+        ep->count = 0;
+
+        i++;
+
+
+        if(n <=0){
+
+        while (1)
+        {
+            int c = get_key_press();
+            if (c == 'q')
+                return;
+            if (c != 0)
+                break;
+        }
+        }
+    }
+    fclose(fptr); 
 }

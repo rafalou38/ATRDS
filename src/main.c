@@ -4,6 +4,8 @@
 #include "enemies.h"
 #include "tower.h"
 
+#include <string.h>
+
 /*
 #################
 ÉTAT DU PROGRAMME
@@ -49,7 +51,7 @@ void configTerminal()
     tcsetattr(STDIN_FILENO, TCSANOW, &t_settings);
 }
 
-int main()
+int main(int argc, char *argv[])
 {
     // SEEDS FUN: énorme jaune: 1729285683    /    problème ? 1729285706
     unsigned int seed = time(NULL); // time(NULL);    seeded : 1729518567
@@ -86,9 +88,19 @@ int main()
 
     enemyPool = AllocEnemyPool();
 
+    if (argc > 1)
+    {
+        if (strcmp(argv[1], "--sim-wave") == 0)
+        {
+            int n = 0;
+            if(argc == 3) n = atoi(argv[2]);
+            testWaveSystem(grid, &enemyPool, n);
+        }
+        return 0;
+    }
+
     clear_screen();
     fillBG(1, 1, width + 1, height + 1);
-    // return 0;
 
     drawFullGrid(grid);
 
@@ -205,7 +217,7 @@ int main()
 #endif
                 updateLabels(&labels, delta_t);
                 drawLabels(labels);
-                
+
                 // Mise à jour des ennemis existants
                 updateEnemies(&enemyPool, grid, &gameStats, &labels, delta_t);
                 // Affichage des ennemis
@@ -217,12 +229,14 @@ int main()
                     float range_min = grid.cells[selected_cell_x][selected_cell_y].turret.range_min[grid.cells[selected_cell_x][selected_cell_y].turret.lvl];
                     float range_max = grid.cells[selected_cell_x][selected_cell_y].turret.range_max[grid.cells[selected_cell_x][selected_cell_y].turret.lvl];
                     if (range_min > 0)
-                        drawRange(width, height, range_min, selected_cell_x+0.5, selected_cell_y+0.5, false);
+                        drawRange(width, height, range_min, selected_cell_x + 0.5, selected_cell_y + 0.5, false);
                     if (range_max > 0)
-                        drawRange(width, height, range_max, selected_cell_x+0.5, selected_cell_y+0.5, false);
+                        drawRange(width, height, range_max, selected_cell_x + 0.5, selected_cell_y + 0.5, false);
 
                     was_range_visible = true;
-                }else if(was_range_visible){
+                }
+                else if (was_range_visible)
+                {
                     fillBG(1, 1, width + 1, height + 1);
                     drawFullGrid(grid);
                     was_range_visible = false;
