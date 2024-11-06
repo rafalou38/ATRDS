@@ -41,8 +41,6 @@ int height = 0;
 void handle_arrow_keys();
 void handle_enter_key();
 
-
-
 struct termios base_t_settings;
 void configTerminal()
 {
@@ -150,6 +148,9 @@ int main(int argc, char *argv[])
     {
         if (strcmp(argv[1], "--sim-wave") == 0)
         {
+            clear_screen();
+            move_to(1, 1);
+            printf(RESET);
             int n = 0;
             if (argc == 3)
                 n = atoi(argv[2]);

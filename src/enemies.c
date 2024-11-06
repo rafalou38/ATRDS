@@ -443,7 +443,9 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
         {
             enemy_choice_pool[i] = true;
             valid = true;
-        }else{
+        }
+        else
+        {
             enemy_choice_pool[i] = false;
         }
     }
@@ -507,7 +509,7 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
     int argent_cumul = 0;
     FILE *fptr;
     fptr = fopen("testing/waves.csv", "w");
-    fprintf(fptr, "wave,hp,hpps,duration,ennemiesSpawned,argentCumul\n");
+    fprintf(fptr, "wave,hp,hpps,duration,argentCumul,ennemiesSpawned,tux,speed,boss\n");
     while (n <= 0 || i < n)
     {
         printf("\n");
@@ -527,6 +529,9 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
         int result = 0;
         float t = 0;
         int cnt = 0;
+        int tux = 0;
+        int speed = 0;
+        int boss = 0;
         do
         {
             float dt = (1.0f / TARGET_FPS);
@@ -537,25 +542,26 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
             if (result >= 0)
             {
                 cnt++;
-                printf("\t %02d. t=%.1fs SPAWN %d (%fHP) -> HP_LEFT=%.1f\n", cnt, t, result, ep->enemies[ep->count - 1].hp, ws.wave_HP_left);
+                ep->count = 0;
+                printf("\t %02d. t=%.1fs SPAWN %d (%fHP) -> HP_LEFT=%.1f %d %d\n", cnt, t, result, ep->enemies[0].hp, ws.wave_HP_left, ep->enemies[0].money, argent_cumul);
+                argent_cumul += ep->enemies[0].money;
+                if (result == 0)
+                    tux++;
+                if (result == 1)
+                    speed++;
+                if (result == 2)
+                    boss++;
             }
 
-            // fflush(stdout);
+            fflush(stdout);
         } while (result != -2);
 
-        printf("\tDurée de la vague:" COLOR_FREEZER_BASE " %.1fs " RESET ", %d ennemis", t, cnt);
+        printf("\tDurée de la vague:" COLOR_FREEZER_BASE " %.1fs " RESET ", %d ennemis %d", t, cnt, argent_cumul);
         // wave,hp,hpps,duration,ennemiesSpawned
-        fprintf(fptr, "%d,%d,%d,%.1f,%d,%d\n", i, ws.current_wave_pattern.target_HP, ws.current_wave_pattern.target_HPPS, t, cnt, argent_cumul);
+        fprintf(fptr, "%d,%d,%d,%.1f,%d,%d,%d,%d,%d\n", i, ws.current_wave_pattern.target_HP, ws.current_wave_pattern.target_HPPS, t, argent_cumul, cnt,tux,speed,boss);
         fflush(fptr);
 
         fflush(stdout);
-
-        for (int i = 0; i < ep->count; i++)
-        {
-            argent_cumul += ep->enemies[i].money;
-        }
-
-        ep->count = 0;
 
         i++;
 
