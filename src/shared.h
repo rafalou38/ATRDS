@@ -83,9 +83,9 @@ struct Turret
     bool has_effect;           // determine si la tourelle possède un effet particulier
     enum EffectType effet;     // Type de l'effet
     float puissance_effet[2];  // determine la puissance de l'effet (a un role different selon les effets)
-    bool sub_effect;           // determine si la tourelle subbit un effet particulier
-    enum EffectType effet_sub; // Type de l'effet subbit
-    float puissance_effet_sub; // Puissance de l'effet subbit
+    bool has_malus;           // determine si la tourelle subbit un effet particulier
+    enum EffectType malus; // Type de l'effet subbit
+    float puissance_malus; // Puissance de l'effet subbit
     float last_shot_dx;
     float last_shot_dy;
 };

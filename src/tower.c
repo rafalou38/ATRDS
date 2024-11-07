@@ -16,9 +16,13 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
             if (grid.cells[x][y].hasTurret) // Si la case a une tourelle, on la mets a jour
             {
                 int lvl = grid.cells[x][y].turret.lvl; // Son niveau
-                if (grid.cells[x][y].turret.sub_effect)
+                if (grid.cells[x][y].turret.has_malus)
                 {
-                    grid.cells[x][y].turret.puissance_effet_sub -= dt;
+                    grid.cells[x][y].turret.puissance_malus -= dt;
+                    if (grid.cells[x][y].turret.puissance_malus <= 0)
+                    {
+                        grid.cells[x][y].turret.has_malus = false;
+                    }
                 }
                 else
                 {
@@ -40,7 +44,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                         grid.cells[x][y].turret.compteur_mortier -= dt;
                     }
                 }
-                if (!grid.cells[x][y].turret.sub_effect || grid.cells[x][y].turret.puissance_effet_sub <= 0)
+                if (!grid.cells[x][y].turret.has_malus)
                 {
                     // Lorsque l'horloge interne dépasse la vitesse de rechargement (reload) de la tourelle, elle applique son effet :
                     if (grid.cells[x][y].turret.compteur >= grid.cells[x][y].turret.reload_delay[lvl])
@@ -66,8 +70,8 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                     {
                                         if (ep.enemies[i].type == ENEMY_BOSS_STUN && d <= ep.enemies[i].puissance_effet)
                                         {
-                                            grid.cells[x][y].turret.sub_effect = true;
-                                            grid.cells[x][y].turret.puissance_effet_sub = ep.enemies[i].puissance_effet;
+                                            grid.cells[x][y].turret.malus = true;
+                                            grid.cells[x][y].turret.puissance_malus = ep.enemies[i].puissance_effet;
                                         }
                                         else
                                         {
@@ -95,8 +99,8 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                     {
                                         if (ep.enemies[i].type == ENEMY_BOSS_STUN && d <= ep.enemies[i].puissance_effet)
                                         {
-                                            grid.cells[x][y].turret.sub_effect = true;
-                                            grid.cells[x][y].turret.puissance_effet_sub = ep.enemies[i].puissance_effet;
+                                            grid.cells[x][y].turret.has_malus = true;
+                                            grid.cells[x][y].turret.puissance_malus = ep.enemies[i].puissance_effet;
                                         }
                                         else
                                         {
@@ -124,8 +128,8 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                     {
                                         if (ep.enemies[i].type == ENEMY_BOSS_STUN && d <= ep.enemies[i].puissance_effet)
                                         {
-                                            grid.cells[x][y].turret.sub_effect = true;
-                                            grid.cells[x][y].turret.puissance_effet_sub = ep.enemies[i].puissance_effet;
+                                            grid.cells[x][y].turret.has_malus= true;
+                                            grid.cells[x][y].turret.puissance_malus = ep.enemies[i].puissance_effet;
                                         }
                                         else
                                         {
@@ -156,8 +160,8 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                 {
                                     if (ep.enemies[i].type == ENEMY_BOSS_STUN && d <= ep.enemies[i].puissance_effet)
                                     {
-                                        grid.cells[x][y].turret.sub_effect = true;
-                                        grid.cells[x][y].turret.puissance_effet_sub = ep.enemies[i].puissance_effet;
+                                        grid.cells[x][y].turret.has_malus = true;
+                                        grid.cells[x][y].turret.puissance_malus = ep.enemies[i].puissance_effet;
                                     }
                                     else
                                     {
@@ -389,7 +393,7 @@ struct Turret getTurretStruct(enum TurretType type)
 {
     struct Turret tur;
     tur.in_range = false;
-    tur.sub_effect = false;
+    tur.has_malus = false;
     tur.compteur_mortier = -1;
     if (type == Sniper)
     {
