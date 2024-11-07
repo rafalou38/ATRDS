@@ -18,10 +18,12 @@ Antique Terminal Route Defense Simulator
     - [Architecture du projet](#architecture-du-projet)
       - [Division du code](#division-du-code)
       - [Éléments nouveaux](#éléments-nouveaux)
+      - [Algorithmes originaux](#algorithmes-originaux)
       - [Allocations dynamiques](#allocations-dynamiques)
         - [Sécurité](#sécurité)
         - [Grille](#grille)
       - [Affichage](#affichage)
+      - [Le problème des missiles](#le-problème-des-missiles)
     - [Simulation](#simulation)
 
 ## Resources utiles
@@ -46,7 +48,8 @@ Ou de télécharger ce zip manuellement: https://github.com/rafalou38/ATRDS/arch
 #### Depuis caséine
 Le code est également disponible dans les téléchargements caséine, mais vous n'aurez pas toute l'architecture du projet ni le script de compilation.
 > ⚠️ Les scripts sont combinés sur caséine, pour avoir des fichiers plus simples, passez par git.
-> Il manque également toute la partie simulation ainsi que les scripts.
+> 
+> Il y manque également toute la partie simulation ainsi que les scripts.
 
 ### Compilation
 
@@ -87,7 +90,7 @@ Si aucun paramètre n'est défini, le jeu se lancera sur le menu standard.
 
 ### Aide a la correction:
 Nous sommes conscient que c'est un gros projet, pour te faciliter la tache voila une liste d'elements que tu peux facilement évaluer.
-Si tu est dans vscode ou sur github, tu dois pouvoir click/ctrl+click sur les liens pour aller directement au fichier et a la ligne correspondante.
+Si tu est dans vscode, tu dois pouvoir ctrl+click sur les liens pour aller directement au fichier et a la ligne correspondante.
 - **Critère 1**: 
     - Disponible en version condensée sur caséine 
     - Sur github, plusieurs fichiers pour améliorer la lisibilité: `enemies.c`  `enemies.h`  `grid.c`  `grid.h`  `main.c`  `shared.c`  `shared.h`  `tower.c`  `tower.h`
@@ -136,15 +139,16 @@ La meilleure façon de tester tout ça, c'est de jouer :joystick: !
 #### Division du code
 Le projet est divisé entre des fichiers `.h` et des fichiers `.c`.
 Les fichiers `.h` contiennent les constantes, les noms de fonctions, types customisés, structs, enums, etc.
-Les fichiers `.c` contiennent le code du jeu et son inclus au moment de la compilation.
-Exemple:
-> **grid.h** contient la définition de la fonction, valeur de retour et paramètres, il est importé avec les #include, et expose ses fonctions pour qu'elles puissent être utilisées par d'autres fichiers.
+Les fichiers `.c` contiennent le code du jeu et sont inclus au moment de la compilation.
+
+**Par exemple:**
+> **grid.h** contient la définition de la fonction avec valeur de retour et paramètres, il est importé par les `#include`, et expose ses fonctions pour qu'elles puissent être utilisées par d'autres fichiers.
 ```c
 void fillBG(int xmin, int ymin, int xmax, int ymax);
 ```
 > **grid.c** le code de la fonction est automatiquement inclut a la compilation par la présence de:
 > `gcc -o atrds.out -std=c99 src/main.c [src/grid.c] src/shared.c src/enemies.c src/tower.c -lm`
-> il n'est pas inclus par les #include, c a uniquement besoin de la "signature" de la fonction pour verifier la validité programme.
+> il n'est pas inclus par les `#include`, car c a uniquement besoin de la "signature" de la fonction pour verifier la validité programme.
 ```c
 void fillBG(int xmin, int ymin, int xmax, int ymax)
 {
@@ -159,6 +163,81 @@ void fillBG(int xmin, int ymin, int xmax, int ymax)
     }
 }
 ```
+
+**Liste de tous les struct, enum et fonctions:**
+- enemies.c
+    - AllocEnemyPool 
+    - freeEnemyPool
+    - defEnemy: *Renvoie le struct ennemi initialisé*
+    - addEnemy: *ajoute un ennemi a la liste d'ennemis*
+    - defragEnemyPool: *voir [tableau comme liste](#algorithmes-originaux)*
+    - drawEnemies
+    - updateEnemies
+    - switchToWave
+    - getWaveByIndex: *renvoie le struct wavePattern d'une vague initialisé*
+    - updateWaveSystem
+    - testWaveSystem: *voir [Simulation](#simulation)*
+- enemies.h
+    - enum EnemyType
+    - enum EnemyState: *Vivant mort, arrivé*
+    - struct Enemy
+    - struct WavePattern
+    - struct WaveSystem
+- grid.c
+    - allocateGridCells
+    - freeGrid
+    - genBasicPath
+    - fillBG
+    - drawCell
+    - drawFullGrid
+    - clearPath
+    - clearUsedPath
+- shared.h
+    - enum TurretType
+    - enum EffectType: *effets de tourelle*
+    - struct Turret
+    - struct EnemyPool
+    - enum CellType
+    - struct Cell
+    - struct Grid
+    - struct GameStats
+    - struct Label
+    - struct Labels
+    - #define HISTORY_SIZE
+    - #define MIN_TERMINAL_WIDTH
+    - #define MIN_TERMINAL_HEIGHT
+    - #define MAX_TERMINAL_WIDTH
+    - #define MAX_TERMINAL_HEIGHT
+    - #define TARGET_FPS
+    - #define WAVE_DELAY
+    - #define CELL_WIDTH
+    - #define CELL_HEIGHT
+    - #define PI
+    - TOUTES LES COULEURS
+- shared.c
+    - get_key_press: *renvoie la valeur de la touche clavier appuyée.*
+    - move_to: *déplacement du curseur.*
+    - clear_screen
+    - clear_line
+    - hide_cursor
+    - show_cursor
+    - printCritical: *affiche un message d'erreur.*
+    - get_terminal_size
+    - checkTerminalSize: *bloque tant que la taille du terminal n'est pas correcte*
+    - drawRange: *dessine les cercles de portée des tourelles.*
+    - anim_debut
+- tower.h
+    - struct Bullet: Voir [le problème des missiles](#le-problème-des-missiles)
+    - struct BulletPool
+    - define BULLETS_ON
+- tower.c
+    - showTowerSelection *print le menu de selection de tourelle*
+    - getTurretStruct *renvoie le struct initialisé de la tourelle*
+    - getTurretPrice *renvoie le prix de la tourelle*
+    - updateTowers
+    - drawBullets
+    - updateBullets
+    - updateTowers
 
 #### Éléments nouveaux
 **Enum**, pareil que les types somme en ocaml.
@@ -201,12 +280,87 @@ EnemyPool enemyPool;
 struct Enemy enemy;
 ```
 
-#### Allocations dynamiques
+#### Algorithmes originaux
+**Génération du chemin**: genBasicPath [./src/grid.c](./src/grid.c#L57)
+Cet algorithme crée un chemin continu dans une grille en suivant des règles pour éviter les collisions et en utilisant un historique pour revenir en arrière en cas de blocage.
 
+1. On choisit une position aléatoire sur le côté gauche de la grille (x = 0).
+2. On place deux premières cases de chemin, créant le point de départ.
+3. On initialise un historique des positions visitées, permettant de revenir en arrière si aucun déplacement n'est possible.
+
+4. Tant que le chemin n'a pas atteint le côté droit de la grille (x = grid->width - 1), on vérifie les directions dans lesquelles il peut se déplacer (haut, bas, droite, gauche).
+Chaque direction doit respecter certaines conditions pour éviter que le chemin ne colle à d'autres cases de chemin ou n’entre en collision avec les bords.
+Si aucune direction n'est possible, on recule en revenant à la dernière position valable grace a l'historique.
+5. On choisit aléatoirement parmi les directions disponibles avec une plus haute probabilité vers la gauche et on y avance.
+
+**Tableau comme liste**
+Les listes ne sont pas disponibles, il faut donc se débrouiller avec les tableaux. Pour ça, on a opté pour la solution suivante dans le cas de:
+- Liste des ennemis
+- Liste des labels
+- Liste des missiles ([problème des missiles](#le-probleme-des-missiles))
+
+On définit un struct qui va représenter la liste et qui contient le tableau avec:
+- tableau (allocation dynamique)
+- taille du tableau
+- nombre d'elements
+
+Le nombre d'elements n'est pas égal a la taille du tableau.
+Taille du tableau correspond a la taille de l'allocation et donc au nombre maximum d'elements.
+On a donc toujours l'intégralité des elements d'allouées mais en considérant "nombre d'elements" on considère que les suivants n'existent pas, et en effet, ils ne sont pas initialisées.
+
+Pour **ajouter** un nouvel element:
+- on l'assigne a la case correspondant au nombre d'elements
+- on incrémente le nombre d'elements
+```c
+lst.elements[lst.count] = element;
+lst.count++;
+```
+
+Pour **supprimer** un element:
+cette opération est beaucoup plus difficile a réaliser a cause du tableau.
+On doit marquer les elements a supprimer puis parcourir le tableau en décalant tous les non marquées vers la gauche pour remplir le cases vides.
+On a choisi le nom de défragmentation pour cet algorithme en reference a https://fr.wikipedia.org/wiki/D%C3%A9fragmentation_(informatique)
+```c
+void defragEnemyPool(EnemyPool *ep)
+{
+    int right = 0;
+    int left = -1;
+
+    while (right < ep->count)
+    {
+        if (ep->enemies[right].state == ENEMY_STATE_ALIVE)
+        {
+            if (left != -1)
+            {
+                assert(left >= 0);
+                assert(left < ep->length);
+
+                ep->enemies[left] = ep->enemies[right];
+                left++;
+            }
+        }
+        else if (left == -1)
+        {
+            left = right;
+        }
+
+        right++;
+    }
+    ep->count -= right - left;
+}
+```
+
+
+#### Allocations dynamiques
+De nombreuses allocations dynamiques sont utilisées dans le jeu.
+- Tableau des ennemis: `AllocEnemyPool` [./src/enemies.c](./src/enemies.c#L3)
+- Historique du chemin: [./src/grid.c](./src/grid.c#L88)
 ##### Sécurité
 
 ##### Grille
 
 #### Affichage
+
+#### Le problème des missiles
 
 ### Simulation
