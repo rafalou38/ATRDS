@@ -70,7 +70,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.maxHP = 50;
         enemy.speed = 0.5f;
         enemy.damage = 5;
-        enemy.money = 10;
+        enemy.money = 5;
         enemy.state = ENEMY_STATE_ALIVE;
         enemy.grid_x = (float)start_x;
         enemy.grid_y = (float)start_y;
@@ -695,6 +695,7 @@ WavePattern getWaveByIndex(int waveIndex)
         wp.random_coeffs[ENEMY_TUX] = 1;
         wp.random_coeffs[ENEMY_HIGHTUX] = 0;
         wp.random_coeffs[ENEMY_HYPERSPEED] = 0;
+        wp.random_coeffs[ENEMY_SLIME_BOSS] = 0;
     }
     else
     {

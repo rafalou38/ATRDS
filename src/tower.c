@@ -329,7 +329,7 @@ int getTurretPrice(enum TurretType type, int level)
     {
         if (level == 0)
         {
-            return 25;
+            return 35;
         }
         if (level == 1)
         {
@@ -340,7 +340,7 @@ int getTurretPrice(enum TurretType type, int level)
     {
         if (level == 0)
         {
-            return 25;
+            return 35;
         }
         if (level == 1)
         {
@@ -437,7 +437,7 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.type = Mortier;
         tur.lvl = 0;
         tur.compteur = 0;
-        tur.range_min[0] = 2;
+        tur.range_min[0] = 3;
         tur.range_min[1] = 2.5;
         tur.range_max[0] = 5.5;
         tur.range_max[1] = 6.5;

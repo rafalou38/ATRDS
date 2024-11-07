@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
     genBasicPath(&grid);
 
     // Gestion des statistiques
-    gameStats.cash = 300;
+    gameStats.cash = 30;
     gameStats.health = 20;
 
     // Gestion labels
