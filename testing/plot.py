@@ -32,7 +32,7 @@ columns = [1, 2, 3, 4, 5]  # Use 1-based indexing if your file includes a header
 ennemies = [
     "TUX",
     "SPEED",
-    "BOSS",
+    "SLIME BOSS",
     "HYPERSPEED",
     "SPIDER",
     "HIGHTUX",

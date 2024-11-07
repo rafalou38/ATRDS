@@ -280,6 +280,9 @@ EnemyPool enemyPool;
 struct Enemy enemy;
 ```
 
+**macro**
+**ternaire**
+
 #### Algorithmes originaux
 **Génération du chemin**: genBasicPath [./src/grid.c](./src/grid.c#L57)
 Cet algorithme crée un chemin continu dans une grille en suivant des règles pour éviter les collisions et en utilisant un historique pour revenir en arrière en cas de blocage.
