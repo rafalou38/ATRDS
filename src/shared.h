@@ -28,7 +28,7 @@ CONFIGURATION
 #define MAX_TERMINAL_HEIGHT 150
 
 #define TARGET_FPS 144
-#define WAVE_DELAY 4 // (secondes)
+#define WAVE_DELAY 0.5 // (secondes)
 
 #define CELL_WIDTH 18
 #define CELL_HEIGHT 9
@@ -234,6 +234,11 @@ int msleep(long ms);
     #define COLOR_HIGHTUX_BASE "\033[38;5;43m"
     #define COLOR_HIGHTUX_CROWN "\033[38;5;226m"
     #define COLOR_HIGHTUX_EYES "\033[38;5;124m"
+    //Boss_slime colors
+    #define COLOR_BOSS_SLIME_BASE "\033[38;5;21m"
+    #define COLOR_BOSS_SLIME_CROWN "\033[38;5;226m"
+    #define COLOR_BOSS_SLIME_EYES "\033[38;5;88m"
+    #define COLOR_BOSS_SLIME_MOUTH "\033[38;5;90m"
 // Terrain colors
 #define COLOR_STANDARD_BG "\033[48;5;233m"
 #define COLOR_TOWER_SLOT_BG "\033[48;5;236m"
