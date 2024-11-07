@@ -594,6 +594,11 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
             enemy->state = ENEMY_STATE_ARRIVED;
             defragNeeded = true;
             gs->health -= enemy->damage;
+            for (size_t i = 0; i < CELL_HEIGHT; i++)
+            {
+                move_to((int)enemy->grid_x  * (CELL_WIDTH + GAP) + 2, (int)enemy->grid_y * (CELL_HEIGHT + GAP / 2) + 2 + i);
+                printf(COLOR_STANDARD_BG "       ");
+            }
         }
 
         if (enemy->hp <= 0) // Effets liés à la mort d'un ennemi
@@ -706,6 +711,7 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
             if (ws->wave_timer == -1)
             {
                 ws->wave_timer = WAVE_DELAY;
+                return -2;
             }
             else if (ws->wave_timer == 0)
             {
@@ -715,7 +721,7 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
             {
                 ws->wave_timer = MAX(0, ws->wave_timer - dt);
             }
-            return -2;
+            return -1;
         }
         else // s'il reste des ennemis en vie, on ne fait rien
         {

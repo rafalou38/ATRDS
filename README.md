@@ -178,7 +178,7 @@ enum TurretType type = Mortier;
 **Struct** vu en cours
 **typedef struct** (version raccourcie)
 ```c
-struct Enemy // version raccourcie
+struct Enemy // version standard 
 {
     enum EnemyType type;
     float hp;
@@ -187,7 +187,7 @@ struct Enemy // version raccourcie
     int damage;
     int money;
 };
-// on peu faire typedef et struct en même temps. 
+// on définit le type et le struct en même temps
 typedef struct EnemyPool
 {
     int length; // Taille du tableau
