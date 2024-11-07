@@ -8,7 +8,7 @@ int msleep(long ms) // Fonction de repos (temps pendant lequel le terminal ne li
     return nanosleep(&ts, &ts);
 }
 
-void updateLabels(Labels *labels, float dt) // Mets a jour les labels (+1$)
+void updateLabels(Labels *labels, float dt) // Mets a jour les labels (l'argent drop par les monstres)
 {
     for (int i = 0; i < labels->count; i++)
     {
@@ -59,7 +59,6 @@ void drawLabels(Labels labels) // affiche tous les labels
     {
         move_to(labels.labels[i].x, labels.labels[i].y);
         printf(COLOR_STANDARD_BG COLOR_YELLOW "%d" RESET, labels.labels[i].text);
-        // printf("%.2f", labels.labels[i].counter);
     }
 };
 
@@ -186,7 +185,7 @@ void drawRange(int term_width, int term_height, float range, float grid_x, float
     }
 }
 
-// Animation de début de jeu
+// Animation de début de jeu (il ne s'agit que de boucle qui font se déplacer le curseur afin que l'annimation se produise)
 
 void anim_debut(int term_width, int term_height)
 {
