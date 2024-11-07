@@ -425,31 +425,31 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
             int sprite_anim = 0;
             char *sprite_ennemy[4][5] =
                 {{
-                     COLOR_BOSS_SLIME_CROWN"  ▞▞▞▚▚▚  ",
-                     COLOR_BOSS_SLIME_BASE" ▞▀▀▀▀▀▀▚ ",
-                     " ▌  "COLOR_BOSS_SLIME_EYES"▚  ▞"COLOR_BOSS_SLIME_BASE"▐ ",
-                     " ▌   "COLOR_BOSS_SLIME_MOUTH"▞▚"COLOR_BOSS_SLIME_BASE" ▐ ",
+                     COLOR_BOSS_SLIME_CROWN "  ▞▞▞▚▚▚  ",
+                     COLOR_BOSS_SLIME_BASE " ▞▀▀▀▀▀▀▚ ",
+                     " ▌  " COLOR_BOSS_SLIME_EYES "▚  ▞" COLOR_BOSS_SLIME_BASE "▐ ",
+                     " ▌   " COLOR_BOSS_SLIME_MOUTH "▞▚" COLOR_BOSS_SLIME_BASE " ▐ ",
                      " ▚▄▄▄▄▄▄▞ ",
                  },
                  {
-                     COLOR_BOSS_SLIME_CROWN"  ▞▞▞▚▚▚  ",
-                     COLOR_BOSS_SLIME_BASE" ▞▀▀"COLOR_BOSS_SLIME_EYES"▚"COLOR_BOSS_SLIME_BASE"▀"COLOR_BOSS_SLIME_EYES"▞"COLOR_BOSS_SLIME_BASE"▀▚ ",
-                     " ▌ "COLOR_BOSS_SLIME_EYES"▀   ▀"COLOR_BOSS_SLIME_BASE"▐ ",
-                     " ▌   "COLOR_BOSS_SLIME_MOUTH"▞▚"COLOR_BOSS_SLIME_BASE" ▐ ",
+                     COLOR_BOSS_SLIME_CROWN "  ▞▞▞▚▚▚  ",
+                     COLOR_BOSS_SLIME_BASE " ▞▀▀" COLOR_BOSS_SLIME_EYES "▚" COLOR_BOSS_SLIME_BASE "▀" COLOR_BOSS_SLIME_EYES "▞" COLOR_BOSS_SLIME_BASE "▀▚ ",
+                     " ▌ " COLOR_BOSS_SLIME_EYES "▀   ▀" COLOR_BOSS_SLIME_BASE "▐ ",
+                     " ▌   " COLOR_BOSS_SLIME_MOUTH "▞▚" COLOR_BOSS_SLIME_BASE " ▐ ",
                      " ▚▄▄▄▄▄▄▞ ",
                  },
                  {
-                     COLOR_BOSS_SLIME_CROWN"  ▞▞▞▚▚▚  ",
-                     COLOR_BOSS_SLIME_BASE" ▞▀▀▀▀▀▀▚ ",
-                     " ▌"COLOR_BOSS_SLIME_EYES"▚  ▞"COLOR_BOSS_SLIME_BASE"  ▐ ",
-                     " ▌ "COLOR_BOSS_SLIME_MOUTH"▞▚"COLOR_BOSS_SLIME_BASE"   ▐ ",
+                     COLOR_BOSS_SLIME_CROWN "  ▞▞▞▚▚▚  ",
+                     COLOR_BOSS_SLIME_BASE " ▞▀▀▀▀▀▀▚ ",
+                     " ▌" COLOR_BOSS_SLIME_EYES "▚  ▞" COLOR_BOSS_SLIME_BASE "  ▐ ",
+                     " ▌ " COLOR_BOSS_SLIME_MOUTH "▞▚" COLOR_BOSS_SLIME_BASE "   ▐ ",
                      " ▚▄▄▄▄▄▄▞ ",
                  },
                  {
-                     COLOR_BOSS_SLIME_CROWN"  ▞▞▞▚▚▚  ",
-                     COLOR_BOSS_SLIME_BASE" ▞▀▀▀▀▀▀▚ ",
-                     " ▌ "COLOR_BOSS_SLIME_EYES"▄▝ ▘▄"COLOR_BOSS_SLIME_BASE"▐ ",
-                     " ▌   "COLOR_BOSS_SLIME_MOUTH"▞▚"COLOR_BOSS_SLIME_BASE" ▐ ",
+                     COLOR_BOSS_SLIME_CROWN "  ▞▞▞▚▚▚  ",
+                     COLOR_BOSS_SLIME_BASE " ▞▀▀▀▀▀▀▚ ",
+                     " ▌ " COLOR_BOSS_SLIME_EYES "▄▝ ▘▄" COLOR_BOSS_SLIME_BASE "▐ ",
+                     " ▌   " COLOR_BOSS_SLIME_MOUTH "▞▚" COLOR_BOSS_SLIME_BASE " ▐ ",
                      " ▚▄▄▄▄▄▄▞ ",
                  }};
             if (enemy->next_cell.x * (CELL_WIDTH + GAP) + 3 > px)
@@ -476,8 +476,33 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
         }
         else if (enemy->type == ENEMY_SLOWBOSS)
         {
-            move_to(px, py);
-            printf("SLB");
+            int sprite_anim = 0;
+            char *sprite_ennemy[2][4] =
+                {{
+                     "  ▞▀▚▄▄   ",
+                     " ▞URSS▚▄▄▄",
+                     "▗▙▄▄▄▄▟▄▖ ",
+                     "▚▄▄▄▄▄▄▄▞ ",
+                 },
+                 {
+                     "   ▄▄▞▀▚  ",
+                     "▄▄▄▞URSS▚ ",
+                     " ▗▄▙▄▄▄▄▟▖",
+                     " ▚▄▄▄▄▄▄▄▞",
+                 }};
+            if (enemy->next_cell.x * (CELL_WIDTH + GAP) + 3 > px)
+            {
+                sprite_anim = 0;
+            }
+            else
+            {
+                sprite_anim = 1;
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                move_to(px - 3, i + py);
+                printf(sprite_ennemy[sprite_anim][i]);
+            }
         }
         else if (enemy->type == ENEMY_BOSS_STUN)
         {
@@ -650,7 +675,7 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
             gs->health -= enemy->damage;
             for (size_t i = 0; i < CELL_HEIGHT; i++)
             {
-                move_to((int)enemy->grid_x  * (CELL_WIDTH + GAP) + 2, (int)enemy->grid_y * (CELL_HEIGHT + GAP / 2) + 2 + i);
+                move_to((int)enemy->grid_x * (CELL_WIDTH + GAP) + 2, (int)enemy->grid_y * (CELL_HEIGHT + GAP / 2) + 2 + i);
                 printf(COLOR_STANDARD_BG "       ");
             }
         }
@@ -684,17 +709,18 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
 WavePattern getWaveByIndex(int waveIndex)
 {
     WavePattern wp = {
-        .target_HP = (10 + 5 * waveIndex),
-        .target_HPPS = 5 + 2 * waveIndex,
+        .target_POWER = (10 + 10 * waveIndex),
+        .target_POWERPS = 5 + 2 * waveIndex,
         .random_coeffs = {0},
         .min_spawns = {0}};
 
-    wp.random_coeffs[ENEMY_SPEED] = 1;
-    wp.random_coeffs[ENEMY_SPIDER] = 0.5;
-    wp.random_coeffs[ENEMY_TUX] = 1;
-    wp.random_coeffs[ENEMY_HIGHTUX] = 1;
-    wp.random_coeffs[ENEMY_HYPERSPEED] = 1;
-    wp.random_coeffs[ENEMY_SLIME_BOSS] = 1;
+    // wp.random_coeffs[ENEMY_SPEED] = 1;
+    // wp.random_coeffs[ENEMY_SPIDER] = 0.5;
+    // wp.random_coeffs[ENEMY_TUX] = 1;
+    // wp.random_coeffs[ENEMY_HIGHTUX] = 1;
+    // wp.random_coeffs[ENEMY_HYPERSPEED] = 1;
+    // wp.random_coeffs[ENEMY_SLIME_BOSS] = 1;
+    wp.random_coeffs[ENEMY_SLOWBOSS] = 1;
     // wp.random_coeffs[ENEMY_SPEED] = 1;
 
     for (int i = 0; i < ENEMY_COUNT; i++)
@@ -709,7 +735,7 @@ void switchToWave(WaveSystem *ws, int waveIndex)
 {
     ws->current_wave_index = waveIndex;
     ws->current_wave_pattern = getWaveByIndex(waveIndex);
-    ws->wave_HP_left = ws->current_wave_pattern.target_HP;
+    ws->wave_HP_left = ws->current_wave_pattern.target_POWER;
     ws->next_spawn_timer = -1;
     ws->wave_timer = -1;
 }
@@ -748,7 +774,7 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
     {
         // Cet ennemi ne va pas ètre ajouté, on le récupère juste pour connaître ses HP
         ennemi_courant = defEnemy(grid, i, 0, 0);
-        if (ennemi_courant.maxHP <= ws->wave_HP_left && pattern->random_coeffs[i] != 0)
+        if (ennemi_courant.maxHP*ennemi_courant.speed <= ws->wave_HP_left && pattern->random_coeffs[i] != 0)
         {
             enemy_choice_pool[i] = true;
             valid = true;
@@ -803,8 +829,8 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
 
     ennemi_choisi = addEnemy(grid, ep, ennemi_choisi_id, grid.start_x, grid.start_y + 0.5);
 
-    ws->wave_HP_left -= ennemi_choisi->maxHP;
-    ws->next_spawn_timer = ennemi_choisi->maxHP / pattern->target_HPPS;
+    ws->wave_HP_left -= ennemi_choisi->maxHP*ennemi_choisi->speed;
+    ws->next_spawn_timer = ennemi_choisi->maxHP / pattern->target_POWERPS;
 
     return ennemi_choisi_id;
 }
@@ -836,7 +862,7 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
 
         switchToWave(&ws, i);
 
-        printf("\t HP: " COLOR_RED "%d" RESET " HPPS: " COLOR_YELLOW "%d" RESET " \t", ws.current_wave_pattern.target_HP, ws.current_wave_pattern.target_HPPS);
+        printf("\t HP: " COLOR_RED "%d" RESET " HPPS: " COLOR_YELLOW "%d" RESET " \t", ws.current_wave_pattern.target_POWER, ws.current_wave_pattern.target_POWERPS);
         for (int j = 0; j < ENEMY_COUNT; j++)
         {
             printf("%.1f%% ", ws.current_wave_pattern.random_coeffs[j] / ws.current_wave_pattern.coeff_sum * 100);
@@ -872,7 +898,7 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
 
         printf("\tDurée de la vague:" COLOR_FREEZER_BASE " %.1fs " RESET ", %d ennemis %d", t, cnt, argent_cumul);
         // wave,hp,hpps,duration,ennemiesSpawned
-        fprintf(fptr, "%d,%d,%d,%.1f,%d,%d", i, ws.current_wave_pattern.target_HP, ws.current_wave_pattern.target_HPPS, t, argent_cumul, cnt);
+        fprintf(fptr, "%d,%d,%d,%.1f,%d,%d", i, ws.current_wave_pattern.target_POWER, ws.current_wave_pattern.target_POWERPS, t, argent_cumul, cnt);
         for (int i = 0; i < ENEMY_COUNT; i++)
         {
             fprintf(fptr, ",%d", spawn_cnt[i]);
