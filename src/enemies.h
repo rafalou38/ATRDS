@@ -36,6 +36,8 @@ struct Enemy
 
     enum EnemyState state;
 
+    bool is_boss;
+
     bool on_last_cell;
     struct Cell next_cell;
     struct Cell previous_cell;
@@ -71,9 +73,9 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
 
 typedef struct WavePattern
 {
-    int target_HP;   // le nombre de HP ennemis qui doivent être spawnées durant cette vague
-    int target_HPPS; // a quelle vitesse les HP ennemis doivent spawn (Health Points Per Second)
-    // float HPPS_factor; // facteur sur le target_HPPS pour un unique ennemi: 1 => 1 ennemi a target_HPPS HP par seconde max; 0.5 => 1 ennemi a target_HPPS*0.5 HP par seconde max
+    float target_POWER;   // le nombre de POWER ennemis qui doivent être spawnées durant cette vague
+    float target_POWERPS; // a quelle vitesse les POWER ennemis doivent spawn (Power Per Second)
+    // float HPPS_factor; // facteur sur le target_POWERPS pour un unique ennemi: 1 => 1 ennemi a target_POWERPS POWER par seconde max; 0.5 => 1 ennemi a target_POWERPS*0.5 POWER par seconde max
     // Plutôt utile si PV des ennemis variable car sinon, seulement les ennemis choisis spawnent, si on a choisi de spawn un gros, il ne faut pas l’empêcher
 
     float random_coeffs[ENEMY_COUNT]; // coefficients de spawn pour chaque ennemi
