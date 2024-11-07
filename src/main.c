@@ -131,6 +131,11 @@ int main(int argc, char *argv[])
     // Gestion labels
     labels.size = 255;
     labels.labels = malloc(sizeof(struct Label) * labels.size);
+    if (labels.labels == NULL)
+    {
+        printCritical("Failed to allocate label");
+        exit(EXIT_FAILURE);
+    }
 
     // Gestion ennemis
     enemyPool = AllocEnemyPool();
