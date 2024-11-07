@@ -78,6 +78,51 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.next_cell = grid.cells[start_x][start_y];
         enemy.on_last_cell = false;
     }
+    else if (type == ENEMY_SPIDER)
+    {
+        enemy.type = ENEMY_SPIDER;
+        enemy.hp = 20;
+        enemy.maxHP = 20;
+        enemy.speed = 1.0f;
+        enemy.damage = 2;
+        enemy.money = 1;
+        enemy.state = ENEMY_STATE_ALIVE;
+        enemy.grid_x = (float)start_x;
+        enemy.grid_y = (float)start_y;
+        enemy.previous_cell = grid.cells[start_x][start_y];
+        enemy.next_cell = grid.cells[start_x][start_y];
+        enemy.on_last_cell = false;
+    }
+    else if (type == ENEMY_HYPERSPEED)
+    {
+        enemy.type = ENEMY_HYPERSPEED;
+        enemy.hp = 10;
+        enemy.maxHP = 10;
+        enemy.speed = 2.5f;
+        enemy.damage = 2;
+        enemy.money = 2;
+        enemy.state = ENEMY_STATE_ALIVE;
+        enemy.grid_x = (float)start_x;
+        enemy.grid_y = (float)start_y;
+        enemy.previous_cell = grid.cells[start_x][start_y];
+        enemy.next_cell = grid.cells[start_x][start_y];
+        enemy.on_last_cell = false;
+    }
+    else if (type == ENEMY_HIGHTUX)
+    {
+        enemy.type = ENEMY_HIGHTUX;
+        enemy.hp = 15;
+        enemy.maxHP = 15;
+        enemy.speed = 1.0f;
+        enemy.damage = 2;
+        enemy.money = 2;
+        enemy.state = ENEMY_STATE_ALIVE;
+        enemy.grid_x = (float)start_x;
+        enemy.grid_y = (float)start_y;
+        enemy.previous_cell = grid.cells[start_x][start_y];
+        enemy.next_cell = grid.cells[start_x][start_y];
+        enemy.on_last_cell = false;
+    }
     return enemy;
 }
 
@@ -186,7 +231,23 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
         }
         else if (enemy->type == ENEMY_BOSS)
         {
+            move_to(px, py);
             printf("bos");
+        }
+        else if (enemy->type == ENEMY_SPIDER)
+        {
+            move_to(px, py);
+            printf("spi");
+        }
+        else if (enemy->type == ENEMY_HYPERSPEED)
+        {
+            move_to(px, py);
+            printf("hys");
+        }
+        else if (enemy->type == ENEMY_HIGHTUX)
+        {
+            move_to(px, py);
+            printf("hit");
         }
 
         // move_to((enemy->next_cell.x * (CELL_WIDTH + GAP) + 3), (enemy->next_cell.y * (CELL_HEIGHT + GAP / 2) + 2));
@@ -356,6 +417,11 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
             defragNeeded = true;
             gs->cash += enemy->money;
             char *label = (char *)malloc(sizeof(char) * 30);
+            if (label == NULL)
+            {
+                printCritical("Failed to allocate label");
+                exit(EXIT_FAILURE);
+            }
             sprintf(label, COLOR_STANDARD_BG COLOR_YELLOW "%d" RESET, enemy->money);
             labels->labels[labels->count].counter = 0;
             labels->labels[labels->count].duration = 2;
