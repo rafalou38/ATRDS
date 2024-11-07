@@ -208,6 +208,14 @@ int msleep(long ms);
     #define COLOR_PETRIFICATEUR_SORON "\033[38;5;214m"
     #define COLOR_PETRIFICATEUR_BASE_LVL2 "\033[38;5;82m"
     #define COLOR_BG_SORON "\033[48;5;214m"
+// Ennemies colors
+    //Tux colors
+    #define COLOR_TUX_BASE "\033[38;5;22m"
+    #define COLOR_TUX_EYES "\033[38;5;160m"
+    //Speed colors
+    #define COLOR_SPEED_BASE "\033[38;5;227m"
+    #define COLOR_SPEED_EYES "\033[38;5;229m"
+
 // Terrain colors
 #define COLOR_STANDARD_BG "\033[48;5;233m"
 #define COLOR_TOWER_SLOT_BG "\033[48;5;236m"

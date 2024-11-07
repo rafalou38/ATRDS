@@ -217,13 +217,65 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
         printf(COLOR_STANDARD_BG); // Sprites des ennemis
         if (enemy->type == ENEMY_TUX)
         {
-            int sprite_anim;
-            char *sprite_ennemy[2][2] = {
-                {"X O",
-                 "-⎶-"},
-                {"X O",
-                 "<=>"}};
-            if ((px % 3 == 0 && py % 3 == 0) || ((px % 3 == 1 && py % 3 == 1)))
+            int sprite_anim=0;
+            char *sprite_ennemy[4][3] =
+                {{
+                     COLOR_TUX_BASE "▞▀▀▚",
+                     "▌" COLOR_TUX_EYES "▚ ▞" COLOR_TUX_BASE,
+                     "▚▄▄▞",
+                 },
+                 {
+                     COLOR_TUX_BASE "▞▀▀▚",
+                     "▌" COLOR_TUX_EYES "▀ ▀" COLOR_TUX_BASE,
+                     "▚▄▄▞",
+                 },
+                 {
+                     COLOR_TUX_BASE "▞▀▀▚",
+                     COLOR_TUX_EYES "▚ ▞" COLOR_TUX_BASE "▐",
+                     "▚▄▄▞",
+                 },
+                 {
+                     COLOR_TUX_BASE "▞▀▀▚",
+                     "▌" COLOR_TUX_EYES "▄ ▄" COLOR_TUX_BASE,
+                     "▚▄▄▞",
+                 }};
+            if (enemy->next_cell.x * (CELL_WIDTH + GAP) + 3 > px)
+            {
+                sprite_anim = 0;
+            }
+            else if (enemy->next_cell.y * (CELL_HEIGHT + GAP / 2) + 2 < py)
+            {
+                sprite_anim = 1;
+            }
+            else if (enemy->next_cell.x * (CELL_HEIGHT + GAP / 2) + 2 > py)
+            {
+                sprite_anim = 3;
+            }
+            else if (enemy->next_cell.x * (CELL_WIDTH + GAP) + 3 < px)
+            {
+                sprite_anim = 2;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                move_to(px - 1, i + py);
+                printf(sprite_ennemy[sprite_anim][i]);
+            }
+        }
+        else if (enemy->type == ENEMY_SPEED)
+        {
+            int sprite_anim=0;
+            char *sprite_ennemy[2][3] =
+                {{
+                     COLOR_SPEED_BASE "▞▄▄▚",
+                     "▐" COLOR_SPEED_EYES "▐▌" COLOR_SPEED_BASE "▌",
+                     "▚▀▀▞",
+                 },
+                 {
+                     COLOR_SPEED_BASE "▞▀▀▚",
+                     "▐" COLOR_SPEED_EYES "▐▌" COLOR_SPEED_BASE "▌",
+                     "▚▄▄▞",
+                 }};
+            if ((int)enemy->grid_x % 2 == 1 && (int)enemy->grid_y % 2 == 1)
             {
                 sprite_anim = 0;
             }
@@ -231,18 +283,11 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
             {
                 sprite_anim = 1;
             }
-            for (int i = py; i < py + 2; i++)
+            for (int i = 0; i < 3; i++)
             {
-                move_to(px, i);
-                printf(sprite_ennemy[sprite_anim][i - py]);
+                move_to(px - 1, i + py);
+                printf(sprite_ennemy[sprite_anim][i]);
             }
-        }
-        else if (enemy->type == ENEMY_SPEED)
-        {
-            move_to(px, py);
-            printf("∑ ∑");
-            move_to(px, py + 1);
-            printf("/▔\\");
         }
         else if (enemy->type == ENEMY_BOSS)
         {
@@ -644,7 +689,7 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
 
         printf("\tDurée de la vague:" COLOR_FREEZER_BASE " %.1fs " RESET ", %d ennemis %d", t, cnt, argent_cumul);
         // wave,hp,hpps,duration,ennemiesSpawned
-        fprintf(fptr, "%d,%d,%d,%.1f,%d,%d,%d,%d,%d\n", i, ws.current_wave_pattern.target_HP, ws.current_wave_pattern.target_HPPS, t, argent_cumul, cnt,tux,speed,boss);
+        fprintf(fptr, "%d,%d,%d,%.1f,%d,%d,%d,%d,%d\n", i, ws.current_wave_pattern.target_HP, ws.current_wave_pattern.target_HPPS, t, argent_cumul, cnt, tux, speed, boss);
         fflush(fptr);
 
         fflush(stdout);
