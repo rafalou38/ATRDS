@@ -37,9 +37,207 @@ int ligne = 1;
 int width = 0;
 int height = 0;
 
-// Ces fonctions sont définies a la fin du fichier
-void handle_arrow_keys();
-void handle_enter_key();
+//Cette fonction permet de savoir que faire si la touche entrée a été préssée
+void handle_enter_key()
+{
+    if (grid.cells[selected_cell_x][selected_cell_y].hasTurret)     //permet de savoir si la cell selctionnée a déja une tourelle (cas de l'upgrade et de la vente)
+    {
+        int upgrade_price = getTurretPrice(grid.cells[selected_cell_x][selected_cell_y].turret.type, grid.cells[selected_cell_x][selected_cell_y].turret.lvl + 1);
+        if (ligne == 1 && upgrade_price > 0 && gameStats.cash >= upgrade_price)     //permet de verifier que l'on veut et peux upgrade
+        {
+            // Upgrade
+            gameStats.cash -= upgrade_price;
+            grid.cells[selected_cell_x][selected_cell_y].turret.lvl = 1;
+        }
+        else if (ligne == 2) //revente
+        {
+            gameStats.cash += (int)(0.8*getTurretPrice(grid.cells[selected_cell_x][selected_cell_y].turret.type, grid.cells[selected_cell_x][selected_cell_y].turret.lvl));
+            grid.cells[selected_cell_x][selected_cell_y].hasTurret = false;
+        }
+    }
+    else //Donc il faut implémenter une nouvelle tourelle
+    {
+        if (ligne == 1 && gameStats.cash >= getTurretPrice(Sniper, 0))//cette serie de if else permet de determiner le type de la tourrelle a placer dans la cell et de l'implémenter.
+        {
+            gameStats.cash -= getTurretPrice(Sniper, 0);
+            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Sniper);
+            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+        }
+        else if (ligne == 2 && gameStats.cash >= getTurretPrice(Inferno, 0))
+        {
+            gameStats.cash -= getTurretPrice(Inferno, 0);
+            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Inferno);
+            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+        }
+        else if (ligne == 3 && gameStats.cash >= getTurretPrice(Mortier, 0))
+        {
+            gameStats.cash -= getTurretPrice(Mortier, 0);
+            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Mortier);
+            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+        }
+        else if (ligne == 4 && gameStats.cash >= getTurretPrice(Gatling, 0))
+        {
+            gameStats.cash -= getTurretPrice(Gatling, 0);
+            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Gatling);
+            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+        }
+        else if (ligne == 5 && gameStats.cash >= getTurretPrice(Petrificateur, 0))
+        {
+            gameStats.cash -= getTurretPrice(Petrificateur, 0);
+            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Petrificateur);
+            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+        }
+        else if (ligne == 6 && gameStats.cash >= getTurretPrice(Freezer, 0))
+        {
+            gameStats.cash -= getTurretPrice(Freezer, 0);
+            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Freezer);
+            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+        }
+        else if (ligne == 7 && gameStats.cash >= getTurretPrice(Banque, 0))
+        {
+            gameStats.cash -= getTurretPrice(Banque, 0);
+            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Banque);
+            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
+        }
+    }
+    selection_active = false;
+    fillBG(1, 1, width + 1, height + 1);
+    drawFullGrid(grid);
+}
+
+void handle_arrow_keys()
+{
+    getchar(); // [
+    char c = getchar();
+    int cell_x = selected_cell_x;
+    int cell_y = selected_cell_y;
+    bool up = c == 'A';
+    bool down = c == 'B';
+    bool right = c == 'C';
+    bool left = c == 'D';
+    if (!selection_active)
+    {
+        // Mouvement de la sélection de cellule, en prenant en compte le chemin et les bords de la grid
+        if (up)
+        {
+            while (cell_y > 1 && grid.cells[cell_x][cell_y - 1].type == CHEMIN)
+                cell_y -= 1;
+
+            if (cell_y > 0)
+            {
+                grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                selected_cell_y = cell_y - 1;
+                grid.cells[selected_cell_x][selected_cell_y].selected = true;
+            }
+            else
+            {
+                cell_y = grid.height;
+                while (cell_y > 1 && grid.cells[cell_x][cell_y - 1].type == CHEMIN)
+                {
+                    cell_y -= 1;
+                }
+                grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                selected_cell_y = cell_y - 1;
+                grid.cells[selected_cell_x][selected_cell_y].selected = true;
+            }
+        }
+        else if (down)
+        {
+            while (cell_y < grid.height - 1 && grid.cells[cell_x][cell_y + 1].type == CHEMIN)
+                cell_y += 1;
+
+            if (cell_y < grid.height - 1)
+            {
+                grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                selected_cell_y = cell_y + 1;
+                grid.cells[selected_cell_x][selected_cell_y].selected = true;
+            }
+            else
+            {
+                cell_y = -1;
+                while (cell_y < grid.height - 1 && grid.cells[cell_x][cell_y + 1].type == CHEMIN)
+                {
+                    cell_y += 1;
+                }
+                grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                selected_cell_y = cell_y + 1;
+                grid.cells[selected_cell_x][selected_cell_y].selected = true;
+            }
+        }
+        else if (right)
+        {
+            while (cell_x < grid.width - 1 && grid.cells[cell_x + 1][cell_y].type == CHEMIN)
+                cell_x += 1;
+
+            if (cell_x < grid.width - 1)
+            {
+                grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                selected_cell_x = cell_x + 1;
+                grid.cells[selected_cell_x][selected_cell_y].selected = true;
+            }
+            else
+            {
+                cell_x = -1;
+                while (cell_x < grid.width - 1 && grid.cells[cell_x + 1][cell_y].type == CHEMIN)
+                {
+                    cell_x += 1;
+                }
+                grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                selected_cell_x = cell_x + 1;
+                grid.cells[selected_cell_x][selected_cell_y].selected = true;
+            }
+        }
+        else if (left)
+        {
+            while (cell_x >= 1 && grid.cells[cell_x - 1][cell_y].type == CHEMIN)
+                cell_x -= 1;
+
+            if (cell_x > 0)
+            {
+                grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                selected_cell_x = cell_x - 1;
+                grid.cells[selected_cell_x][selected_cell_y].selected = true;
+            }
+            else
+            {
+                cell_x = grid.width;
+                while (cell_x > 1 && grid.cells[cell_x - 1][cell_y].type == CHEMIN)
+                {
+                    cell_x -= 1;
+                }
+                grid.cells[selected_cell_x][selected_cell_y].selected = false;
+                selected_cell_x = cell_x - 1;
+                grid.cells[selected_cell_x][selected_cell_y].selected = true;
+            }
+        }
+        drawFullGrid(grid);
+        fflush(stdout);
+    }
+    else
+    {
+        // Mouvement du curseur dans le shop
+        if (down)
+        {
+            ligne += 1;
+        }
+        else if (up)
+        {
+            ligne -= 1;
+        }
+
+        if (selection_active)
+        { // le shop est ouvert
+            // 7 tourelles => 7 lignes sélectionnables
+            ligne = CLAMP(ligne, 1, 7); //CLAMP(val,x,y): permet de faire en sorte que si val<x, val = x et si val>y, val = y
+        }
+        else
+        {
+            // c'est le menu d'upgrade
+            // Deux options: améliorer ou vendre
+            ligne = CLAMP(ligne, 1, 2);
+        }
+    }
+}
 
 struct termios base_t_settings;
 void configTerminal()
@@ -83,7 +281,7 @@ void cleanup()
  */
 int main(int argc, char *argv[])
 {
-    // Enregistre la fonction cleanup pour qu'elle soit exécutée  la terminaison du programme.
+    // Enregistre la fonction cleanup pour qu'elle soit exécutée lors la terminaison du programme.
     atexit(cleanup);
     struct sigaction act;
     act.sa_handler = &cleanup;
@@ -348,205 +546,4 @@ int main(int argc, char *argv[])
     freeLabels(labels);
 
     return 0;
-}
-
-void handle_enter_key()
-{
-    if (grid.cells[selected_cell_x][selected_cell_y].hasTurret)
-    {
-        int upgrade_price = getTurretPrice(grid.cells[selected_cell_x][selected_cell_y].turret.type, grid.cells[selected_cell_x][selected_cell_y].turret.lvl + 1);
-        if (ligne == 1 && upgrade_price > 0 && gameStats.cash >= upgrade_price)
-        {
-            // Upgrade
-            gameStats.cash -= upgrade_price;
-            grid.cells[selected_cell_x][selected_cell_y].turret.lvl = 1;
-        }
-        else if (ligne == 2)
-        {
-            gameStats.cash += (int)(0.8*getTurretPrice(grid.cells[selected_cell_x][selected_cell_y].turret.type, grid.cells[selected_cell_x][selected_cell_y].turret.lvl));
-            grid.cells[selected_cell_x][selected_cell_y].hasTurret = false;
-        }
-    }
-    else
-    {
-        if (ligne == 1 && gameStats.cash >= getTurretPrice(Sniper, 0))
-        {
-            gameStats.cash -= getTurretPrice(Sniper, 0);
-            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Sniper);
-            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
-        }
-        else if (ligne == 2 && gameStats.cash >= getTurretPrice(Inferno, 0))
-        {
-            gameStats.cash -= getTurretPrice(Inferno, 0);
-            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Inferno);
-            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
-        }
-        else if (ligne == 3 && gameStats.cash >= getTurretPrice(Mortier, 0))
-        {
-            gameStats.cash -= getTurretPrice(Mortier, 0);
-            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Mortier);
-            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
-        }
-        else if (ligne == 4 && gameStats.cash >= getTurretPrice(Gatling, 0))
-        {
-            gameStats.cash -= getTurretPrice(Gatling, 0);
-            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Gatling);
-            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
-        }
-        else if (ligne == 5 && gameStats.cash >= getTurretPrice(Petrificateur, 0))
-        {
-            gameStats.cash -= getTurretPrice(Petrificateur, 0);
-            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Petrificateur);
-            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
-        }
-        else if (ligne == 6 && gameStats.cash >= getTurretPrice(Freezer, 0))
-        {
-            gameStats.cash -= getTurretPrice(Freezer, 0);
-            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Freezer);
-            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
-        }
-        else if (ligne == 7 && gameStats.cash >= getTurretPrice(Banque, 0))
-        {
-            gameStats.cash -= getTurretPrice(Banque, 0);
-            grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Banque);
-            grid.cells[selected_cell_x][selected_cell_y].hasTurret = true;
-        }
-    }
-    selection_active = false;
-    fillBG(1, 1, width + 1, height + 1);
-    drawFullGrid(grid);
-}
-
-void handle_arrow_keys()
-{
-    getchar(); // [
-    char c = getchar();
-    int cell_x = selected_cell_x;
-    int cell_y = selected_cell_y;
-    bool up = c == 'A';
-    bool down = c == 'B';
-    bool right = c == 'C';
-    bool left = c == 'D';
-    if (!selection_active)
-    {
-        // Mouvement de la sélection de cellule, en prenant en compte le chemin et les bords de la grid
-        if (up)
-        {
-            while (cell_y > 1 && grid.cells[cell_x][cell_y - 1].type == CHEMIN)
-                cell_y -= 1;
-
-            if (cell_y > 0)
-            {
-                grid.cells[selected_cell_x][selected_cell_y].selected = false;
-                selected_cell_y = cell_y - 1;
-                grid.cells[selected_cell_x][selected_cell_y].selected = true;
-            }
-            else
-            {
-                cell_y = grid.height;
-                while (cell_y > 1 && grid.cells[cell_x][cell_y - 1].type == CHEMIN)
-                {
-                    cell_y -= 1;
-                }
-                grid.cells[selected_cell_x][selected_cell_y].selected = false;
-                selected_cell_y = cell_y - 1;
-                grid.cells[selected_cell_x][selected_cell_y].selected = true;
-            }
-        }
-        else if (down)
-        {
-            while (cell_y < grid.height - 1 && grid.cells[cell_x][cell_y + 1].type == CHEMIN)
-                cell_y += 1;
-
-            if (cell_y < grid.height - 1)
-            {
-                grid.cells[selected_cell_x][selected_cell_y].selected = false;
-                selected_cell_y = cell_y + 1;
-                grid.cells[selected_cell_x][selected_cell_y].selected = true;
-            }
-            else
-            {
-                cell_y = -1;
-                while (cell_y < grid.height - 1 && grid.cells[cell_x][cell_y + 1].type == CHEMIN)
-                {
-                    cell_y += 1;
-                }
-                grid.cells[selected_cell_x][selected_cell_y].selected = false;
-                selected_cell_y = cell_y + 1;
-                grid.cells[selected_cell_x][selected_cell_y].selected = true;
-            }
-        }
-        else if (right)
-        {
-            while (cell_x < grid.width - 1 && grid.cells[cell_x + 1][cell_y].type == CHEMIN)
-                cell_x += 1;
-
-            if (cell_x < grid.width - 1)
-            {
-                grid.cells[selected_cell_x][selected_cell_y].selected = false;
-                selected_cell_x = cell_x + 1;
-                grid.cells[selected_cell_x][selected_cell_y].selected = true;
-            }
-            else
-            {
-                cell_x = -1;
-                while (cell_x < grid.width - 1 && grid.cells[cell_x + 1][cell_y].type == CHEMIN)
-                {
-                    cell_x += 1;
-                }
-                grid.cells[selected_cell_x][selected_cell_y].selected = false;
-                selected_cell_x = cell_x + 1;
-                grid.cells[selected_cell_x][selected_cell_y].selected = true;
-            }
-        }
-        else if (left)
-        {
-            while (cell_x >= 1 && grid.cells[cell_x - 1][cell_y].type == CHEMIN)
-                cell_x -= 1;
-
-            if (cell_x > 0)
-            {
-                grid.cells[selected_cell_x][selected_cell_y].selected = false;
-                selected_cell_x = cell_x - 1;
-                grid.cells[selected_cell_x][selected_cell_y].selected = true;
-            }
-            else
-            {
-                cell_x = grid.width;
-                while (cell_x > 1 && grid.cells[cell_x - 1][cell_y].type == CHEMIN)
-                {
-                    cell_x -= 1;
-                }
-                grid.cells[selected_cell_x][selected_cell_y].selected = false;
-                selected_cell_x = cell_x - 1;
-                grid.cells[selected_cell_x][selected_cell_y].selected = true;
-            }
-        }
-        drawFullGrid(grid);
-        fflush(stdout);
-    }
-    else
-    {
-        // Mouvement du curseur dans le shop
-        if (down)
-        {
-            ligne += 1;
-        }
-        else if (up)
-        {
-            ligne -= 1;
-        }
-
-        if (selection_active)
-        { // le shop est ouvert
-            // 7 tourelles => 7 lignes sélectionnables
-            ligne = CLAMP(ligne, 1, 7);
-        }
-        else
-        {
-            // c'est le menu d'upgrade
-            // Deux options: améliorer ou vendre
-            ligne = CLAMP(ligne, 1, 2);
-        }
-    }
 }
