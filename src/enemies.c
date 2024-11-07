@@ -471,8 +471,9 @@ WavePattern getWaveByIndex(int waveIndex)
         .random_coeffs = {0},
         .min_spawns = {0}};
 
-    wp.random_coeffs[ENEMY_TUX] = 1;
-    wp.random_coeffs[ENEMY_SPEED] = 1;
+    wp.random_coeffs[ENEMY_SPIDER] = 1;
+    // wp.random_coeffs[ENEMY_TUX] = 1;
+    // wp.random_coeffs[ENEMY_SPEED] = 1;
 
     for (int i = 0; i < ENEMY_COUNT; i++)
     {
@@ -525,7 +526,7 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
     {
         // Cet ennemi ne va pas ètre ajouté, on le récupère juste pour connaître ses HP
         ennemi_courant = defEnemy(grid, i, 0, 0);
-        if (ennemi_courant.maxHP <= ws->wave_HP_left)
+        if (ennemi_courant.maxHP <= ws->wave_HP_left && pattern->random_coeffs[i] != 0)
         {
             enemy_choice_pool[i] = true;
             valid = true;
