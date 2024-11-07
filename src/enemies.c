@@ -33,6 +33,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
 {
     struct Enemy enemy;
     enemy.has_effect = false;
+    enemy.is_boss = false;
     if (type == ENEMY_TUX) // Ennemi de base
     {
         enemy.type = ENEMY_TUX;
@@ -66,6 +67,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
     else if (type == ENEMY_SLIME_BOSS) // Boss ennemi
     {
         enemy.type = ENEMY_SLIME_BOSS;
+        enemy.is_boss = true;
         enemy.hp = 50;
         enemy.maxHP = 50;
         enemy.speed = 0.5f;
@@ -126,6 +128,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
     else if (type == ENEMY_TANK)
     {
         enemy.type = ENEMY_TANK;
+        enemy.is_boss = true;
         enemy.hp = 1000;
         enemy.maxHP = 1000;
         enemy.speed = 0.2f;
@@ -141,6 +144,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
     else if (type == ENEMY_BOSS_STUN)
     {
         enemy.type = ENEMY_BOSS_STUN;
+        enemy.is_boss = true;
         enemy.hp = 100;
         enemy.maxHP = 100;
         enemy.speed = 0.5f;
@@ -741,25 +745,17 @@ WavePattern getWaveByIndex(int waveIndex)
         .target_POWERPS = 5 + 2 * waveIndex,
         .random_coeffs = {0},
         .min_spawns = {0}};
-    if (waveIndex < 10)
-    {
-        // wp.random_coeffs[ENEMY_SPEED] = 1;
-        // wp.random_coeffs[ENEMY_SPIDER] = 0.5;
-        // wp.random_coeffs[ENEMY_TUX] = 1;
-        // wp.random_coeffs[ENEMY_HIGHTUX] = 0;
-        // wp.random_coeffs[ENEMY_HYPERSPEED] = 0;
-        // wp.random_coeffs[ENEMY_SLIME_BOSS] = 0;
-    }
-    else
-    {
-        // wp.random_coeffs[ENEMY_SPEED] = 1;
-        // wp.random_coeffs[ENEMY_SPIDER] = 1;
-        // wp.random_coeffs[ENEMY_TUX] = 1;
-        // wp.random_coeffs[ENEMY_HIGHTUX] = 1;
-        // wp.random_coeffs[ENEMY_HYPERSPEED] = 1;
-        // wp.random_coeffs[ENEMY_SLIME_BOSS] = 1;
-        wp.random_coeffs[ENEMY_BOSS_STUN] = 1;
-    }
+
+    wp.random_coeffs[ENEMY_TUX] = 1;
+    wp.random_coeffs[ENEMY_SPEED] = 1;
+    wp.random_coeffs[ENEMY_SPIDER] = MIN(1, 0.5 + 0.5f * waveIndex / 16);   // 1 a vague 16
+    wp.random_coeffs[ENEMY_HIGHTUX] = MIN(1, 0 + 1.0f * waveIndex / 20);    // 1 a vague 20
+    wp.random_coeffs[ENEMY_HYPERSPEED] = MIN(1, 0 + 1.0f * waveIndex / 25); // 1 a vague 25
+
+    wp.random_coeffs[ENEMY_SLIME_BOSS] = CLAMP(-0.1f + 0.2f * waveIndex / 20, 0.0f, 0.2f);
+    wp.random_coeffs[ENEMY_BOSS_STUN] = CLAMP(-0.4f + 0.2f * waveIndex / 30, 0.0f, 0.2f);
+    wp.random_coeffs[ENEMY_SLOWBOSS] = CLAMP(-0.4f + 0.2f * waveIndex / 40, 0.0f, 0.2f);
+
 
     for (int i = 0; i < ENEMY_COUNT; i++)
     {
@@ -812,7 +808,8 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
     {
         // Cet ennemi ne va pas ètre ajouté, on le récupère juste pour connaître ses HP
         ennemi_courant = defEnemy(grid, i, 0, 0);
-        if (ennemi_courant.maxHP * ennemi_courant.speed <= ws->wave_HP_left && pattern->random_coeffs[i] != 0)
+
+        if ((ennemi_courant.maxHP * ennemi_courant.speed <= ws->wave_HP_left && pattern->random_coeffs[i] != 0) || pattern->min_spawns[i] > 0)
         {
             enemy_choice_pool[i] = true;
             valid = true;
@@ -856,9 +853,13 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
     {
         if (enemy_choice_pool[i % ENEMY_COUNT])
         {
-            if (rand() / (float)RAND_MAX <= pattern->random_coeffs[i % ENEMY_COUNT] / pattern->coeff_sum)
+            if (rand() / (float)RAND_MAX <= pattern->random_coeffs[i % ENEMY_COUNT] / pattern->coeff_sum || pattern->min_spawns[i % ENEMY_COUNT] > 0)
             {
                 ennemi_choisi_id = i % ENEMY_COUNT;
+                if (pattern->min_spawns[ennemi_choisi_id] > 0)
+                {
+                    pattern->min_spawns[ennemi_choisi_id]--;
+                }
                 break;
             }
         }
@@ -867,8 +868,15 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
 
     ennemi_choisi = addEnemy(grid, ep, ennemi_choisi_id, grid.start_x, grid.start_y + 0.5);
 
-    ws->wave_HP_left -= ennemi_choisi->maxHP * ennemi_choisi->speed;
-    ws->next_spawn_timer = ennemi_choisi->maxHP / pattern->target_POWERPS;
+    if (!ennemi_choisi->is_boss)
+    {
+        ws->wave_HP_left -= ennemi_choisi->maxHP * ennemi_choisi->speed;
+        ws->next_spawn_timer = ennemi_choisi->maxHP / pattern->target_POWERPS;
+    }
+    else
+    {
+        ws->next_spawn_timer = 1.5;
+    }
 
     return ennemi_choisi_id;
 }
@@ -886,12 +894,23 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
     fprintf(fptr, "wave,hp,hpps,duration,argentCumul,ennemiesSpawned,");
     fprintf(fptr, "TUX,");
     fprintf(fptr, "SPEED,");
-    fprintf(fptr, "BOSS,");
+    fprintf(fptr, "SLIME BOSS,");
     fprintf(fptr, "HYPERSPEED,");
     fprintf(fptr, "SPIDER,");
     fprintf(fptr, "HIGHTUX,");
     fprintf(fptr, "SLOWBOSS,");
     fprintf(fptr, "BOSS_STUN");
+    fprintf(fptr, "\n");
+
+    printf("\t\t\t\tTUX\t\t");
+    printf("SPEED\t\t");
+    printf("SLIME BOSS\t");
+    printf("HYPERSPEED\t");
+    printf("SPIDER\t\t");
+    printf("HIGHTUX\t\t");
+    printf("SLOWBOSS\t");
+    printf("BOSS_STUN");
+    printf("\n");
     while (n <= 0 || i < n)
     {
         printf("\n");
@@ -900,10 +919,10 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
 
         switchToWave(&ws, i);
 
-        printf("\t HP: " COLOR_RED "%d" RESET " HPPS: " COLOR_YELLOW "%d" RESET " \t", ws.current_wave_pattern.target_POWER, ws.current_wave_pattern.target_POWERPS);
+        printf("\t HP: " COLOR_RED "%.1f" RESET " HPPS: " COLOR_YELLOW "%.1f" RESET " \t", ws.current_wave_pattern.target_POWER, ws.current_wave_pattern.target_POWERPS);
         for (int j = 0; j < ENEMY_COUNT; j++)
         {
-            printf("%.1f%% ", ws.current_wave_pattern.random_coeffs[j] / ws.current_wave_pattern.coeff_sum * 100);
+            printf("%.1f%% \t\t", ws.current_wave_pattern.random_coeffs[j] / ws.current_wave_pattern.coeff_sum * 100);
         }
 
         printf("\n");
@@ -936,7 +955,7 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
 
         printf("\tDurée de la vague:" COLOR_FREEZER_BASE " %.1fs " RESET ", %d ennemis %d", t, cnt, argent_cumul);
         // wave,hp,hpps,duration,ennemiesSpawned
-        fprintf(fptr, "%d,%d,%d,%.1f,%d,%d", i, ws.current_wave_pattern.target_POWER, ws.current_wave_pattern.target_POWERPS, t, argent_cumul, cnt);
+        fprintf(fptr, "%d,%f,%f,%.1f,%d,%d", i, ws.current_wave_pattern.target_POWER, ws.current_wave_pattern.target_POWERPS, t, argent_cumul, cnt);
         for (int i = 0; i < ENEMY_COUNT; i++)
         {
             fprintf(fptr, ",%d", spawn_cnt[i]);

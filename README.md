@@ -280,6 +280,16 @@ EnemyPool enemyPool;
 struct Enemy enemy;
 ```
 
+**macro**
+Une macro (par exemple MAX et MIN) permet d'écrire une fonction sans pour autant avoir à spécifier les types.
+Cependant, il faut faire attention a ne pas oublier les parentaises car une macro ne fait que remplacer la macro par
+ce par quoi on l'a définie (c'est a dire comme les défine). Donc en oubliant les parentaises, on risque de changer completement la valeur retenue par le programme.
+**ternaire**
+Le ternaire est le ? des macro.
+Le ? permet de savoir si la condition précédente est vraie ou non puis les : permetent de determiner quoi faire en fonction de la véracité de la condition.
+Si la condition est vrai, la macro renvera ce qui se trouve entre le ? et les :.
+Sinon, la macro renvera ce qui se trouve apres les :. 
+
 #### Algorithmes originaux
 **Génération du chemin**: genBasicPath [./src/grid.c](./src/grid.c#L57)
 Cet algorithme crée un chemin continu dans une grille en suivant des règles pour éviter les collisions et en utilisant un historique pour revenir en arrière en cas de blocage.

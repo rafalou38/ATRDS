@@ -32,12 +32,12 @@ columns = [1, 2, 3, 4, 5]  # Use 1-based indexing if your file includes a header
 ennemies = [
     "TUX",
     "SPEED",
-    "BOSS",
     "HYPERSPEED",
     "SPIDER",
     "HIGHTUX",
-    "SLOWBOSS",
+    "SLIME BOSS",
     "BOSS_STUN",
+    "SLOWBOSS",
 ]
 # Plot each column in a separate subplot
 for i, (title, ylabel, col) in enumerate(zip(titles, y_labels, columns)):
