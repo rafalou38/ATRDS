@@ -437,12 +437,12 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.type = Mortier;
         tur.lvl = 0;
         tur.compteur = 0;
-        tur.range_min[0] = 3.5;
+        tur.range_min[0] = 2;
         tur.range_min[1] = 2.5;
         tur.range_max[0] = 5.5;
         tur.range_max[1] = 6.5;
-        tur.damage[0] = 4; // 4/4 -> 1dps
-        tur.damage[1] = 5; // 5/3 -> 1.42dps
+        tur.damage[0] = 2; // 4/4 -> 1dps
+        tur.damage[1] = 2.5; // 5/3 -> 1.42dps
         tur.reload_delay[0] = 4;
         tur.reload_delay[1] = 3.5;
         tur.splash[0] = 1.0;
@@ -503,8 +503,8 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.range_max[1] = 2.5;
         tur.damage[0] = 0;
         tur.damage[1] = 0;
-        tur.reload_delay[0] = 4;
-        tur.reload_delay[1] = 4;
+        tur.reload_delay[0] = 3;
+        tur.reload_delay[1] = 3;
         tur.splash[0] = 0;
         tur.splash[1] = 0;
         tur.nb_ennemi[0] = 100;
@@ -523,8 +523,8 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.reload_delay[1] = 10;
         tur.has_effect = true;
         tur.effet = Money;
-        tur.puissance_effet[0] = 10;
-        tur.puissance_effet[1] = 30;
+        tur.puissance_effet[0] = 2;
+        tur.puissance_effet[1] = 5;
     }
     return tur;
 }
@@ -586,7 +586,7 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
         printf(" 💰 Sell");
 
         move_to(x0 + 1 + width - 8, y0 + 2);
-        printf(COLOR_GREEN "+% 3d €" RESET, getTurretPrice(selectedTurret.type, selectedTurret.lvl));
+        printf(COLOR_GREEN "+% 3d €" RESET, (int)(getTurretPrice(selectedTurret.type, selectedTurret.lvl)*0.8));
     }
     // Sinon, proposer la construction des autres tourelles
     else

@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
     genBasicPath(&grid);
 
     // Gestion des statistiques
-    gameStats.cash = 30;
+    gameStats.cash = 300;
     gameStats.health = 20;
 
     // Gestion labels
@@ -353,7 +353,7 @@ void handle_enter_key()
         }
         else if (ligne == 2)
         {
-            gameStats.cash += getTurretPrice(grid.cells[selected_cell_x][selected_cell_y].turret.type, grid.cells[selected_cell_x][selected_cell_y].turret.lvl);
+            gameStats.cash += (int)(0.8*getTurretPrice(grid.cells[selected_cell_x][selected_cell_y].turret.type, grid.cells[selected_cell_x][selected_cell_y].turret.lvl));
             grid.cells[selected_cell_x][selected_cell_y].hasTurret = false;
         }
     }

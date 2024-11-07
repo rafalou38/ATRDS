@@ -629,12 +629,22 @@ WavePattern getWaveByIndex(int waveIndex)
         .target_HPPS = 5 + 2 * waveIndex,
         .random_coeffs = {0},
         .min_spawns = {0}};
-
-    wp.random_coeffs[ENEMY_SPEED] = 1;
-    wp.random_coeffs[ENEMY_SPIDER] = 0.5;
-    wp.random_coeffs[ENEMY_TUX] = 1;
-    wp.random_coeffs[ENEMY_HIGHTUX] = 0.25;
-    wp.random_coeffs[ENEMY_HYPERSPEED] = 0.25;
+    if (waveIndex<10)
+    {
+        wp.random_coeffs[ENEMY_SPEED] = 1;
+        wp.random_coeffs[ENEMY_SPIDER] = 0.5;
+        wp.random_coeffs[ENEMY_TUX] = 1;
+        wp.random_coeffs[ENEMY_HIGHTUX] = 0;
+        wp.random_coeffs[ENEMY_HYPERSPEED] = 0;
+    }
+    else
+    {
+        wp.random_coeffs[ENEMY_SPEED] = 0.5;
+        wp.random_coeffs[ENEMY_SPIDER] = 0.5;
+        wp.random_coeffs[ENEMY_TUX] = 0.5;
+        wp.random_coeffs[ENEMY_HIGHTUX] = 0.5;
+        wp.random_coeffs[ENEMY_HYPERSPEED] = 0.5;
+    }
 
     for (int i = 0; i < ENEMY_COUNT; i++)
     {
