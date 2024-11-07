@@ -21,8 +21,11 @@ CONFIGURATION
 */
 #define HISTORY_SIZE 500
 
-#define MIN_TERMINAL_WIDTH 120
-#define MIN_TERMINAL_HEIGHT 20
+#define MIN_TERMINAL_WIDTH 232
+#define MIN_TERMINAL_HEIGHT 74
+
+#define MAX_TERMINAL_WIDTH 510
+#define MAX_TERMINAL_HEIGHT 150
 
 #define TARGET_FPS 144
 #define WAVE_DELAY 4 // (secondes)
@@ -66,23 +69,24 @@ enum EffectType
 
 struct Turret
 {
-    enum TurretType type;           //Type de tourelle
-    int lvl;                        //Niveau de la tourelle et également l'indice des différente valeurs qui changent lors de l'upgrade
-    float compteur;                 //Compteur pour savoir quand la tourelle doit tirer
-    bool in_range;                  //sert a savoir si un ennemi est a portée de la tourrelle
-    float range_min[2];             //détermine la portée minimale de la tourelle
-    float range_max[2];             //détermine la portée maximale de la tourelle
-    float damage[2];                //détermine les dégats de la tourelle
-    float reload_delay[2];          //détermine la fréquence de tir de la tourelle
-    float splash[2];                //détermine la taille des dégats de zone de la tourelle
-    int nb_ennemi[2];               //détermine le nombre d'ennemi que la tourelle peut toucher lors de son attaque
-    bool has_effect;                //determine si la tourelle possède un effet particulier
-    enum EffectType effet;          //Type de l'effet
-    float puissance_effet[2];       //determine la puissance de l'effet (a un role different selon les effets)
-    bool sub_effect;                //determine si la tourelle subbit un effet particulier
-    enum EffectType effet_sub;      //Type de l'effet subbit
-    float puissance_effet_sub;      //Puissance de l'effet subbit
-    float last_shot_dx;             
+    enum TurretType type;      // Type de tourelle
+    int lvl;                   // Niveau de la tourelle et également l'indice des différente valeurs qui changent lors de l'upgrade
+    float compteur;            // Compteur pour savoir quand la tourelle doit tirer
+    float compteur_mortier;    // Compteur pour clear les tirs de mortier
+    bool in_range;             // sert a savoir si un ennemi est a portée de la tourrelle
+    float range_min[2];        // détermine la portée minimale de la tourelle
+    float range_max[2];        // détermine la portée maximale de la tourelle
+    float damage[2];           // détermine les dégats de la tourelle
+    float reload_delay[2];     // détermine la fréquence de tir de la tourelle
+    float splash[2];           // détermine la taille des dégats de zone de la tourelle
+    int nb_ennemi[2];          // détermine le nombre d'ennemi que la tourelle peut toucher lors de son attaque
+    bool has_effect;           // determine si la tourelle possède un effet particulier
+    enum EffectType effet;     // Type de l'effet
+    float puissance_effet[2];  // determine la puissance de l'effet (a un role different selon les effets)
+    bool sub_effect;           // determine si la tourelle subbit un effet particulier
+    enum EffectType effet_sub; // Type de l'effet subbit
+    float puissance_effet_sub; // Puissance de l'effet subbit
+    float last_shot_dx;
     float last_shot_dy;
 };
 
@@ -179,38 +183,38 @@ int msleep(long ms);
 #define COLOR_GREEN "\033[38;5;42m"
 #define COLOR_YELLOW "\033[38;5;11;1m"
 // Turrets colors
-    //Sniper colors
-    #define COLOR_SNIPER_BASE "\033[38;5;48m"
-    #define COLOR_SNIPER_CANNON "\033[38;5;33m"
-    #define COLOR_SNIPER_HEAD "\033[38;5;196m"
-    //Inferno colors
-    #define COLOR_INFERNO_BASE "\033[38;5;202m"
-    #define COLOR_INFERNO_FIRE1 "\033[38;5;196m"
-    #define COLOR_INFERNO_FIRE2 "\033[38;5;227m"
-    #define COLOR_INFERNO_TORCH "\033[38;5;243m"
-    //Mortier colors
-    #define COLOR_MORTIER_BASE "\033[38;5;243m"
-    #define COLOR_MORTIER_FIRING "\033[38;5;208m"
-    #define COLOR_MORTIER_FIRING_CENTER "\033[38;5;184m"
-    #define COLOR_MORTIER_COOLING "\033[38;5;14m"
-    //Banque colors
-    #define COLOR_BANQUE_BASE "\033[38;5;130m"
-    #define COLOR_BANQUE_MONEY "\033[38;5;184m"
-    #define COLOR_BANQUE_GENERATION "\033[38;5;40m"
-    //Freezer colors
-    #define COLOR_FREEZER_BASE "\033[38;5;14m"
-    #define COLOR_FREEZER_FIRING "\033[38;5;50m"
-    #define COLOR_FREEZER_FIRING_CENTER "\033[38;5;15m"
-    //Gatling colors
-    #define COLOR_GATLING_BASE "\033[38;5;238m"
-    #define COLOR_GATLING_FIRING "\033[38;5;125m"
-    #define COLOR_GATLING_COOLING "\033[38;5;50m"
-    //Gatling colors
-    #define COLOR_PETRIFICATEUR_BASE "\033[38;5;22m"
-    #define COLOR_PETRIFICATEUR_FIRING "\033[38;5;34m"
-    #define COLOR_PETRIFICATEUR_SORON "\033[38;5;214m"
-    #define COLOR_PETRIFICATEUR_BASE_LVL2 "\033[38;5;82m"
-    #define COLOR_BG_SORON "\033[48;5;214m"
+// Sniper colors
+#define COLOR_SNIPER_BASE "\033[38;5;48m"
+#define COLOR_SNIPER_CANNON "\033[38;5;33m"
+#define COLOR_SNIPER_HEAD "\033[38;5;196m"
+// Inferno colors
+#define COLOR_INFERNO_BASE "\033[38;5;202m"
+#define COLOR_INFERNO_FIRE1 "\033[38;5;196m"
+#define COLOR_INFERNO_FIRE2 "\033[38;5;227m"
+#define COLOR_INFERNO_TORCH "\033[38;5;243m"
+// Mortier colors
+#define COLOR_MORTIER_BASE "\033[38;5;243m"
+#define COLOR_MORTIER_FIRING "\033[38;5;208m"
+#define COLOR_MORTIER_FIRING_CENTER "\033[38;5;184m"
+#define COLOR_MORTIER_COOLING "\033[38;5;14m"
+// Banque colors
+#define COLOR_BANQUE_BASE "\033[38;5;130m"
+#define COLOR_BANQUE_MONEY "\033[38;5;184m"
+#define COLOR_BANQUE_GENERATION "\033[38;5;40m"
+// Freezer colors
+#define COLOR_FREEZER_BASE "\033[38;5;14m"
+#define COLOR_FREEZER_FIRING "\033[38;5;50m"
+#define COLOR_FREEZER_FIRING_CENTER "\033[38;5;15m"
+// Gatling colors
+#define COLOR_GATLING_BASE "\033[38;5;238m"
+#define COLOR_GATLING_FIRING "\033[38;5;125m"
+#define COLOR_GATLING_COOLING "\033[38;5;50m"
+// Gatling colors
+#define COLOR_PETRIFICATEUR_BASE "\033[38;5;22m"
+#define COLOR_PETRIFICATEUR_FIRING "\033[38;5;34m"
+#define COLOR_PETRIFICATEUR_SORON "\033[38;5;214m"
+#define COLOR_PETRIFICATEUR_BASE_LVL2 "\033[38;5;82m"
+#define COLOR_BG_SORON "\033[48;5;214m"
 // Ennemies colors
     //Tux colors
     #define COLOR_TUX_BASE "\033[38;5;22m"
@@ -244,4 +248,4 @@ void printCritical(char *errorMessage);
 void get_terminal_size(int *width, int *height);
 void checkTerminalSize(int *width, int *height);
 void drawRange(int term_width, int term_height, float range, float grid_x, float grid_y, bool fill);
-void anim_debut(int term_width,int term_height);
+void anim_debut(int term_width, int term_height);

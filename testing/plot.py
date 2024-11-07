@@ -15,21 +15,30 @@ fig.suptitle("Wave Data")
 # Define titles and columns for each subplot
 # wave,hp,hpps,duration,argentCumul,ennemiesSpawned,tux,speed,boss
 titles = [
-    "Health Points (hp)", 
-    "Health Points per Second (hpps)", 
-    "Duration (s)", 
+    "Health Points (hp)",
+    "Health Points per Second (hpps)",
+    "Duration (s)",
     "Cumulative Money (argentCumul)",
-    "Enemies Spawned", 
+    "Enemies Spawned",
 ]
 y_labels = [
-    "Health Points (hp)", 
-    "Health Points per Second (hpps)", 
-    "Duration (s)", 
+    "Health Points (hp)",
+    "Health Points per Second (hpps)",
+    "Duration (s)",
     "Cumulative Money (argentCumul)",
-    "Enemies Spawned", 
+    "Enemies Spawned",
 ]
 columns = [1, 2, 3, 4, 5]  # Use 1-based indexing if your file includes a header
-
+ennemies = [
+    "TUX",
+    "SPEED",
+    "BOSS",
+    "HYPERSPEED",
+    "SPIDER",
+    "HIGHTUX",
+    "SLOWBOSS",
+    "BOSS_STUN",
+]
 # Plot each column in a separate subplot
 for i, (title, ylabel, col) in enumerate(zip(titles, y_labels, columns)):
     row, col_index = divmod(i, 3)
@@ -37,10 +46,18 @@ for i, (title, ylabel, col) in enumerate(zip(titles, y_labels, columns)):
     if col < len(data.columns):
         if title == "Enemies Spawned":
             # Stacked bar plot for enemy types
-            axes[row, col_index].bar(data.iloc[:, 0], data["tux"], label="Tux", color="blue")
-            axes[row, col_index].bar(data.iloc[:, 0], data["speed"], bottom=data["tux"], label="Speed", color="green")
-            axes[row, col_index].bar(data.iloc[:, 0], data["boss"], bottom=data["tux"] + data["speed"], label="Boss", color="red")
-            axes[row, col_index].set_ylabel("Enemies Spawned")
+            bottom = None
+            for enemy in ennemies:
+                if enemy in data.columns:
+                    axes[row, col_index].bar(
+                        data.iloc[:, 0],
+                        data[enemy],
+                        label=enemy.capitalize(),
+                        bottom=bottom,
+                    )
+                    bottom = data[enemy] if bottom is None else bottom + data[enemy]
+            axes[row, col_index].set_ylabel(ylabel)
+            axes[row, col_index].legend()
         else:
             axes[row, col_index].plot(data.iloc[:, 0], data.iloc[:, col], label=title)
             axes[row, col_index].set_xlabel("Wave")

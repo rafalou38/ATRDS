@@ -141,15 +141,15 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
     else if (type == ENEMY_BOSS_STUN)
     {
         enemy.type = ENEMY_BOSS_STUN;
-        enemy.hp = 10;
-        enemy.maxHP = 10;
+        enemy.hp = 100;
+        enemy.maxHP = 100;
         enemy.speed = 0.5f;
         enemy.damage = 10;
         enemy.money = 20;
         enemy.state = ENEMY_STATE_ALIVE;
         enemy.has_effect = true;
         enemy.effet = BOSS_STUN;
-        enemy.puissance_effet = 1;
+        enemy.puissance_effet = 2.5;
         enemy.grid_x = (float)start_x;
         enemy.grid_y = (float)start_y;
         enemy.previous_cell = grid.cells[start_x][start_y];
@@ -688,7 +688,7 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
     {
         // Cet ennemi ne va pas ètre ajouté, on le récupère juste pour connaître ses HP
         ennemi_courant = defEnemy(grid, i, 0, 0);
-        if (ennemi_courant.maxHP <= ws->wave_HP_left)
+        if (ennemi_courant.maxHP <= ws->wave_HP_left && pattern->random_coeffs[i] != 0)
         {
             enemy_choice_pool[i] = true;
             valid = true;
@@ -758,7 +758,15 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
     int argent_cumul = 0;
     FILE *fptr;
     fptr = fopen("testing/waves.csv", "w");
-    fprintf(fptr, "wave,hp,hpps,duration,argentCumul,ennemiesSpawned,tux,speed,boss\n");
+    fprintf(fptr, "wave,hp,hpps,duration,argentCumul,ennemiesSpawned,");
+    fprintf(fptr, "TUX,");
+    fprintf(fptr, "SPEED,");
+    fprintf(fptr, "BOSS,");
+    fprintf(fptr, "HYPERSPEED,");
+    fprintf(fptr, "SPIDER,");
+    fprintf(fptr, "HIGHTUX,");
+    fprintf(fptr, "SLOWBOSS,");
+    fprintf(fptr, "BOSS_STUN");
     while (n <= 0 || i < n)
     {
         printf("\n");
@@ -778,9 +786,10 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
         int result = 0;
         float t = 0;
         int cnt = 0;
-        int tux = 0;
-        int speed = 0;
-        int boss = 0;
+        int spawn_cnt[ENEMY_COUNT] = {0};
+        // int tux = 0;
+        // int speed = 0;
+        // int boss = 0;
         do
         {
             float dt = (1.0f / TARGET_FPS);
@@ -794,12 +803,7 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
                 ep->count = 0;
                 printf("\t %02d. t=%.1fs SPAWN %d (%fHP) -> HP_LEFT=%.1f %d %d\n", cnt, t, result, ep->enemies[0].hp, ws.wave_HP_left, ep->enemies[0].money, argent_cumul);
                 argent_cumul += ep->enemies[0].money;
-                if (result == 0)
-                    tux++;
-                if (result == 1)
-                    speed++;
-                if (result == 2)
-                    boss++;
+                spawn_cnt[result]++;
             }
 
             fflush(stdout);
@@ -807,7 +811,13 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
 
         printf("\tDurée de la vague:" COLOR_FREEZER_BASE " %.1fs " RESET ", %d ennemis %d", t, cnt, argent_cumul);
         // wave,hp,hpps,duration,ennemiesSpawned
-        fprintf(fptr, "%d,%d,%d,%.1f,%d,%d,%d,%d,%d\n", i, ws.current_wave_pattern.target_HP, ws.current_wave_pattern.target_HPPS, t, argent_cumul, cnt, tux, speed, boss);
+        fprintf(fptr, "%d,%d,%d,%.1f,%d,%d", i, ws.current_wave_pattern.target_HP, ws.current_wave_pattern.target_HPPS, t, argent_cumul, cnt);
+        for (int i = 0; i < ENEMY_COUNT; i++)
+        {
+            fprintf(fptr, ",%d", spawn_cnt[i]);
+        }
+        fprintf(fptr, "\n");
+
         fflush(fptr);
 
         fflush(stdout);
