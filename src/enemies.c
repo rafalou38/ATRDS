@@ -350,14 +350,14 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
             int sprite_anim = 0;
             char *sprite_ennemy[2][3] =
                 {{
-                     "▞▄▀▀▄▚",
-                     "▐▐▞▞▌▌",
-                     "▚▀▄▄▀▞",
+                     COLOR_HYPERSPEED_BASE " ▞▄▀▀▄▚ ",
+                     " ▐" COLOR_HYPERSPEED_BOX "▐" COLOR_HYPERSPEED_EYES "▞▞" COLOR_HYPERSPEED_BOX "▌" COLOR_HYPERSPEED_BASE "▌ ",
+                     " ▚▀▄▄▀▞ ",
                  },
                  {
-                     "▞▄▀▀▄▚",
-                     "▐▐▚▚▌▌",
-                     "▚▀▄▄▀▞",
+                     COLOR_HYPERSPEED_BASE " ▞▄▀▀▄▚ ",
+                     " ▐" COLOR_HYPERSPEED_BOX "▐" COLOR_HYPERSPEED_EYES "▚▚" COLOR_HYPERSPEED_BOX "▌" COLOR_HYPERSPEED_BASE "▌ ",
+                     " ▚▀▄▄▀▞ ",
                  }};
             if (((int)enemy->grid_x % 2 == 1 && (int)enemy->grid_y % 2 == 1) //
                 || ((int)enemy->grid_x % 2 == 0 && (int)enemy->grid_y % 2 == 0))
@@ -370,7 +370,7 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
             }
             for (int i = 0; i < 3; i++)
             {
-                move_to(px - 2, i + py);
+                move_to(px - 3, i + py);
                 printf(sprite_ennemy[sprite_anim][i]);
             }
         }
@@ -379,24 +379,24 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
             int sprite_anim = 0;
             char *sprite_ennemy[4][3] =
                 {{
-                     "▞▚▞▚▞▚",
-                     "▌ ▚ ▞▐",
-                     "▚▄▄▄▄▞",
+                     COLOR_HIGHTUX_CROWN " ▞▚▞▚▞▚ ",
+                     COLOR_HIGHTUX_BASE " ▌ " COLOR_HIGHTUX_EYES "▚ ▞" COLOR_HIGHTUX_BASE "▐ ",
+                     COLOR_HIGHTUX_BASE " ▚▄▄▄▄▞ ",
                  },
                  {
-                     "▞▚▞▚▞▚",
-                     "▌ ▀ ▀▐",
-                     "▚▄▄▄▄▞",
+                     COLOR_HIGHTUX_CROWN " ▞▚▞▚▞▚ ",
+                     COLOR_HIGHTUX_BASE " ▌ " COLOR_HIGHTUX_EYES "▀ ▀" COLOR_HIGHTUX_BASE "▐ ",
+                     COLOR_HIGHTUX_BASE " ▚▄▄▄▄▞ ",
                  },
                  {
-                     "▞▚▞▚▞▚",
-                     "▌▚ ▞ ▐",
-                     "▚▄▄▄▄▞",
+                     COLOR_HIGHTUX_CROWN " ▞▚▞▚▞▚ ",
+                     COLOR_HIGHTUX_BASE " ▌" COLOR_HIGHTUX_EYES "▚ ▞" COLOR_HIGHTUX_BASE " ▐ ",
+                     COLOR_HIGHTUX_BASE " ▚▄▄▄▄▞ ",
                  },
                  {
-                     "▞▚▞▚▞▚",
-                     "▌ ▄ ▄▐",
-                     "▚▄▄▄▄▞",
+                     COLOR_HIGHTUX_CROWN " ▞▚▞▚▞▚ ",
+                     COLOR_HIGHTUX_BASE " ▌ " COLOR_HIGHTUX_EYES "▄ ▄" COLOR_HIGHTUX_BASE "▐ ",
+                     COLOR_HIGHTUX_BASE " ▚▄▄▄▄▞ ",
                  }};
             if (enemy->next_cell.x * (CELL_WIDTH + GAP) + 3 > px)
             {
@@ -416,7 +416,7 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
             }
             for (int i = 0; i < 3; i++)
             {
-                move_to(px - 2, i + py);
+                move_to(px - 3, i + py);
                 printf(sprite_ennemy[sprite_anim][i]);
             }
         }

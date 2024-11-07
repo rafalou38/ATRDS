@@ -222,10 +222,18 @@ int msleep(long ms);
     //Speed colors
     #define COLOR_SPEED_BASE "\033[38;5;227m"
     #define COLOR_SPEED_EYES "\033[38;5;229m"
-    //Speed colors
+    //Spider colors
     #define COLOR_SPIDER_BASE "\033[38;5;90m"
     #define COLOR_SPIDER_EYES "\033[38;5;125m"
     #define COLOR_SPIDER_LEGS "\033[38;5;57m"
+    //Hyperspeed colors
+    #define COLOR_HYPERSPEED_BASE "\033[38;5;227m"
+    #define COLOR_HYPERSPEED_BOX "\033[38;5;222m"
+    #define COLOR_HYPERSPEED_EYES "\033[38;5;81m"
+    //Hightux colors
+    #define COLOR_HIGHTUX_BASE "\033[38;5;43m"
+    #define COLOR_HIGHTUX_CROWN "\033[38;5;226m"
+    #define COLOR_HIGHTUX_EYES "\033[38;5;124m"
 // Terrain colors
 #define COLOR_STANDARD_BG "\033[48;5;233m"
 #define COLOR_TOWER_SLOT_BG "\033[48;5;236m"
