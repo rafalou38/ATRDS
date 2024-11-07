@@ -239,6 +239,14 @@ int msleep(long ms);
     #define COLOR_BOSS_SLIME_CROWN "\033[38;5;226m"
     #define COLOR_BOSS_SLIME_EYES "\033[38;5;88m"
     #define COLOR_BOSS_SLIME_MOUTH "\033[38;5;90m"
+    //Tank colors
+    #define COLOR_TANK_BASE "\033[38;5;28m"
+    #define COLOR_TANK_CANON "\033[38;5;240m"
+    #define COLOR_TANK_URSS "\033[38;5;196m" "\033[1m" "\033[4m"
+    //Boss stun colors
+    #define COLOR_BOSS_STUN_BASE "\033[38;5;184m"
+    #define COLOR_BOSS_STUN_LIGHTNING "\033[38;5;50m"
+    #define COLOR_BOSS_STUN_SPARKS "\033[38;5;229m"
 // Terrain colors
 #define COLOR_STANDARD_BG "\033[48;5;233m"
 #define COLOR_TOWER_SLOT_BG "\033[48;5;236m"
