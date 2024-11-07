@@ -311,73 +311,73 @@ int getTurretPrice(enum TurretType type, int level)
         }
         if (level == 1)
         {
-            return 15;
+            return 20;
         }
     }
     if (type == Inferno)
     {
         if (level == 0)
         {
-            return 10;
+            return 20;
         }
         if (level == 1)
         {
-            return 15;
+            return 40;
         }
     }
     if (type == Mortier)
     {
         if (level == 0)
         {
-            return 10;
+            return 25;
         }
         if (level == 1)
         {
-            return 15;
+            return 50;
         }
     }
     if (type == Gatling)
     {
         if (level == 0)
         {
-            return 15;
+            return 25;
         }
         if (level == 1)
         {
-            return 20;
+            return 50;
         }
     }
     if (type == Freezer)
     {
         if (level == 0)
         {
-            return 75;
+            return 25;
         }
         if (level == 1)
         {
-            return 150;
+            return 50;
         }
     }
     if (type == Petrificateur)
     {
         if (level == 0)
         {
-            return 75;
+            return 10;
         }
         if (level == 1)
         {
-            return 150;
+            return 20;
         }
     }
     if (type == Banque)
     {
         if (level == 0)
         {
-            return 150;
+            return 50;
         }
         if (level == 1)
         {
-            return 300;
+            return 150;
         }
     }
 
@@ -402,8 +402,8 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.range_max[1] = 100;
         tur.damage[0] = 1;
         tur.damage[1] = 1.5;
-        tur.reload_delay[0] = 0.5;
-        tur.reload_delay[1] = 0.6;
+        tur.reload_delay[0] = 1;
+        tur.reload_delay[1] = 0.75;
         tur.splash[0] = 0.0;
         tur.splash[1] = 0.0;
         tur.nb_ennemi[0] = 1;
@@ -422,7 +422,7 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.damage[0] = 0.5;
         tur.damage[1] = 0.5;
         tur.reload_delay[0] = 1;
-        tur.reload_delay[1] = 0.5;
+        tur.reload_delay[1] = 1;
         tur.splash[0] = 0.0;
         tur.splash[1] = 0.0;
         tur.nb_ennemi[0] = 4;
@@ -437,8 +437,8 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.type = Mortier;
         tur.lvl = 0;
         tur.compteur = 0;
-        tur.range_min[0] = 2.5;
-        tur.range_min[1] = 1.5;
+        tur.range_min[0] = 3.5;
+        tur.range_min[1] = 2.5;
         tur.range_max[0] = 5.5;
         tur.range_max[1] = 6.5;
         tur.damage[0] = 4; // 4/4 -> 1dps
@@ -503,16 +503,16 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.range_max[1] = 2.5;
         tur.damage[0] = 0;
         tur.damage[1] = 0;
-        tur.reload_delay[0] = 2;
-        tur.reload_delay[1] = 2;
+        tur.reload_delay[0] = 4;
+        tur.reload_delay[1] = 4;
         tur.splash[0] = 0;
         tur.splash[1] = 0;
         tur.nb_ennemi[0] = 100;
         tur.nb_ennemi[1] = 100;
         tur.has_effect = true;
         tur.effet = Slow;
-        tur.puissance_effet[0] = 0.75;
-        tur.puissance_effet[1] = 0.5;
+        tur.puissance_effet[0] = 0.90;
+        tur.puissance_effet[1] = 0.75;
     }
     else if (type == Banque)
     {
