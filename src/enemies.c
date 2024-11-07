@@ -141,15 +141,15 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
     else if (type == ENEMY_BOSS_STUN)
     {
         enemy.type = ENEMY_BOSS_STUN;
-        enemy.hp = 10;
-        enemy.maxHP = 10;
+        enemy.hp = 100;
+        enemy.maxHP = 100;
         enemy.speed = 0.5f;
         enemy.damage = 10;
         enemy.money = 20;
         enemy.state = ENEMY_STATE_ALIVE;
         enemy.has_effect = true;
         enemy.effet = BOSS_STUN;
-        enemy.puissance_effet = 1;
+        enemy.puissance_effet = 2.5;
         enemy.grid_x = (float)start_x;
         enemy.grid_y = (float)start_y;
         enemy.previous_cell = grid.cells[start_x][start_y];
