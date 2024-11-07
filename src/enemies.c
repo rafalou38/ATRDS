@@ -138,6 +138,24 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.next_cell = grid.cells[start_x][start_y];
         enemy.on_last_cell = false;
     }
+    else if (type == ENEMY_BOSS_STUN)
+    {
+        enemy.type = ENEMY_BOSS_STUN;
+        enemy.hp = 10;
+        enemy.maxHP = 10;
+        enemy.speed = 0.5f;
+        enemy.damage = 10;
+        enemy.money = 20;
+        enemy.state = ENEMY_STATE_ALIVE;
+        enemy.has_effect = true;
+        enemy.effet = BOSS_STUN;
+        enemy.puissance_effet = 1;
+        enemy.grid_x = (float)start_x;
+        enemy.grid_y = (float)start_y;
+        enemy.previous_cell = grid.cells[start_x][start_y];
+        enemy.next_cell = grid.cells[start_x][start_y];
+        enemy.on_last_cell = false;
+    }
     return enemy;
 }
 
@@ -314,6 +332,11 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
             move_to(px, py);
             printf("SLB");
         }
+        else if (enemy->type == ENEMY_BOSS_STUN)
+        {
+            move_to(px, py);
+            printf("bss");
+        }
 
         // move_to((enemy->next_cell.x * (CELL_WIDTH + GAP) + 3), (enemy->next_cell.y * (CELL_HEIGHT + GAP / 2) + 2));
         // printf("N%d", i);
@@ -481,16 +504,9 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
             drawCell(enemy->previous_cell, grid);
             defragNeeded = true;
             gs->cash += enemy->money;
-            char *label = (char *)malloc(sizeof(char) * 30);
-            if (label == NULL)
-            {
-                printCritical("Failed to allocate label");
-                exit(EXIT_FAILURE);
-            }
-            sprintf(label, COLOR_STANDARD_BG COLOR_YELLOW "%d" RESET, enemy->money);
             labels->labels[labels->count].counter = 0;
             labels->labels[labels->count].duration = 2;
-            labels->labels[labels->count].text = label;
+            labels->labels[labels->count].text = enemy->money;
             labels->labels[labels->count].x = (enemy->grid_x * (CELL_WIDTH + GAP) + 3);
             labels->labels[labels->count].y = (enemy->grid_y * (CELL_HEIGHT + GAP / 2) + 2);
             labels->count++;
@@ -516,8 +532,8 @@ WavePattern getWaveByIndex(int waveIndex)
         .random_coeffs = {0},
         .min_spawns = {0}};
 
-    wp.random_coeffs[ENEMY_TUX] = 1;
-    wp.random_coeffs[ENEMY_SPEED] = 1;
+    wp.random_coeffs[ENEMY_BOSS_STUN] = 1;
+    // wp.random_coeffs[ENEMY_SPEED] = 1;
 
     for (int i = 0; i < ENEMY_COUNT; i++)
     {
