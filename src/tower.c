@@ -332,8 +332,9 @@ int getTurretPrice(enum TurretType type, int level)
 
 // Definition de toutes les caractéristiques de chaque tourelle
 struct Turret getTurretStruct(enum TurretType type)
-{
+{   
     struct Turret tur;
+    tur.in_range = false;
     if (type == Sniper)
     {
         tur.type = Sniper;

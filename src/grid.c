@@ -31,6 +31,9 @@ void allocateGridCells(Grid *grid)
             cells[x][y].selected = false;
             cells[x][y].hasTurret = false;
             cells[x][y].drawn = false;
+            cells[x][y].has_effect = false;
+            cells[x][y].effect = 0;
+            cells[x][y].effect_counter = -1;
         }
     }
 }
@@ -387,58 +390,58 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
                 char *sprite[2][4][7] = {
                     {{"     ▄██▄     ",
                       "  ▄▀█▀▀▀▀█▀▄  ",
-                      " ▄█▀ "COLOR_INFERNO_FIRE1"▄"COLOR_INFERNO_FIRE2"▀ ▄"COLOR_INFERNO_BASE" ▀█▄ ",
-                      "███  "COLOR_INFERNO_FIRE1"▀▄█"COLOR_INFERNO_FIRE2" ▄"COLOR_INFERNO_BASE" ███",
-                      " ▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀ ",
+                      " ▄█▀ " COLOR_INFERNO_FIRE1 "▄" COLOR_INFERNO_FIRE2 "▀ ▄" COLOR_INFERNO_BASE " ▀█▄ ",
+                      "███  " COLOR_INFERNO_FIRE1 "▀▄█" COLOR_INFERNO_FIRE2 " ▄" COLOR_INFERNO_BASE " ███",
+                      " ▀█▄ " COLOR_INFERNO_TORCH "▀██▀" COLOR_INFERNO_BASE " ▄█▀ ",
                       "  ▀▄█▄▄▄▄█▄▀  ",
                       "     ▀██▀     "},
                      {"     ▄██▄     ",
                       "  ▄▀█▀▀▀▀█▀▄  ",
-                      " ▄█▀"COLOR_INFERNO_FIRE2"▄ ▀ ▄"COLOR_INFERNO_BASE" ▀█▄ ",
-                      "███ "COLOR_INFERNO_FIRE1"▀▄"COLOR_INFERNO_FIRE1"▀"COLOR_INFERNO_FIRE1"▄ █"COLOR_INFERNO_BASE" ███",
-                      " ▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀ ",
+                      " ▄█▀" COLOR_INFERNO_FIRE2 "▄ ▀ ▄" COLOR_INFERNO_BASE " ▀█▄ ",
+                      "███ " COLOR_INFERNO_FIRE1 "▀▄" COLOR_INFERNO_FIRE1 "▀" COLOR_INFERNO_FIRE1 "▄ █" COLOR_INFERNO_BASE " ███",
+                      " ▀█▄ " COLOR_INFERNO_TORCH "▀██▀" COLOR_INFERNO_BASE " ▄█▀ ",
                       "  ▀▄█▄▄▄▄█▄▀  ",
                       "     ▀██▀     "},
                      {"     ▄██▄     ",
                       "  ▄▀█▀▀▀▀█▀▄  ",
-                      " ▄█▀ "COLOR_INFERNO_FIRE2"▄ ▀"COLOR_INFERNO_FIRE1"▄"COLOR_INFERNO_BASE" ▀█▄ ",
-                      "███ "COLOR_INFERNO_FIRE2"▄ "COLOR_INFERNO_FIRE1"█▄▀"COLOR_INFERNO_BASE"  ███",
-                      " ▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀ ",
+                      " ▄█▀ " COLOR_INFERNO_FIRE2 "▄ ▀" COLOR_INFERNO_FIRE1 "▄" COLOR_INFERNO_BASE " ▀█▄ ",
+                      "███ " COLOR_INFERNO_FIRE2 "▄ " COLOR_INFERNO_FIRE1 "█▄▀" COLOR_INFERNO_BASE "  ███",
+                      " ▀█▄ " COLOR_INFERNO_TORCH "▀██▀" COLOR_INFERNO_BASE " ▄█▀ ",
                       "  ▀▄█▄▄▄▄█▄▀  ",
                       "     ▀██▀     "},
                      {"     █  █     ",
                       "  ▄▀█▀▀▀▀█▀▄  ",
-                      "▄▄█▀ "COLOR_INFERNO_FIRE2"▄ ▀"COLOR_INFERNO_FIRE1"▄"COLOR_INFERNO_BASE" ▀█▄▄",
-                      "  █ "COLOR_INFERNO_FIRE1"█ ▄"COLOR_INFERNO_FIRE2"▀"COLOR_INFERNO_FIRE1"▄█"COLOR_INFERNO_BASE" █  ",
-                      "▀▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀▀",
+                      "▄▄█▀ " COLOR_INFERNO_FIRE2 "▄ ▀" COLOR_INFERNO_FIRE1 "▄" COLOR_INFERNO_BASE " ▀█▄▄",
+                      "  █ " COLOR_INFERNO_FIRE1 "█ ▄" COLOR_INFERNO_FIRE2 "▀" COLOR_INFERNO_FIRE1 "▄█" COLOR_INFERNO_BASE " █  ",
+                      "▀▀█▄ " COLOR_INFERNO_TORCH "▀██▀" COLOR_INFERNO_BASE " ▄█▀▀",
                       "  ▀▄█▄▄▄▄█▄▀  ",
                       "     █  █     "}},
                     {{"█▀▄  ▄▀▀▄  ▄▀█",
                       " ▀▄▀█▀▀▀▀█▀▄▀ ",
-                      " ▄█▀ "COLOR_INFERNO_FIRE1"▄"COLOR_INFERNO_FIRE2"▀ ▄"COLOR_INFERNO_BASE" ▀█▄ ",
-                      "█ █  "COLOR_INFERNO_FIRE1"▀▄█"COLOR_INFERNO_FIRE2" ▄"COLOR_INFERNO_BASE" █ █",
-                      " ▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀ ",
+                      " ▄█▀ " COLOR_INFERNO_FIRE1 "▄" COLOR_INFERNO_FIRE2 "▀ ▄" COLOR_INFERNO_BASE " ▀█▄ ",
+                      "█ █  " COLOR_INFERNO_FIRE1 "▀▄█" COLOR_INFERNO_FIRE2 " ▄" COLOR_INFERNO_BASE " █ █",
+                      " ▀█▄ " COLOR_INFERNO_TORCH "▀██▀" COLOR_INFERNO_BASE " ▄█▀ ",
                       " ▄▀▄█▄▄▄▄█▄▀▄ ",
                       "█▄▀  ▀▄▄▀  ▀▄█"},
                      {"█▀▄  ▄▀▀▄  ▄▀█",
                       " ▀▄▀█▀▀▀▀█▀▄▀ ",
-                      " ▄█▀"COLOR_INFERNO_FIRE2"▄ ▀ ▄"COLOR_INFERNO_BASE" ▀█▄ ",
-                      "█ █ "COLOR_INFERNO_FIRE1"▀▄"COLOR_INFERNO_FIRE1"▀"COLOR_INFERNO_FIRE1"▄ █"COLOR_INFERNO_BASE" █ █",
-                      " ▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀ ",
+                      " ▄█▀" COLOR_INFERNO_FIRE2 "▄ ▀ ▄" COLOR_INFERNO_BASE " ▀█▄ ",
+                      "█ █ " COLOR_INFERNO_FIRE1 "▀▄" COLOR_INFERNO_FIRE1 "▀" COLOR_INFERNO_FIRE1 "▄ █" COLOR_INFERNO_BASE " █ █",
+                      " ▀█▄ " COLOR_INFERNO_TORCH "▀██▀" COLOR_INFERNO_BASE " ▄█▀ ",
                       " ▄▀▄█▄▄▄▄█▄▀▄ ",
                       "█▄▀  ▀▄▄▀  ▀▄█"},
                      {"█▀▄  ▄▀▀▄  ▄▀█",
                       " ▀▄▀█▀▀▀▀█▀▄▀ ",
-                      " ▄█▀ "COLOR_INFERNO_FIRE2"▄ ▀"COLOR_INFERNO_FIRE1"▄"COLOR_INFERNO_BASE" ▀█▄ ",
-                      "█ █ "COLOR_INFERNO_FIRE2"▄ "COLOR_INFERNO_FIRE1"█▄▀"COLOR_INFERNO_BASE"  █ █",
-                      " ▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀ ",
+                      " ▄█▀ " COLOR_INFERNO_FIRE2 "▄ ▀" COLOR_INFERNO_FIRE1 "▄" COLOR_INFERNO_BASE " ▀█▄ ",
+                      "█ █ " COLOR_INFERNO_FIRE2 "▄ " COLOR_INFERNO_FIRE1 "█▄▀" COLOR_INFERNO_BASE "  █ █",
+                      " ▀█▄ " COLOR_INFERNO_TORCH "▀██▀" COLOR_INFERNO_BASE " ▄█▀ ",
                       " ▄▀▄█▄▄▄▄█▄▀▄ ",
                       "█▄▀  ▀▄▄▀  ▀▄█"},
                      {"▄▀▄  █  █  ▄▀▄",
                       " ▀▄▀█▀▀▀▀█▀▄▀ ",
-                      "▄▄█▀ "COLOR_INFERNO_FIRE2"▄ ▀"COLOR_INFERNO_FIRE1"▄"COLOR_INFERNO_BASE" ▀█▄▄",
-                      "  █ "COLOR_INFERNO_FIRE1"█ ▄"COLOR_INFERNO_FIRE2"▀"COLOR_INFERNO_FIRE1"▄█"COLOR_INFERNO_BASE" █  ",
-                      "▀▀█▄ "COLOR_INFERNO_TORCH"▀██▀"COLOR_INFERNO_BASE" ▄█▀▀",
+                      "▄▄█▀ " COLOR_INFERNO_FIRE2 "▄ ▀" COLOR_INFERNO_FIRE1 "▄" COLOR_INFERNO_BASE " ▀█▄▄",
+                      "  █ " COLOR_INFERNO_FIRE1 "█ ▄" COLOR_INFERNO_FIRE2 "▀" COLOR_INFERNO_FIRE1 "▄█" COLOR_INFERNO_BASE " █  ",
+                      "▀▀█▄ " COLOR_INFERNO_TORCH "▀██▀" COLOR_INFERNO_BASE " ▄█▀▀",
                       " ▄▀▄█▄▄▄▄█▄▀▄ ",
                       "▀▄▀  █  █  ▀▄▀"}}};
                 int inferno_shooting;
@@ -448,7 +451,7 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
                 }
                 else
                 {
-                    inferno_shooting = ((int)floor(cell.turret.compteur * (3*(3-cell.turret.lvl) / cell.turret.reload_delay[cell.turret.lvl])))%3;
+                    inferno_shooting = ((int)floor(cell.turret.compteur * (3 * (3 - cell.turret.lvl) / cell.turret.reload_delay[cell.turret.lvl]))) % 3;
                     if (inferno_shooting > 2)
                     {
                         inferno_shooting = 2;
@@ -1305,7 +1308,17 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
         printf(RESET);
     }
 }
-
+void update_grid(){
+    // for (int x = 0; x < grid.width; x++)
+    // {
+    //     for (int y = 0; y < grid.height; y++)
+    //     {
+    //         grid.cells[x][y].has_effect = false;
+    //         grid.cells[x][y].effect = 0;
+    //         grid.cells[x][y].effect_counter = -1;
+    //     }
+    // }
+}
 void drawFullGrid(Grid grid) // Dessine la grille en entière
 {
 
@@ -1357,8 +1370,9 @@ void clearUsedPath(Grid grid, EnemyPool ep) // Redessine les endroits aves des e
                 for (int i = 0; i < ep.count; i++)
                 {
                     if (
-                        (ep.enemies[i].previous_cell.x == x && ep.enemies[i].previous_cell.y == y) //
-                        || (ep.enemies[i].previous_cell.x + 1 == x && ep.enemies[i].previous_cell.y == y))
+                        (ep.enemies[i].previous_cell.x == x && ep.enemies[i].previous_cell.y == y)        //
+                        || (ep.enemies[i].previous_cell.x + 1 == x && ep.enemies[i].previous_cell.y == y) //
+                        || (ep.enemies[i].previous_cell.x == x && ep.enemies[i].previous_cell.y + 1 == y))
                     {
                         drawCell(grid.cells[x][y], grid);
                         grid.cells[x][y].drawn = true;

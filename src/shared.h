@@ -24,7 +24,7 @@ CONFIGURATION
 #define MIN_TERMINAL_WIDTH 120
 #define MIN_TERMINAL_HEIGHT 20
 
-#define TARGET_FPS 40
+#define TARGET_FPS 144
 #define WAVE_DELAY 4 // (secondes)
 
 #define CELL_WIDTH 18
@@ -60,7 +60,8 @@ enum EffectType
     Money,
     Stun,
     Slow,
-    Fire
+    Fire,
+    Explosion
 };
 
 struct Turret
@@ -106,6 +107,9 @@ struct Cell
     struct Turret turret;
     bool hasTurret;
     bool drawn;
+    bool has_effect;
+    enum EffectType effect;
+    float effect_counter;
 };
 
 typedef struct Grid

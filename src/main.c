@@ -105,7 +105,10 @@ int main(int argc, char *argv[])
     checkTerminalSize(&width, &height);
     clear_screen();
 
-    anim_debut(width, height);
+    if (!(argc > 1 && strcmp(argv[1], "--play") == 0))
+    {
+        anim_debut(width, height);
+    }
 
     fillBG(1, 1, width + 1, height + 1);
 
@@ -158,8 +161,8 @@ int main(int argc, char *argv[])
             if (argc == 3)
                 n = atoi(argv[2]);
             testWaveSystem(grid, &enemyPool, n);
+            return 0;
         }
-        return 0;
     }
 
     // Affichage intégral de la grille
@@ -188,8 +191,8 @@ int main(int argc, char *argv[])
             msleep((1.0 / TARGET_FPS - delta_t) * 1000);
         if (delta_t > 3.0 / TARGET_FPS) // ici on évite d'avoir un dt trop énorme ce qui peut poser des problèmes
             delta_t = 3.0 / TARGET_FPS;
-        if (1.0f / delta_t * 10.0f < TARGET_FPS * 2)
-            fps = TARGET_FPS;
+        if (1.0/delta_t < TARGET_FPS * 2)
+            fps = 1.0f / delta_t;
 
         frame_index++;
 
