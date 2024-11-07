@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
 
     if (!(argc > 1 && strcmp(argv[1], "--play") == 0))
     {
-        // anim_debut(width, height);
+        anim_debut(width, height);
     }
 
     fillBG(1, 1, width + 1, height + 1);
