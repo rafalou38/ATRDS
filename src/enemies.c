@@ -717,24 +717,17 @@ WavePattern getWaveByIndex(int waveIndex)
         .target_POWERPS = 5 + 2 * waveIndex,
         .random_coeffs = {0},
         .min_spawns = {0}};
-    if (waveIndex < 10)
-    {
-        wp.random_coeffs[ENEMY_SPEED] = 1;
-        wp.random_coeffs[ENEMY_SPIDER] = 0.5;
-        wp.random_coeffs[ENEMY_TUX] = 1;
-        wp.random_coeffs[ENEMY_HIGHTUX] = 0;
-        wp.random_coeffs[ENEMY_HYPERSPEED] = 0;
-        wp.random_coeffs[ENEMY_SLIME_BOSS] = 0;
-    }
-    else
-    {
-        wp.random_coeffs[ENEMY_SPEED] = 1;
-        wp.random_coeffs[ENEMY_SPIDER] = 1;
-        wp.random_coeffs[ENEMY_TUX] = 1;
-        wp.random_coeffs[ENEMY_HIGHTUX] = 1;
-        wp.random_coeffs[ENEMY_HYPERSPEED] = 1;
-        wp.random_coeffs[ENEMY_SLIME_BOSS] = 1;
-    }
+
+    wp.random_coeffs[ENEMY_TUX] = 1;
+    wp.random_coeffs[ENEMY_SPEED] = 1;
+    wp.random_coeffs[ENEMY_SPIDER] = MIN(1, 0.5 + 0.5f * waveIndex / 16);   // 1 a vague 16
+    wp.random_coeffs[ENEMY_HIGHTUX] = MIN(1, 0 + 1.0f * waveIndex / 20);    // 1 a vague 20
+    wp.random_coeffs[ENEMY_HYPERSPEED] = MIN(1, 0 + 1.0f * waveIndex / 25); // 1 a vague 25
+
+    wp.random_coeffs[ENEMY_SLIME_BOSS] = CLAMP(-0.1f + 0.2f * waveIndex / 20, 0.0f, 0.2f);
+    wp.random_coeffs[ENEMY_BOSS_STUN] = CLAMP(-0.4f + 0.2f * waveIndex / 30, 0.0f, 0.2f);
+    wp.random_coeffs[ENEMY_SLOWBOSS] = CLAMP(-0.4f + 0.2f * waveIndex / 40, 0.0f, 0.2f);
+
 
     for (int i = 0; i < ENEMY_COUNT; i++)
     {
@@ -879,6 +872,17 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
     fprintf(fptr, "HIGHTUX,");
     fprintf(fptr, "SLOWBOSS,");
     fprintf(fptr, "BOSS_STUN");
+    fprintf(fptr, "\n");
+
+    printf("\t\t\t\tTUX\t\t");
+    printf("SPEED\t\t");
+    printf("SLIME BOSS\t");
+    printf("HYPERSPEED\t");
+    printf("SPIDER\t\t");
+    printf("HIGHTUX\t\t");
+    printf("SLOWBOSS\t");
+    printf("BOSS_STUN");
+    printf("\n");
     while (n <= 0 || i < n)
     {
         printf("\n");
@@ -890,7 +894,7 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
         printf("\t HP: " COLOR_RED "%.1f" RESET " HPPS: " COLOR_YELLOW "%.1f" RESET " \t", ws.current_wave_pattern.target_POWER, ws.current_wave_pattern.target_POWERPS);
         for (int j = 0; j < ENEMY_COUNT; j++)
         {
-            printf("%.1f%% ", ws.current_wave_pattern.random_coeffs[j] / ws.current_wave_pattern.coeff_sum * 100);
+            printf("%.1f%% \t\t", ws.current_wave_pattern.random_coeffs[j] / ws.current_wave_pattern.coeff_sum * 100);
         }
 
         printf("\n");
