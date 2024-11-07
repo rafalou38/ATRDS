@@ -235,7 +235,7 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
         printf(COLOR_STANDARD_BG); // Sprites des ennemis
         if (enemy->type == ENEMY_TUX)
         {
-            int sprite_anim=0;
+            int sprite_anim = 0;
             char *sprite_ennemy[4][3] =
                 {{
                      COLOR_TUX_BASE "▞▀▀▚",
@@ -281,7 +281,7 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
         }
         else if (enemy->type == ENEMY_SPEED)
         {
-            int sprite_anim=0;
+            int sprite_anim = 0;
             char *sprite_ennemy[2][3] =
                 {{
                      COLOR_SPEED_BASE "▞▄▄▚",
@@ -293,7 +293,8 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
                      "▐" COLOR_SPEED_EYES "▐▌" COLOR_SPEED_BASE "▌",
                      "▚▄▄▞",
                  }};
-            if ((int)enemy->grid_x % 2 == 1 && (int)enemy->grid_y % 2 == 1)
+            if (((int)enemy->grid_x % 2 == 1 && (int)enemy->grid_y % 2 == 1) //
+                || ((int)enemy->grid_x % 2 == 0 && (int)enemy->grid_y % 2 == 0))
             {
                 sprite_anim = 0;
             }
@@ -307,25 +308,122 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
                 printf(sprite_ennemy[sprite_anim][i]);
             }
         }
+        else if (enemy->type == ENEMY_SPIDER)
+        {
+            int sprite_anim = 0;
+            char *sprite_ennemy[3][3] =
+                {{
+                     COLOR_SPIDER_BASE "▌" COLOR_SPIDER_EYES "▄▄" COLOR_SPIDER_BASE "▐",
+                     COLOR_SPIDER_EYES "▐▄▄▌",
+                     COLOR_SPIDER_LEGS "▞▞▚▚",
+                 },
+                 {
+                     COLOR_SPIDER_BASE "▌" COLOR_SPIDER_EYES "▄▄" COLOR_SPIDER_BASE "▐",
+                     COLOR_SPIDER_EYES "▐▄▄▌",
+                     COLOR_SPIDER_LEGS "▞▞▞▚",
+                 },
+                 {
+                     COLOR_SPIDER_BASE "▌" COLOR_SPIDER_EYES "▄▄" COLOR_SPIDER_BASE "▐",
+                     COLOR_SPIDER_BASE "▐▄▄▌",
+                     COLOR_SPIDER_LEGS "▞▚▚▚",
+                 }};
+            if ((int)enemy->grid_x % 2 == 1 && (int)enemy->grid_y % 2 == 1)
+            {
+                sprite_anim = 2;
+            }
+            else if ((int)enemy->grid_x % 2 == 0 && (int)enemy->grid_y % 2 == 0)
+            {
+                sprite_anim = 1;
+            }
+            else
+            {
+                sprite_anim = 0;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                move_to(px - 1, i + py);
+                printf(sprite_ennemy[sprite_anim][i]);
+            }
+        }
+        else if (enemy->type == ENEMY_HYPERSPEED)
+        {
+            int sprite_anim = 0;
+            char *sprite_ennemy[2][3] =
+                {{
+                     "▞▄▀▀▄▚",
+                     "▐▐▞▞▌▌",
+                     "▚▀▄▄▀▞",
+                 },
+                 {
+                     "▞▄▀▀▄▚",
+                     "▐▐▚▚▌▌",
+                     "▚▀▄▄▀▞",
+                 }};
+            if (((int)enemy->grid_x % 2 == 1 && (int)enemy->grid_y % 2 == 1) //
+                || ((int)enemy->grid_x % 2 == 0 && (int)enemy->grid_y % 2 == 0))
+            {
+                sprite_anim = 0;
+            }
+            else
+            {
+                sprite_anim = 1;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                move_to(px - 2, i + py);
+                printf(sprite_ennemy[sprite_anim][i]);
+            }
+        }
+        else if (enemy->type == ENEMY_HIGHTUX)
+        {
+            int sprite_anim = 0;
+            char *sprite_ennemy[4][3] =
+                {{
+                     "▞▚▞▚▞▚",
+                     "▌ ▚ ▞▐",
+                     "▚▄▄▄▄▞",
+                 },
+                 {
+                     "▞▚▞▚▞▚",
+                     "▌ ▀ ▀▐",
+                     "▚▄▄▄▄▞",
+                 },
+                 {
+                     "▞▚▞▚▞▚",
+                     "▌▚ ▞ ▐",
+                     "▚▄▄▄▄▞",
+                 },
+                 {
+                     "▞▚▞▚▞▚",
+                     "▌ ▄ ▄▐",
+                     "▚▄▄▄▄▞",
+                 }};
+            if (enemy->next_cell.x * (CELL_WIDTH + GAP) + 3 > px)
+            {
+                sprite_anim = 0;
+            }
+            else if (enemy->next_cell.y * (CELL_HEIGHT + GAP / 2) + 2 < py)
+            {
+                sprite_anim = 1;
+            }
+            else if (enemy->next_cell.x * (CELL_HEIGHT + GAP / 2) + 2 > py)
+            {
+                sprite_anim = 3;
+            }
+            else if (enemy->next_cell.x * (CELL_WIDTH + GAP) + 3 < px)
+            {
+                sprite_anim = 2;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                move_to(px - 2, i + py);
+                printf(sprite_ennemy[sprite_anim][i]);
+            }
+        }
         else if (enemy->type == ENEMY_BOSS)
         {
             move_to(px, py);
             printf("bos");
-        }
-        else if (enemy->type == ENEMY_SPIDER)
-        {
-            move_to(px, py);
-            printf("spi");
-        }
-        else if (enemy->type == ENEMY_HYPERSPEED)
-        {
-            move_to(px, py);
-            printf("hys");
-        }
-        else if (enemy->type == ENEMY_HIGHTUX)
-        {
-            move_to(px, py);
-            printf("hit");
         }
         else if (enemy->type == ENEMY_SLOWBOSS)
         {
@@ -532,7 +630,11 @@ WavePattern getWaveByIndex(int waveIndex)
         .random_coeffs = {0},
         .min_spawns = {0}};
 
-    wp.random_coeffs[ENEMY_BOSS_STUN] = 1;
+    wp.random_coeffs[ENEMY_SPEED] = 1;
+    wp.random_coeffs[ENEMY_SPIDER] = 1;
+    wp.random_coeffs[ENEMY_TUX] = 1;
+    wp.random_coeffs[ENEMY_HIGHTUX] = 1;
+    wp.random_coeffs[ENEMY_HYPERSPEED] = 1;
     // wp.random_coeffs[ENEMY_SPEED] = 1;
 
     for (int i = 0; i < ENEMY_COUNT; i++)
