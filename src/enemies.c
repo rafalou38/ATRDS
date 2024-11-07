@@ -713,8 +713,8 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
 WavePattern getWaveByIndex(int waveIndex)
 {
     WavePattern wp = {
-        .target_POWER = (10 + 10 * waveIndex),
-        .target_POWERPS = 5 + 2 * waveIndex,
+        .target_POWER = (10 + 15 * waveIndex),
+        .target_POWERPS = 5 + 0.4 * waveIndex,
         .random_coeffs = {0},
         .min_spawns = {0}};
 
