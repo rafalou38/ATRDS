@@ -39,14 +39,6 @@ void updateLabels(Labels *labels, float dt) // Mets a jour les labels (+1$)
             // Si c'est le premier label invalide, on le note comme étant
             // le premier label que l'on va supprimer.
             left = right;
-
-            free(labels->labels[left].text);
-        }
-        else
-        {
-            // On libère la mémoire du label de gauche, car on l'a déjà
-            // déplacé.
-            free(labels->labels[left].text);
         }
 
         right++;
@@ -66,7 +58,7 @@ void drawLabels(Labels labels) // affiche tous les labels
     for (int i = 0; i < labels.count; i++)
     {
         move_to(labels.labels[i].x, labels.labels[i].y);
-        printf(labels.labels[i].text);
+        printf(COLOR_STANDARD_BG COLOR_YELLOW "%d" RESET,labels.labels[i].text);
         // printf("%.2f", labels.labels[i].counter);
     }
 };
@@ -74,10 +66,6 @@ void drawLabels(Labels labels) // affiche tous les labels
 void freeLabels(Labels labels) // nettoie le tableau des labels
 {
     printf(COLOR_GRAY " $ " RESET "Freeing %s%d%s labels:\t", COLOR_YELLOW, labels.count, RESET);
-    for (int i = 0; i < labels.count; i++)
-    {
-        free(labels.labels[i].text);
-    }
 
     free(labels.labels);
 
