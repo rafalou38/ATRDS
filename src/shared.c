@@ -326,18 +326,138 @@ void anim_debut(int term_width, int term_height)
         fflush(stdout);
         msleep(5);
     }
-
-    char *sprite[2][9] = {
+    int ecart_term_y = 5;
+    int ecart_AT = 7;
+    char *spriteAT[2][6] = {
+        {"     █████╗ ███╗   ██╗████████╗██╗ ██████╗ ██╗   ██╗███████╗      ",
+         "    ██╔══██╗████╗  ██║╚══██╔══╝██║██╔═══██╗██║   ██║██╔════╝      ",
+         "    ███████║██╔██╗ ██║   ██║   ██║██║   ██║██║   ██║█████╗        ",
+         "    ██╔══██║██║╚██╗██║   ██║   ██║██║▄▄ ██║██║   ██║██╔══╝        ",
+         "    ██║  ██║██║ ╚████║   ██║   ██║╚██████╔╝╚██████╔╝███████╗      ",
+         "    ╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝   ╚═╝ ╚══▀▀═╝  ╚═════╝ ╚══════╝      "},
+        {"████████╗███████╗██████╗ ███╗   ███╗██╗███╗   ██╗ █████╗ ██╗      ",
+         "╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██║████╗  ██║██╔══██╗██║      ",
+         "   ██║   █████╗  ██████╔╝██╔████╔██║██║██╔██╗ ██║███████║██║      ",
+         "   ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║██║╚██╗██║██╔══██║██║      ",
+         "   ██║   ███████╗██║  ██║██║ ╚═╝ ██║██║██║ ╚████║██║  ██║███████╗ ",
+         "   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝ "}};
+    for (int n = 0; n < 21; n++)
+    {
+        for (int i = 0; i < 6; i++)
         {
-            COLOR_GRAY "   ▄████████     ███        ▄████████    ▄████████ ████████▄     ▄████████    ▄████████ ",
-            "   ███    ███ ▀█████████▄   ███    ███   ███    ███ ███   ▀███   ███    ███   ███    ███",
-            "   ███    ███    ▀███▀▀██   ███    ███   ███    ███ ███    ███   ███    █▀    ███    █▀ ",
-            "   ███    ███     ███   ▀   ███    ███  ▄███▄▄▄▄██▀ ███    ███  ▄███▄▄▄       ███       ",
-            " ▀███████████     ███     ▀███████████ ▀▀███▀▀▀▀▀   ███    ███ ▀▀███▀▀▀     ▀███████████",
-            "   ███    ███     ███       ███    ███ ▀███████████ ███    ███   ███    █▄           ███",
-            "   ███    ███     ███       ███    ███   ███    ███ ███   ▄███   ███    ███    ▄█    ███",
-            "   ███    █▀     ▄████▀     ███    █▀    ███    ███ ████████▀    ██████████  ▄████████▀ ",
-            "                                         ███    ███                                     ",
+            move_to(term_width / 2 - 33 - 4 * (21 - n), ecart_term_y + ecart_AT + i);
+            printf("    ");
+            move_to(term_width / 2 - 33 + 4 * (20 - n), ecart_term_y + i);
+            printf(spriteAT[0][i]);
+            move_to(term_width / 2 - 33 - 4 * (20 - n), ecart_term_y + ecart_AT + i);
+            printf(spriteAT[1][i]);
+            fflush(stdout);
+        }
+        msleep(10);
+    }
+    int ecart_Abs = 5;
+    char *spriteAbs[4] =
+        {
+            "     ▗▄▖ ▗▄▄▖  ▗▄▄▖ ▗▄▖ ▗▖   ▗▖ ▗▖▗▄▄▄▖▗▄▄▄▖    ",
+            "    ▐▌ ▐▌▐▌ ▐▌▐▌   ▐▌ ▐▌▐▌   ▐▌ ▐▌  █  ▐▌       ",
+            "    ▐▛▀▜▌▐▛▀▚▖ ▝▀▚▖▐▌ ▐▌▐▌   ▐▌ ▐▌  █  ▐▛▀▀▘    ",
+            "    ▐▌ ▐▌▐▙▄▞▘▗▄▄▞▘▝▚▄▞▘▐▙▄▄▖▝▚▄▞▘  █  ▐▙▄▄▖    ",
+        };
+    for (int n = 0; n < 21; n++)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            move_to(term_width / 2 - 26 + 4 * (20 - n), ecart_term_y + 2 * ecart_AT + i);
+            printf(spriteAbs[i]);
+            fflush(stdout);
+        }
+        msleep(10);
+    }
+
+    char *spriteRou[4] =
+        {
+            "    ▗▄▄▖  ▗▄▖ ▗▖ ▗▖▗▄▄▄▖▗▄▄▄▖▗▖  ▗▖ ▗▄▄▖        ",
+            "    ▐▌ ▐▌▐▌ ▐▌▐▌ ▐▌  █    █  ▐▛▚▖▐▌▐▌           ",
+            "    ▐▛▀▚▖▐▌ ▐▌▐▌ ▐▌  █    █  ▐▌ ▝▜▌▐▌▝▜▌        ",
+            "    ▐▌ ▐▌▝▚▄▞▘▝▚▄▞▘  █  ▗▄█▄▖▐▌  ▐▌▝▚▄▞▘        ",
+        };
+    for (int n = 0; n < 21; n++)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            move_to(term_width / 2 - 26 - 4 * (20 - n), ecart_term_y + 2 * ecart_AT + ecart_Abs + i);
+            printf(spriteRou[i]);
+            fflush(stdout);
+        }
+        msleep(10);
+    }
+
+    char *spriteDef[4] =
+        {
+            "    ▗▄▄▄ ▗▄▄▄▖▗▄▄▄▖▗▄▄▄▖▗▖  ▗▖ ▗▄▄▖▗▄▄▄▖        ",
+            "    ▐▌  █▐▌   ▐▌   ▐▌   ▐▛▚▖▐▌▐▌   ▐▌           ",
+            "    ▐▌  █▐▛▀▀▘▐▛▀▀▘▐▛▀▀▘▐▌ ▝▜▌ ▝▀▚▖▐▛▀▀▘        ",
+            "    ▐▙▄▄▀▐▙▄▄▖▐▌   ▐▙▄▄▖▐▌  ▐▌▗▄▄▞▘▐▙▄▄▖        ",
+        };
+    for (int n = 0; n < 21; n++)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            move_to(term_width / 2 - 26 + 4 * (20 - n), ecart_term_y + 2 * ecart_AT + 2 * ecart_Abs + i);
+            printf(spriteDef[i]);
+            fflush(stdout);
+        }
+        msleep(10);
+    }
+
+    char *spriteEpi[4] =
+        {
+            "    ▗▄▄▄▖▗▄▄▖▗▄▄▄▖ ▗▄▄▖                         ",
+            "    ▐▌   ▐▌ ▐▌ █  ▐▌                            ",
+            "    ▐▛▀▀▘▐▛▀▘  █  ▐▌                            ",
+            "    ▐▙▄▄▖▐▌  ▗▄█▄▖▝▚▄▄▖                         ",
+        };
+    for (int n = 0; n < 21; n++)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            move_to(term_width / 2 - 26 - 4 * (20 - n), ecart_term_y + 2 * ecart_AT + 3 * ecart_Abs + i);
+            printf(spriteEpi[i]);
+            fflush(stdout);
+        }
+        msleep(10);
+    }
+
+    char *spriteSim[4] =
+        {
+            "     ▗▄▄▖▗▄▄▄▖▗▖  ▗▖▗▖ ▗▖▗▖    ▗▄▖▗▄▄▄▖▗▄▖ ▗▄▄▖     ",
+            "    ▐▌     █  ▐▛▚▞▜▌▐▌ ▐▌▐▌   ▐▌ ▐▌ █ ▐▌ ▐▌▐▌ ▐▌    ",
+            "     ▝▀▚▖  █  ▐▌  ▐▌▐▌ ▐▌▐▌   ▐▛▀▜▌ █ ▐▌ ▐▌▐▛▀▚▖    ",
+            "    ▗▄▄▞▘▗▄█▄▖▐▌  ▐▌▝▚▄▞▘▐▙▄▄▖▐▌ ▐▌ █ ▝▚▄▞▘▐▌ ▐▌    ",
+        };
+    for (int n = 0; n < 21; n++)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            move_to(term_width / 2 - 26 + 4 * (20 - n), ecart_term_y + 2 * ecart_AT + 4 * ecart_Abs + i);
+            printf(spriteSim[i]);
+            fflush(stdout);
+        }
+        msleep(10);
+    }
+    msleep(500);
+    clear_screen();
+    char *spriteATARDES[2][9] = {
+        {
+            COLOR_GREEN "   ▄████████     ███        ▄████████    ▄████████ ████████▄     ▄████████    ▄████████ ",
+            COLOR_GREEN "   ███    ███ ▀█████████▄   ███    ███   ███    ███ ███   ▀███   ███    ███   ███    ███",
+            COLOR_GREEN "   ███    ███    ▀███▀▀██   ███    ███   ███    ███ ███    ███   ███    █▀    ███    █▀ ",
+            COLOR_GREEN "   ███    ███     ███   ▀   ███    ███  ▄███▄▄▄▄██▀ ███    ███  ▄███▄▄▄       ███       ",
+            COLOR_GREEN " ▀███████████     ███     ▀███████████ ▀▀███▀▀▀▀▀   ███    ███ ▀▀███▀▀▀     ▀███████████",
+            COLOR_GREEN "   ███    ███     ███       ███    ███ ▀███████████ ███    ███   ███    █▄           ███",
+            COLOR_GREEN "   ███    ███     ███       ███    ███   ███    ███ ███   ▄███   ███    ███    ▄█    ███",
+            COLOR_GREEN "   ███    █▀     ▄████▀     ███    █▀    ███    ███ ████████▀    ██████████  ▄████████▀ ",
+            COLOR_GREEN "                                         ███    ███                                     ",
         },
         {
             COLOR_GREEN "   ▄████████     ███        ▄████████    ▄████████ ████████▄     ▄████████    ▄████████ ",
@@ -350,15 +470,88 @@ void anim_debut(int term_width, int term_height)
             "   ███    █▀     ▄████▀     ███    █▀    ███    ███ ████████▀    ██████████  ▄████████▀ ",
             "                                         ███    ███                                     ",
         }};
-    for (int n = 0; n < 21; n++)
+
+    char *spriteTuto[2][9] = {
+        {COLOR_GRAY "▗▄▄▄▖▗▖ ▗▖▗▄▄▄▖▗▄▖ ▗▄▄▖ ▗▄▄▄▖▗▄▄▄▖▗▖        ",
+         COLOR_GRAY "  █  ▐▌ ▐▌  █ ▐▌ ▐▌▐▌ ▐▌  █  ▐▌   ▐▌        ",
+         COLOR_GRAY "  █  ▐▌ ▐▌  █ ▐▌ ▐▌▐▛▀▚▖  █  ▐▛▀▀▘▐▌        ",
+         COLOR_GRAY "  █  ▝▚▄▞▘  █ ▝▚▄▞▘▐▌ ▐▌▗▄█▄▖▐▙▄▄▖▐▙▄▄▖     ",
+         "                                            ",
+         COLOR_GREEN "█▄      ▗▖▗▄▄▄▖▗▖ ▗▖                        ",
+         COLOR_GREEN "███▄    ▐▌▐▌   ▐▌ ▐▌                        ",
+         COLOR_GREEN "███▀    ▐▌▐▛▀▀▘▐▌ ▐▌                        ",
+         COLOR_GREEN "█▀   ▗▄▄▞▘▐▙▄▄▖▝▚▄▞▘                        "},
+        {COLOR_GREEN "█▄   ▗▄▄▄▖▗▖ ▗▖▗▄▄▄▖▗▄▖ ▗▄▄▖ ▗▄▄▄▖▗▄▄▄▖▗▖   ",
+         COLOR_GREEN "███▄   █  ▐▌ ▐▌  █ ▐▌ ▐▌▐▌ ▐▌  █  ▐▌   ▐▌   ",
+         COLOR_GREEN "███▀   █  ▐▌ ▐▌  █ ▐▌ ▐▌▐▛▀▚▖  █  ▐▛▀▀▘▐▌   ",
+         COLOR_GREEN "█▀     █  ▝▚▄▞▘  █ ▝▚▄▞▘▐▌ ▐▌▗▄█▄▖▐▙▄▄▖▐▙▄▄▖",
+         "                                            ",
+         COLOR_GRAY "   ▗▖▗▄▄▄▖▗▖ ▗▖                             ",
+         COLOR_GRAY "   ▐▌▐▌   ▐▌ ▐▌                             ",
+         COLOR_GRAY "   ▐▌▐▛▀▀▘▐▌ ▐▌                             ",
+         COLOR_GRAY "▗▄▄▞▘▐▙▄▄▖▝▚▄▞▘                             "}};
+
+    int tutorial_variable = 1;
+    int tutorial_page = 0;
+    while (true)
     {
+        int c = get_key_press();
+        if (c == 'A')
+        {
+            tutorial_variable = 1;
+        }
+        else if (c == 'B')
+        {
+            tutorial_variable = 0;
+        }
+
         for (int i = 0; i < 9; i++)
         {
+            move_to(term_width / 2 - 44, term_height / 2 - 21 + i);
+            printf(spriteATARDES[0][i]);
             move_to(term_width / 2 - 44, term_height / 2 - 5 + i);
-            printf(sprite[n % 2][i]);
+            printf(spriteTuto[tutorial_variable][i]);
             fflush(stdout);
         }
-        msleep(100);
+        if (c == 10 && tutorial_variable == 0)
+        {
+            break;
+        }
+        if (c == 10 && tutorial_variable == 1)
+        {
+            clear_screen();
+            while (tutorial_page < 11)
+            {
+                int c = get_key_press();
+                for (int y = 0; y < term_height - 5; y++)
+                {
+                    for (int x = 0; x < term_width - 20; x++)
+                    {
+                        printf(RESET);
+                        move_to(20 + x, 5 + y);
+                        if ((x == 0 || x == term_width - 40) && y <= term_height - 10)
+                        {
+                            printf("█");
+                        }
+                        else if (y == 0 && x <= term_width - 40)
+                        {
+                            printf("▀");
+                        }
+                        else if (y == term_height - 10 && x <= term_width - 40)
+                        {
+                            printf("▄");
+                        }
+                    }
+                }
+                move_to(term_width-26,term_height-7);
+                printf("%d/10",tutorial_page);
+                if (c == 10)
+                {
+                    tutorial_page++;
+                }
+            }
+            break;
+        }
     }
 
     if (bro_this_variable_is_actually_an_easter_egg == 1)

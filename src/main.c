@@ -104,6 +104,9 @@ int main(int argc, char *argv[])
     // Vérifie et bloque tant que la taille du terminal ne convient pas
     checkTerminalSize(&width, &height);
     clear_screen();
+
+    anim_debut(width, height);
+
     fillBG(1, 1, width + 1, height + 1);
 
     /**
