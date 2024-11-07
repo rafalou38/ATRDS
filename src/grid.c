@@ -75,9 +75,19 @@ void genBasicPath(Grid *grid) // Génération du terrain par rapport a la seed (
 
     int **historique; // Création d'un historique du chemin qui permet de ne pas tourner en boucle lors de sa génération
     historique = (int **)malloc(HISTORY_SIZE * (sizeof(int *)));
+    if (historique == NULL)
+    {
+        printCritical("Failed to allocate historique");
+        exit(EXIT_FAILURE);
+    }
     for (size_t i = 0; i < HISTORY_SIZE; i++)
     {
         historique[i] = (int *)malloc(2 * sizeof(int));
+        if (historique[i] == NULL)
+        {
+            printCritical("Failed to allocate an indice of historique");
+            exit(EXIT_FAILURE);
+        }
     }
 
     int history_index = 0;

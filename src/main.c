@@ -131,6 +131,11 @@ int main(int argc, char *argv[])
     // Gestion labels
     labels.size = 255;
     labels.labels = malloc(sizeof(struct Label) * labels.size);
+    if (labels.labels == NULL)
+    {
+        printCritical("Failed to allocate label");
+        exit(EXIT_FAILURE);
+    }
 
     // Gestion ennemis
     enemyPool = AllocEnemyPool();
@@ -358,7 +363,7 @@ void handle_enter_key()
         }
         else if (ligne == 2)
         {
-            gameStats.cash += getTurretPrice(grid.cells[selected_cell_x][selected_cell_y].turret.type, grid.cells[selected_cell_x][selected_cell_y].turret.lvl);
+            gameStats.cash += (int)(0.8*getTurretPrice(grid.cells[selected_cell_x][selected_cell_y].turret.type, grid.cells[selected_cell_x][selected_cell_y].turret.lvl));
             grid.cells[selected_cell_x][selected_cell_y].hasTurret = false;
         }
     }

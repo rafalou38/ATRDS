@@ -70,7 +70,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.maxHP = 50;
         enemy.speed = 0.5f;
         enemy.damage = 5;
-        enemy.money = 10;
+        enemy.money = 5;
         enemy.state = ENEMY_STATE_ALIVE;
         enemy.grid_x = (float)start_x;
         enemy.grid_y = (float)start_y;
@@ -713,15 +713,24 @@ WavePattern getWaveByIndex(int waveIndex)
         .target_POWERPS = 5 + 2 * waveIndex,
         .random_coeffs = {0},
         .min_spawns = {0}};
-
-    // wp.random_coeffs[ENEMY_SPEED] = 1;
-    // wp.random_coeffs[ENEMY_SPIDER] = 0.5;
-    // wp.random_coeffs[ENEMY_TUX] = 1;
-    // wp.random_coeffs[ENEMY_HIGHTUX] = 1;
-    // wp.random_coeffs[ENEMY_HYPERSPEED] = 1;
-    // wp.random_coeffs[ENEMY_SLIME_BOSS] = 1;
-    wp.random_coeffs[ENEMY_SLOWBOSS] = 1;
-    // wp.random_coeffs[ENEMY_SPEED] = 1;
+    if (waveIndex<10)
+    {
+        wp.random_coeffs[ENEMY_SPEED] = 1;
+        wp.random_coeffs[ENEMY_SPIDER] = 0.5;
+        wp.random_coeffs[ENEMY_TUX] = 1;
+        wp.random_coeffs[ENEMY_HIGHTUX] = 0;
+        wp.random_coeffs[ENEMY_HYPERSPEED] = 0;
+        wp.random_coeffs[ENEMY_SLIME_BOSS] = 0;
+    }
+    else
+    {
+        wp.random_coeffs[ENEMY_SPEED] = 1;
+        wp.random_coeffs[ENEMY_SPIDER] = 1;
+        wp.random_coeffs[ENEMY_TUX] = 1;
+        wp.random_coeffs[ENEMY_HIGHTUX] = 1;
+        wp.random_coeffs[ENEMY_HYPERSPEED] = 1;
+        wp.random_coeffs[ENEMY_SLIME_BOSS] = 1;
+    }
 
     for (int i = 0; i < ENEMY_COUNT; i++)
     {
