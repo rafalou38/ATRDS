@@ -37,7 +37,7 @@ ennemies = [
     "HIGHTUX",
     "SLIME BOSS",
     "BOSS_STUN",
-    "SLOWBOSS",
+    "ENEMY_TANK"
 ]
 # Plot each column in a separate subplot
 for i, (title, ylabel, col) in enumerate(zip(titles, y_labels, columns)):

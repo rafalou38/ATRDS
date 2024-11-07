@@ -513,18 +513,18 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
             int sprite_anim = 0;
             char *sprite_ennemy[2][5] =
                 {{
-                     COLOR_BOSS_STUN_BASE" ▞▀▀▚▞▀▀▚ ",
-                     COLOR_BOSS_STUN_BASE" ▌"COLOR_BOSS_STUN_SPARKS"▘"COLOR_BOSS_STUN_LIGHTNING"▞"COLOR_BOSS_STUN_SPARKS"▗"COLOR_BOSS_STUN_LIGHTNING" ▖"COLOR_BOSS_STUN_SPARKS"▝"COLOR_BOSS_STUN_BASE"▐ ",
-                     COLOR_BOSS_STUN_BASE" ▌"COLOR_BOSS_STUN_LIGHTNING"▞▝▖▞▝▖"COLOR_BOSS_STUN_BASE"▐ ",
-                     COLOR_BOSS_STUN_BASE" ▌"COLOR_BOSS_STUN_SPARKS" ▖"COLOR_BOSS_STUN_LIGHTNING"▝▝▖ "COLOR_BOSS_STUN_BASE"▐ ",
-                     COLOR_BOSS_STUN_BASE" ▚▄▄▞▚▄▄▞ ",
+                     COLOR_BOSS_STUN_BASE " ▞▀▀▚▞▀▀▚ ",
+                     COLOR_BOSS_STUN_BASE " ▌" COLOR_BOSS_STUN_SPARKS "▘" COLOR_BOSS_STUN_LIGHTNING "▞" COLOR_BOSS_STUN_SPARKS "▗" COLOR_BOSS_STUN_LIGHTNING " ▖" COLOR_BOSS_STUN_SPARKS "▝" COLOR_BOSS_STUN_BASE "▐ ",
+                     COLOR_BOSS_STUN_BASE " ▌" COLOR_BOSS_STUN_LIGHTNING "▞▝▖▞▝▖" COLOR_BOSS_STUN_BASE "▐ ",
+                     COLOR_BOSS_STUN_BASE " ▌" COLOR_BOSS_STUN_SPARKS " ▖" COLOR_BOSS_STUN_LIGHTNING "▝▝▖ " COLOR_BOSS_STUN_BASE "▐ ",
+                     COLOR_BOSS_STUN_BASE " ▚▄▄▞▚▄▄▞ ",
                  },
                  {
-                     COLOR_BOSS_STUN_BASE" ▞▀▀▚▞▀▀▚ ",
-                     COLOR_BOSS_STUN_BASE" ▌"COLOR_BOSS_STUN_LIGHTNING"▖ ▝▖ "COLOR_BOSS_STUN_SPARKS"▝"COLOR_BOSS_STUN_BASE"▐ ",
-                     COLOR_BOSS_STUN_BASE" ▌"COLOR_BOSS_STUN_LIGHTNING"▝▖▞▝▖▞"COLOR_BOSS_STUN_BASE"▐ ",
-                     COLOR_BOSS_STUN_BASE" ▌"COLOR_BOSS_STUN_SPARKS   "▘"COLOR_BOSS_STUN_LIGHTNING"▞"COLOR_BOSS_STUN_SPARKS"▗ ▝ "COLOR_BOSS_STUN_BASE"▐ ",
-                     COLOR_BOSS_STUN_BASE" ▚▄▄▞▚▄▄▞ ",
+                     COLOR_BOSS_STUN_BASE " ▞▀▀▚▞▀▀▚ ",
+                     COLOR_BOSS_STUN_BASE " ▌" COLOR_BOSS_STUN_LIGHTNING "▖ ▝▖ " COLOR_BOSS_STUN_SPARKS "▝" COLOR_BOSS_STUN_BASE "▐ ",
+                     COLOR_BOSS_STUN_BASE " ▌" COLOR_BOSS_STUN_LIGHTNING "▝▖▞▝▖▞" COLOR_BOSS_STUN_BASE "▐ ",
+                     COLOR_BOSS_STUN_BASE " ▌" COLOR_BOSS_STUN_SPARKS "▘" COLOR_BOSS_STUN_LIGHTNING "▞" COLOR_BOSS_STUN_SPARKS "▗ ▝ " COLOR_BOSS_STUN_BASE "▐ ",
+                     COLOR_BOSS_STUN_BASE " ▚▄▄▞▚▄▄▞ ",
                  }};
             if (((int)enemy->grid_x % 2 == 1 && (int)enemy->grid_y % 2 == 1) //
                 || ((int)enemy->grid_x % 2 == 0 && (int)enemy->grid_y % 2 == 0))
@@ -753,9 +753,33 @@ WavePattern getWaveByIndex(int waveIndex)
     wp.random_coeffs[ENEMY_HYPERSPEED] = MIN(1, 0 + 1.0f * waveIndex / 25); // 1 a vague 25
 
     wp.random_coeffs[ENEMY_SLIME_BOSS] = CLAMP(-0.1f + 0.2f * waveIndex / 20, 0.0f, 0.2f);
-    wp.random_coeffs[ENEMY_BOSS_STUN] = CLAMP(-0.4f + 0.2f * waveIndex / 30, 0.0f, 0.2f);
-    wp.random_coeffs[ENEMY_TANK] = CLAMP(-0.4f + 0.2f * waveIndex / 40, 0.0f, 0.2f);
+    wp.random_coeffs[ENEMY_BOSS_STUN] = CLAMP(-0.15f + 0.2f * waveIndex / 30, 0.0f, 0.2f);
+    wp.random_coeffs[ENEMY_TANK] = CLAMP(-0.20f + 0.2f * waveIndex / 40, 0.0f, 0.2f);
 
+    if (waveIndex == 10)
+    {
+        wp.min_spawns[ENEMY_SLIME_BOSS] = 1;
+    }
+    else if (waveIndex == 20)
+    {
+        wp.min_spawns[BOSS_STUN] = 1;
+    }
+    else if (waveIndex == 30)
+    {
+        wp.min_spawns[ENEMY_TANK] = 1;
+    }
+    else if (waveIndex == 40)
+    {
+        wp.min_spawns[ENEMY_TANK] = 1;
+        wp.min_spawns[BOSS_STUN] = 1;
+        wp.min_spawns[ENEMY_SLIME_BOSS] = 3;
+    }
+    else if (waveIndex == 50)
+    {
+        wp.min_spawns[ENEMY_TANK] = 3;
+        wp.min_spawns[BOSS_STUN] = 3;
+        wp.min_spawns[ENEMY_SLIME_BOSS] = 10;
+    }
 
     for (int i = 0; i < ENEMY_COUNT; i++)
     {
@@ -898,7 +922,7 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
     fprintf(fptr, "HYPERSPEED,");
     fprintf(fptr, "SPIDER,");
     fprintf(fptr, "HIGHTUX,");
-    fprintf(fptr, "SLOWBOSS,");
+    fprintf(fptr, "ENEMY_TANK,");
     fprintf(fptr, "BOSS_STUN");
     fprintf(fptr, "\n");
 
@@ -908,7 +932,7 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
     printf("HYPERSPEED\t");
     printf("SPIDER\t\t");
     printf("HIGHTUX\t\t");
-    printf("SLOWBOSS\t");
+    printf("ENEMY_TANK\t");
     printf("BOSS_STUN");
     printf("\n");
     while (n <= 0 || i < n)
