@@ -123,6 +123,21 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.next_cell = grid.cells[start_x][start_y];
         enemy.on_last_cell = false;
     }
+    else if (type == ENEMY_SLOWBOSS)
+    {
+        enemy.type = ENEMY_SLOWBOSS;
+        enemy.hp = 1000;
+        enemy.maxHP = 1000;
+        enemy.speed = 0.2f;
+        enemy.damage = 20;
+        enemy.money = 30;
+        enemy.state = ENEMY_STATE_ALIVE;
+        enemy.grid_x = (float)start_x;
+        enemy.grid_y = (float)start_y;
+        enemy.previous_cell = grid.cells[start_x][start_y];
+        enemy.next_cell = grid.cells[start_x][start_y];
+        enemy.on_last_cell = false;
+    }
     return enemy;
 }
 
@@ -248,6 +263,11 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
         {
             move_to(px, py);
             printf("hit");
+        }
+        else if (enemy->type == ENEMY_SLOWBOSS)
+        {
+            move_to(px, py);
+            printf("SLB");
         }
 
         // move_to((enemy->next_cell.x * (CELL_WIDTH + GAP) + 3), (enemy->next_cell.y * (CELL_HEIGHT + GAP / 2) + 2));
