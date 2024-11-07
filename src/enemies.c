@@ -754,7 +754,7 @@ WavePattern getWaveByIndex(int waveIndex)
 
     wp.random_coeffs[ENEMY_SLIME_BOSS] = CLAMP(-0.1f + 0.2f * waveIndex / 20, 0.0f, 0.2f);
     wp.random_coeffs[ENEMY_BOSS_STUN] = CLAMP(-0.4f + 0.2f * waveIndex / 30, 0.0f, 0.2f);
-    wp.random_coeffs[ENEMY_SLOWBOSS] = CLAMP(-0.4f + 0.2f * waveIndex / 40, 0.0f, 0.2f);
+    wp.random_coeffs[ENEMY_TANK] = CLAMP(-0.4f + 0.2f * waveIndex / 40, 0.0f, 0.2f);
 
 
     for (int i = 0; i < ENEMY_COUNT; i++)
