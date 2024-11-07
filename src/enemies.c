@@ -53,7 +53,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.type = ENEMY_SPEED;
         enemy.hp = 5;
         enemy.maxHP = 5;
-        enemy.speed = 1.8f;
+        enemy.speed = 1.5f;
         enemy.damage = 1;
         enemy.money = 2;
         enemy.state = ENEMY_STATE_ALIVE;
@@ -98,7 +98,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.type = ENEMY_HYPERSPEED;
         enemy.hp = 10;
         enemy.maxHP = 10;
-        enemy.speed = 2.5f;
+        enemy.speed = 2.0f;
         enemy.damage = 2;
         enemy.money = 2;
         enemy.state = ENEMY_STATE_ALIVE;
@@ -636,11 +636,10 @@ WavePattern getWaveByIndex(int waveIndex)
         .min_spawns = {0}};
 
     wp.random_coeffs[ENEMY_SPEED] = 1;
-    wp.random_coeffs[ENEMY_SPIDER] = 1;
+    wp.random_coeffs[ENEMY_SPIDER] = 0.5;
     wp.random_coeffs[ENEMY_TUX] = 1;
-    wp.random_coeffs[ENEMY_HIGHTUX] = 1;
-    wp.random_coeffs[ENEMY_HYPERSPEED] = 1;
-    // wp.random_coeffs[ENEMY_SPEED] = 1;
+    wp.random_coeffs[ENEMY_HIGHTUX] = 0.25;
+    wp.random_coeffs[ENEMY_HYPERSPEED] = 0.25;
 
     for (int i = 0; i < ENEMY_COUNT; i++)
     {
