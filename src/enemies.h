@@ -9,7 +9,7 @@ enum EnemyType
 {
     ENEMY_TUX,
     ENEMY_SPEED,
-    ENEMY_BOSS,
+    ENEMY_SLIME_BOSS,
     ENEMY_HYPERSPEED,
     ENEMY_SPIDER,
     ENEMY_HIGHTUX,

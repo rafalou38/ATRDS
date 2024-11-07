@@ -63,9 +63,9 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.next_cell = grid.cells[start_x][start_y];
         enemy.on_last_cell = false;
     }
-    else if (type == ENEMY_BOSS) // Boss ennemi
+    else if (type == ENEMY_SLIME_BOSS) // Boss ennemi
     {
-        enemy.type = ENEMY_BOSS;
+        enemy.type = ENEMY_SLIME_BOSS;
         enemy.hp = 50;
         enemy.maxHP = 50;
         enemy.speed = 0.5f;
@@ -324,7 +324,7 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
                  },
                  {
                      COLOR_SPIDER_BASE "▌" COLOR_SPIDER_EYES "▄▄" COLOR_SPIDER_BASE "▐",
-                     COLOR_SPIDER_BASE "▐▄▄▌",
+                     COLOR_SPIDER_EYES "▐▄▄▌",
                      COLOR_SPIDER_LEGS "▞▚▚▚",
                  }};
             if ((int)enemy->grid_x % 2 == 1 && (int)enemy->grid_y % 2 == 1)
@@ -420,10 +420,59 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
                 printf(sprite_ennemy[sprite_anim][i]);
             }
         }
-        else if (enemy->type == ENEMY_BOSS)
+        else if (enemy->type == ENEMY_SLIME_BOSS)
         {
-            move_to(px, py);
-            printf("bos");
+            int sprite_anim = 0;
+            char *sprite_ennemy[4][5] =
+                {{
+                     COLOR_BOSS_SLIME_CROWN"  ▞▞▞▚▚▚  ",
+                     COLOR_BOSS_SLIME_BASE" ▞▀▀▀▀▀▀▚ ",
+                     " ▌  "COLOR_BOSS_SLIME_EYES"▚  ▞"COLOR_BOSS_SLIME_BASE"▐ ",
+                     " ▌   "COLOR_BOSS_SLIME_MOUTH"▞▚"COLOR_BOSS_SLIME_BASE" ▐ ",
+                     " ▚▄▄▄▄▄▄▞ ",
+                 },
+                 {
+                     COLOR_BOSS_SLIME_CROWN"  ▞▞▞▚▚▚  ",
+                     COLOR_BOSS_SLIME_BASE" ▞▀▀"COLOR_BOSS_SLIME_EYES"▚"COLOR_BOSS_SLIME_BASE"▀"COLOR_BOSS_SLIME_EYES"▞"COLOR_BOSS_SLIME_BASE"▀▚ ",
+                     " ▌ "COLOR_BOSS_SLIME_EYES"▀   ▀"COLOR_BOSS_SLIME_BASE"▐ ",
+                     " ▌   "COLOR_BOSS_SLIME_MOUTH"▞▚"COLOR_BOSS_SLIME_BASE" ▐ ",
+                     " ▚▄▄▄▄▄▄▞ ",
+                 },
+                 {
+                     COLOR_BOSS_SLIME_CROWN"  ▞▞▞▚▚▚  ",
+                     COLOR_BOSS_SLIME_BASE" ▞▀▀▀▀▀▀▚ ",
+                     " ▌"COLOR_BOSS_SLIME_EYES"▚  ▞"COLOR_BOSS_SLIME_BASE"  ▐ ",
+                     " ▌ "COLOR_BOSS_SLIME_MOUTH"▞▚"COLOR_BOSS_SLIME_BASE"   ▐ ",
+                     " ▚▄▄▄▄▄▄▞ ",
+                 },
+                 {
+                     COLOR_BOSS_SLIME_CROWN"  ▞▞▞▚▚▚  ",
+                     COLOR_BOSS_SLIME_BASE" ▞▀▀▀▀▀▀▚ ",
+                     " ▌ "COLOR_BOSS_SLIME_EYES"▄▝ ▘▄"COLOR_BOSS_SLIME_BASE"▐ ",
+                     " ▌   "COLOR_BOSS_SLIME_MOUTH"▞▚"COLOR_BOSS_SLIME_BASE" ▐ ",
+                     " ▚▄▄▄▄▄▄▞ ",
+                 }};
+            if (enemy->next_cell.x * (CELL_WIDTH + GAP) + 3 > px)
+            {
+                sprite_anim = 0;
+            }
+            else if (enemy->next_cell.y * (CELL_HEIGHT + GAP / 2) + 2 < py)
+            {
+                sprite_anim = 1;
+            }
+            else if (enemy->next_cell.x * (CELL_HEIGHT + GAP / 2) + 2 > py)
+            {
+                sprite_anim = 3;
+            }
+            else if (enemy->next_cell.x * (CELL_WIDTH + GAP) + 3 < px)
+            {
+                sprite_anim = 2;
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                move_to(px - 3, i + py);
+                printf(sprite_ennemy[sprite_anim][i]);
+            }
         }
         else if (enemy->type == ENEMY_SLOWBOSS)
         {
@@ -440,9 +489,14 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
         // printf("N%d", i);
         // move_to((enemy->previous_cell.x * (CELL_WIDTH + GAP) + 3), (enemy->previous_cell.y * (CELL_HEIGHT + GAP / 2) + 2));
         // printf("P%d", i);
-
-        move_to(px - 1, py - 1);
-
+        if (enemy->type == ENEMY_SLIME_BOSS)
+        {
+            move_to(px, py - 1);
+        }
+        else
+        {
+            move_to(px - 1, py - 1);
+        }
         printf(COLOR_HEALTH_BG); // Sprites de la barre de vie des ennemis
         float ratio_tot = enemy->hp / (float)enemy->maxHP;
         if (ratio_tot >= 0.75)
@@ -594,6 +648,11 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
             enemy->state = ENEMY_STATE_ARRIVED;
             defragNeeded = true;
             gs->health -= enemy->damage;
+            for (size_t i = 0; i < CELL_HEIGHT; i++)
+            {
+                move_to((int)enemy->grid_x  * (CELL_WIDTH + GAP) + 2, (int)enemy->grid_y * (CELL_HEIGHT + GAP / 2) + 2 + i);
+                printf(COLOR_STANDARD_BG "       ");
+            }
         }
 
         if (enemy->hp <= 0) // Effets liés à la mort d'un ennemi
@@ -639,11 +698,12 @@ WavePattern getWaveByIndex(int waveIndex)
     }
     else
     {
-        wp.random_coeffs[ENEMY_SPEED] = 0.5;
-        wp.random_coeffs[ENEMY_SPIDER] = 0.5;
-        wp.random_coeffs[ENEMY_TUX] = 0.5;
-        wp.random_coeffs[ENEMY_HIGHTUX] = 0.5;
-        wp.random_coeffs[ENEMY_HYPERSPEED] = 0.5;
+        wp.random_coeffs[ENEMY_SPEED] = 1;
+        wp.random_coeffs[ENEMY_SPIDER] = 1;
+        wp.random_coeffs[ENEMY_TUX] = 1;
+        wp.random_coeffs[ENEMY_HIGHTUX] = 1;
+        wp.random_coeffs[ENEMY_HYPERSPEED] = 1;
+        wp.random_coeffs[ENEMY_SLIME_BOSS] = 1;
     }
 
     for (int i = 0; i < ENEMY_COUNT; i++)
@@ -715,6 +775,7 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
             if (ws->wave_timer == -1)
             {
                 ws->wave_timer = WAVE_DELAY;
+                return -2;
             }
             else if (ws->wave_timer == 0)
             {
@@ -724,7 +785,7 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
             {
                 ws->wave_timer = MAX(0, ws->wave_timer - dt);
             }
-            return -2;
+            return -1;
         }
         else // s'il reste des ennemis en vie, on ne fait rien
         {
