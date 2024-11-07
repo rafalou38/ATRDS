@@ -53,7 +53,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.type = ENEMY_SPEED;
         enemy.hp = 5;
         enemy.maxHP = 5;
-        enemy.speed = 1.8f;
+        enemy.speed = 1.5f;
         enemy.damage = 1;
         enemy.money = 2;
         enemy.state = ENEMY_STATE_ALIVE;
@@ -98,7 +98,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.type = ENEMY_HYPERSPEED;
         enemy.hp = 10;
         enemy.maxHP = 10;
-        enemy.speed = 2.5f;
+        enemy.speed = 2.0f;
         enemy.damage = 2;
         enemy.money = 2;
         enemy.state = ENEMY_STATE_ALIVE;
@@ -648,6 +648,11 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
             enemy->state = ENEMY_STATE_ARRIVED;
             defragNeeded = true;
             gs->health -= enemy->damage;
+            for (size_t i = 0; i < CELL_HEIGHT; i++)
+            {
+                move_to((int)enemy->grid_x  * (CELL_WIDTH + GAP) + 2, (int)enemy->grid_y * (CELL_HEIGHT + GAP / 2) + 2 + i);
+                printf(COLOR_STANDARD_BG "       ");
+            }
         }
 
         if (enemy->hp <= 0) // Effets liés à la mort d'un ennemi
@@ -685,7 +690,7 @@ WavePattern getWaveByIndex(int waveIndex)
         .min_spawns = {0}};
 
     wp.random_coeffs[ENEMY_SPEED] = 1;
-    wp.random_coeffs[ENEMY_SPIDER] = 1;
+    wp.random_coeffs[ENEMY_SPIDER] = 0.5;
     wp.random_coeffs[ENEMY_TUX] = 1;
     wp.random_coeffs[ENEMY_HIGHTUX] = 1;
     wp.random_coeffs[ENEMY_HYPERSPEED] = 1;
@@ -761,6 +766,7 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
             if (ws->wave_timer == -1)
             {
                 ws->wave_timer = WAVE_DELAY;
+                return -2;
             }
             else if (ws->wave_timer == 0)
             {
@@ -770,7 +776,7 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
             {
                 ws->wave_timer = MAX(0, ws->wave_timer - dt);
             }
-            return -2;
+            return -1;
         }
         else // s'il reste des ennemis en vie, on ne fait rien
         {

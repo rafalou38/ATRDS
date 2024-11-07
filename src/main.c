@@ -125,8 +125,8 @@ int main(int argc, char *argv[])
     genBasicPath(&grid);
 
     // Gestion des statistiques
-    gameStats.cash = 500;
-    gameStats.health = 100;
+    gameStats.cash = 30;
+    gameStats.health = 20;
 
     // Gestion labels
     labels.size = 255;
@@ -191,7 +191,7 @@ int main(int argc, char *argv[])
             msleep((1.0 / TARGET_FPS - delta_t) * 1000);
         if (delta_t > 3.0 / TARGET_FPS) // ici on évite d'avoir un dt trop énorme ce qui peut poser des problèmes
             delta_t = 3.0 / TARGET_FPS;
-        if (1.0/delta_t < TARGET_FPS * 2)
+        if (1.0 / delta_t < TARGET_FPS * 2)
             fps = 1.0f / delta_t;
 
         frame_index++;
@@ -238,7 +238,12 @@ int main(int argc, char *argv[])
             updateLabels(&labels, delta_t);
             drawLabels(labels);
 
-            updateWaveSystem(&waveSystem, grid, &enemyPool, delta_t);
+            int wave_status = updateWaveSystem(&waveSystem, grid, &enemyPool, delta_t);
+            if (wave_status == -2)
+            {
+                fillBG(1, 1, width + 1, height + 1);
+                drawFullGrid(grid);
+            }
 
             // Mise à jour des ennemis existants
             updateEnemies(&enemyPool, grid, &gameStats, &labels, delta_t);
