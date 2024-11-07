@@ -13,7 +13,7 @@ enum EnemyType
     ENEMY_HYPERSPEED,
     ENEMY_SPIDER,
     ENEMY_HIGHTUX,
-    ENEMY_SLOWBOSS,
+    ENEMY_TANK,
     ENEMY_BOSS_STUN,
     ENEMY_COUNT // Doit être placé dernier Ceci n'est pas un vrai ennemi mais permet de définir automatiquement combien d’ennemis sont dans l'enum
 };
