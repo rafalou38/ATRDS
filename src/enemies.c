@@ -480,8 +480,33 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
         }
         else if (enemy->type == ENEMY_SLOWBOSS)
         {
-            move_to(px, py);
-            printf("SLB");
+            int sprite_anim = 0;
+            char *sprite_ennemy[2][4] =
+                {{
+                     "  ▞▀▚▄▄   ",
+                     " ▞URSS▚▄▄▄",
+                     "▗▙▄▄▄▄▟▄▖ ",
+                     "▚▄▄▄▄▄▄▄▞ ",
+                 },
+                 {
+                     "   ▄▄▞▀▚  ",
+                     "▄▄▄▞URSS▚ ",
+                     " ▗▄▙▄▄▄▄▟▖",
+                     " ▚▄▄▄▄▄▄▄▞",
+                 }};
+            if (enemy->next_cell.x * (CELL_WIDTH + GAP) + 3 > px)
+            {
+                sprite_anim = 0;
+            }
+            else
+            {
+                sprite_anim = 1;
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                move_to(px - 3, i + py);
+                printf(sprite_ennemy[sprite_anim][i]);
+            }
         }
         else if (enemy->type == ENEMY_BOSS_STUN)
         {
@@ -688,8 +713,8 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
 WavePattern getWaveByIndex(int waveIndex)
 {
     WavePattern wp = {
-        .target_HP = (10 + 5.0f * waveIndex),
-        .target_HPPS = 5 + 0.5f * waveIndex,
+        .target_POWER = (10 + 10 * waveIndex),
+        .target_POWERPS = 5 + 2 * waveIndex,
         .random_coeffs = {0},
         .min_spawns = {0}};
     if (waveIndex < 10)
@@ -723,7 +748,7 @@ void switchToWave(WaveSystem *ws, int waveIndex)
 {
     ws->current_wave_index = waveIndex;
     ws->current_wave_pattern = getWaveByIndex(waveIndex);
-    ws->wave_HP_left = ws->current_wave_pattern.target_HP;
+    ws->wave_HP_left = ws->current_wave_pattern.target_POWER;
     ws->next_spawn_timer = -1;
     ws->wave_timer = -1;
 }
@@ -762,7 +787,8 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
     {
         // Cet ennemi ne va pas ètre ajouté, on le récupère juste pour connaître ses HP
         ennemi_courant = defEnemy(grid, i, 0, 0);
-        if ((ennemi_courant.maxHP <= ws->wave_HP_left && pattern->random_coeffs[i] != 0) || pattern->min_spawns[i] > 0)
+
+        if ((ennemi_courant.maxHP * ennemi_courant.speed <= ws->wave_HP_left && pattern->random_coeffs[i] != 0) || pattern->min_spawns[i] > 0)
         {
             enemy_choice_pool[i] = true;
             valid = true;
@@ -823,9 +849,11 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
 
     if (!ennemi_choisi->is_boss)
     {
-        ws->wave_HP_left -= ennemi_choisi->maxHP;
-        ws->next_spawn_timer = ennemi_choisi->maxHP / pattern->target_HPPS;
-    }else{
+        ws->wave_HP_left -= ennemi_choisi->maxHP * ennemi_choisi->speed;
+        ws->next_spawn_timer = ennemi_choisi->maxHP / pattern->target_POWERPS;
+    }
+    else
+    {
         ws->next_spawn_timer = 1.5;
     }
 
@@ -859,7 +887,7 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
 
         switchToWave(&ws, i);
 
-        printf("\t HP: " COLOR_RED "%.1f" RESET " HPPS: " COLOR_YELLOW "%.1f" RESET " \t", ws.current_wave_pattern.target_HP, ws.current_wave_pattern.target_HPPS);
+        printf("\t HP: " COLOR_RED "%.1f" RESET " HPPS: " COLOR_YELLOW "%.1f" RESET " \t", ws.current_wave_pattern.target_POWER, ws.current_wave_pattern.target_POWERPS);
         for (int j = 0; j < ENEMY_COUNT; j++)
         {
             printf("%.1f%% ", ws.current_wave_pattern.random_coeffs[j] / ws.current_wave_pattern.coeff_sum * 100);
@@ -895,7 +923,7 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
 
         printf("\tDurée de la vague:" COLOR_FREEZER_BASE " %.1fs " RESET ", %d ennemis %d", t, cnt, argent_cumul);
         // wave,hp,hpps,duration,ennemiesSpawned
-        fprintf(fptr, "%d,%f,%f,%.1f,%d,%d", i, ws.current_wave_pattern.target_HP, ws.current_wave_pattern.target_HPPS, t, argent_cumul, cnt);
+        fprintf(fptr, "%d,%f,%f,%.1f,%d,%d", i, ws.current_wave_pattern.target_POWER, ws.current_wave_pattern.target_POWERPS, t, argent_cumul, cnt);
         for (int i = 0; i < ENEMY_COUNT; i++)
         {
             fprintf(fptr, ",%d", spawn_cnt[i]);
