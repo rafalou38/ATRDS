@@ -16,161 +16,200 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
             if (grid.cells[x][y].hasTurret) // Affecte à une tourelles ses caractéristiques
             {
                 int lvl = grid.cells[x][y].turret.lvl; // Son niveau
-                grid.cells[x][y].turret.compteur += dt; // Son horloge interne / son compteur
-
-                // Lorsque l'horloge interne dépasse la vitesse de rechargement (reload) de la tourelle, elle applique son effet :
-                if (grid.cells[x][y].turret.compteur >= grid.cells[x][y].turret.reload_delay[lvl]) 
+                if (grid.cells[x][y].turret.sub_effect)
                 {
-                    int enemies_hit = 0;
-                    if (grid.cells[x][y].turret.has_effect)
+                    grid.cells[x][y].turret.puissance_effet_sub -= dt;
+                }
+                else
+                {
+                    grid.cells[x][y].turret.compteur += dt; // Son horloge interne / son compteur
+                }
+                if (!grid.cells[x][y].turret.sub_effect || grid.cells[x][y].turret.puissance_effet_sub<=0)
+                {
+                    // Lorsque l'horloge interne dépasse la vitesse de rechargement (reload) de la tourelle, elle applique son effet :
+                    if (grid.cells[x][y].turret.compteur >= grid.cells[x][y].turret.reload_delay[lvl]) 
                     {
-                        if (grid.cells[x][y].turret.effet == Money) // Génération d'argent (Banque)
+                        int enemies_hit = 0;
+                        if (grid.cells[x][y].turret.has_effect)
                         {
-                            gs->cash += grid.cells[x][y].turret.puissance_effet[lvl];
-                            enemies_hit++;
-                        }
-                        else if (grid.cells[x][y].turret.effet == Stun) // Stun = Pétrification (Pétrificateur)
-                        {
-                            for (int i = 0; i < ep.count; i++)
+                            if (grid.cells[x][y].turret.effet == Money) // Génération d'argent (Banque)
                             {
-                                // Calcul du vecteur entre la tourelle et l’ennemi
-                                float dx = ep.enemies[i].grid_x - (x + 0.5);
-                                float dy = ep.enemies[i].grid_y - (y + 0.5);
-
-                                float d = sqrt(dx * dx + dy * dy);
-                                if (d <= grid.cells[x][y].turret.range_max[lvl] && d >= grid.cells[x][y].turret.range_min[lvl])
-                                {
-
-                                    grid.cells[x][y].turret.last_shot_dx = dx / d;
-                                    grid.cells[x][y].turret.last_shot_dy = dy / d;
-                                    ep.enemies[i].has_effect = true;
-                                    ep.enemies[i].effet = Stun;
-                                    ep.enemies[i].temps_rest = grid.cells[x][y].turret.puissance_effet[lvl];
-                                    enemies_hit++;
-                                    break;
-                                }
+                                gs->cash += grid.cells[x][y].turret.puissance_effet[lvl];
+                                enemies_hit++;
                             }
-                        }
-                        else if (grid.cells[x][y].turret.effet == Slow) // Slow = Ralentissement (Freezer)
-                        {
-                            for (int i = 0; i < ep.count; i++)
+                            else if (grid.cells[x][y].turret.effet == Stun) // Stun = Pétrification (Pétrificateur)
                             {
-                                // Calcul du vecteur entre la tourelle et l’ennemi
-                                float dx = ep.enemies[i].grid_x - (x + 0.5);
-                                float dy = ep.enemies[i].grid_y - (y + 0.5);
-
-                                float d = sqrt(dx * dx + dy * dy);
-                                if (d <= grid.cells[x][y].turret.range_max[lvl] && d >= grid.cells[x][y].turret.range_min[lvl])
+                                for (int i = 0; i < ep.count; i++)
                                 {
-                                    grid.cells[x][y].turret.last_shot_dx = dx / d;
-                                    grid.cells[x][y].turret.last_shot_dy = dy / d;
-                                    ep.enemies[i].has_effect = true;
-                                    ep.enemies[i].effet = Slow;
-                                    ep.enemies[i].temps_rest = lvl + 1;
-                                    ep.enemies[i].puissance_effet = grid.cells[x][y].turret.puissance_effet[lvl];
-                                    enemies_hit++;
-                                } 
-                            }
-                        }
-                        else if (grid.cells[x][y].turret.effet == Fire) // Fire = dégats sur la durée (Inferno)
-                        {
-                            for (int i = 0; i < ep.count; i++)
-                            {
-                                // Calcul du vecteur entre la tourelle et l’ennemi
-                                float dx = ep.enemies[i].grid_x - (x + 0.5);
-                                float dy = ep.enemies[i].grid_y - (y + 0.5);
-                                float d = sqrt(dx * dx + dy * dy);
+                                    // Calcul du vecteur entre la tourelle et l’ennemi
+                                    float dx = ep.enemies[i].grid_x - (x + 0.5);
+                                    float dy = ep.enemies[i].grid_y - (y + 0.5);
 
-                                if (d <= grid.cells[x][y].turret.range_max[lvl] && d >= grid.cells[x][y].turret.range_min[lvl])
-                                {
-
-                                    grid.cells[x][y].turret.last_shot_dx = dx / d;
-                                    grid.cells[x][y].turret.last_shot_dy = dy / d;
-                                    ep.enemies[i].has_effect = true;
-                                    ep.enemies[i].effet = Fire;
-                                    ep.enemies[i].temps_rest = lvl + 1;
-                                    ep.enemies[i].temps_recharge = grid.cells[x][y].turret.puissance_effet[lvl];
-                                    ep.enemies[i].last_hit = 10;
-                                    enemies_hit++;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < ep.count; i++)
-                        {
-                            // Calcul du vecteur entre la tourelle et l’ennemi
-                            float dx = ep.enemies[i].grid_x - (x + 0.5);
-                            float dy = ep.enemies[i].grid_y - (y + 0.5);
-                            float d = sqrt(dx * dx + dy * dy);
-
-                            // Test pour que l'ennemi soit dans la portée de la tourelle
-                            if (d <= grid.cells[x][y].turret.range_max[lvl]
-                            && d >= grid.cells[x][y].turret.range_min[lvl])
-                            {
-                                float dx = ep.enemies[i].grid_x - x;
-                                float dy = ep.enemies[i].grid_y - y;
-                                float d = sqrt(dx * dx + dy * dy);
-
-                                grid.cells[x][y].turret.last_shot_dx = dx / d;
-                                grid.cells[x][y].turret.last_shot_dy = dy / d;
-
-                                // Fonctionnement du splash damage (dégats de zone)
-                                if (grid.cells[x][y].turret.splash[lvl] != 0.0)  
-                                {
-                                    float d_min = grid.cells[x][y].turret.splash[lvl];
-                                    for (int j = 0 ; j < ep.count ; j++)
+                                    float d = sqrt(dx * dx + dy * dy);
+                                    if (d <= grid.cells[x][y].turret.range_max[lvl] && d >= grid.cells[x][y].turret.range_min[lvl])
                                     {
-                                        if (j != i)
+                                        if (ep.enemies[i].type == ENEMY_BOSS_STUN && d<=ep.enemies[i].puissance_effet)
                                         {
-                                            int d_enemy = sqrt(pow(ep.enemies[i].grid_x - ep.enemies[j].grid_x, 2) + 
-                                            pow(ep.enemies[i].grid_y - ep.enemies[j].grid_y, 2));
-                                            if (d_enemy < d_min)
-                                            {
-                                                ep.enemies[j].hp -= grid.cells[x][y].turret.damage[lvl];
-                                            }
+                                            grid.cells[x][y].turret.sub_effect = true;
+                                            grid.cells[x][y].turret.puissance_effet_sub = ep.enemies[i].puissance_effet;
+                                        }
+                                        else
+                                        {
+                                            grid.cells[x][y].turret.last_shot_dx = dx / d;
+                                            grid.cells[x][y].turret.last_shot_dy = dy / d;
+                                            ep.enemies[i].has_effect = true;
+                                            ep.enemies[i].effet = Stun;
+                                            ep.enemies[i].temps_rest = grid.cells[x][y].turret.puissance_effet[lvl];
+                                            enemies_hit++;
+                                            break;
                                         }
                                     }
-                                    ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
-                                    int w;
-                                    int h;
-                                    get_terminal_size(&w, &h);
-                                    printf(COLOR_MORTIER_FIRING);
-                                    drawRange(w, h, d_min, ep.enemies[i].grid_x, ep.enemies[i].grid_y, false);
-                                    printf(RESET);
-                                    // msleep(400);
                                 }
-                                else // Tir standard
+                            }
+                            else if (grid.cells[x][y].turret.effet == Slow) // Slow = Ralentissement (Freezer)
+                            {
+                                for (int i = 0; i < ep.count; i++)
                                 {
-#if BULLETS_ON
-                                    bp->bullets[bp->count].hit = false;
-                                    bp->bullets[bp->count].grid_x = x + 0.5 + (dx / d) / 4;
-                                    bp->bullets[bp->count].grid_y = y + 0.5 + (dy / d) / 4;
-                                    bp->bullets[bp->count].target = &(ep.enemies[i]);
-                                    bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage[lvl];
-                                    bp->count++;
-#else
-                                    // Changements des points de vie de l'ennemi touché, perdant ainsi le nombre de dégats infligés par l'attaque
-                                    ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
-#endif
+                                    // Calcul du vecteur entre la tourelle et l’ennemi
+                                    float dx = ep.enemies[i].grid_x - (x + 0.5);
+                                    float dy = ep.enemies[i].grid_y - (y + 0.5);
+
+                                    float d = sqrt(dx * dx + dy * dy);
+                                    if (d <= grid.cells[x][y].turret.range_max[lvl] && d >= grid.cells[x][y].turret.range_min[lvl])
+                                    {
+                                        if (ep.enemies[i].type == ENEMY_BOSS_STUN && d<=ep.enemies[i].puissance_effet)
+                                        {
+                                            grid.cells[x][y].turret.sub_effect = true;
+                                            grid.cells[x][y].turret.puissance_effet_sub = ep.enemies[i].puissance_effet;
+                                        }
+                                        else
+                                        {
+                                            grid.cells[x][y].turret.last_shot_dx = dx / d;
+                                            grid.cells[x][y].turret.last_shot_dy = dy / d;
+                                            ep.enemies[i].has_effect = true;
+                                            ep.enemies[i].effet = Slow;
+                                            ep.enemies[i].temps_rest = lvl + 1;
+                                            ep.enemies[i].puissance_effet = grid.cells[x][y].turret.puissance_effet[lvl];
+                                            enemies_hit++;
+                                        }
+                                    } 
                                 }
-                                // Fonctionnement du nombre d'ennemi pouvant être touché
-                                enemies_hit++;
-                                if (enemies_hit >= grid.cells[x][y].turret.nb_ennemi[lvl])
-                                    break;
+                            }
+                            else if (grid.cells[x][y].turret.effet == Fire) // Fire = dégats sur la durée (Inferno)
+                            {
+                                for (int i = 0; i < ep.count; i++)
+                                {
+                                    // Calcul du vecteur entre la tourelle et l’ennemi
+                                    float dx = ep.enemies[i].grid_x - (x + 0.5);
+                                    float dy = ep.enemies[i].grid_y - (y + 0.5);
+                                    float d = sqrt(dx * dx + dy * dy);
+
+                                    if (d <= grid.cells[x][y].turret.range_max[lvl] && d >= grid.cells[x][y].turret.range_min[lvl])
+                                    {
+                                        if (ep.enemies[i].type == ENEMY_BOSS_STUN  && d<=ep.enemies[i].puissance_effet)
+                                        {
+                                            grid.cells[x][y].turret.sub_effect = true;
+                                            grid.cells[x][y].turret.puissance_effet_sub = ep.enemies[i].puissance_effet;
+                                        }
+                                        else
+                                        {
+                                            grid.cells[x][y].turret.last_shot_dx = dx / d;
+                                            grid.cells[x][y].turret.last_shot_dy = dy / d;
+                                            ep.enemies[i].has_effect = true;
+                                            ep.enemies[i].effet = Fire;
+                                            ep.enemies[i].temps_rest = lvl + 1;
+                                            ep.enemies[i].temps_recharge = grid.cells[x][y].turret.puissance_effet[lvl];
+                                            ep.enemies[i].last_hit = 10;
+                                            enemies_hit++;
+                                        }
+                                    }
+                                }
                             }
                         }
+                        else
+                        {
+                            for (int i = 0; i < ep.count; i++)
+                            {
+                                // Calcul du vecteur entre la tourelle et l’ennemi
+                                float dx = ep.enemies[i].grid_x - (x + 0.5);
+                                float dy = ep.enemies[i].grid_y - (y + 0.5);
+                                float d = sqrt(dx * dx + dy * dy);
+
+                                // Test pour que l'ennemi soit dans la portée de la tourelle
+                                if (d <= grid.cells[x][y].turret.range_max[lvl]
+                                && d >= grid.cells[x][y].turret.range_min[lvl])
+                                {
+                                    if (ep.enemies[i].type == ENEMY_BOSS_STUN && d<=ep.enemies[i].puissance_effet)
+                                        {
+                                            grid.cells[x][y].turret.sub_effect = true;
+                                            grid.cells[x][y].turret.puissance_effet_sub = ep.enemies[i].puissance_effet;
+                                        }
+                                    else
+                                    {
+                                        float dx = ep.enemies[i].grid_x - x;
+                                        float dy = ep.enemies[i].grid_y - y;
+                                        float d = sqrt(dx * dx + dy * dy);
+
+                                        grid.cells[x][y].turret.last_shot_dx = dx / d;
+                                        grid.cells[x][y].turret.last_shot_dy = dy / d;
+
+                                        // Fonctionnement du splash damage (dégats de zone)
+                                        if (grid.cells[x][y].turret.splash[lvl] != 0.0)  
+                                        {
+                                            float d_min = grid.cells[x][y].turret.splash[lvl];
+                                            for (int j = 0 ; j < ep.count ; j++)
+                                            {
+                                                if (j != i)
+                                                {
+                                                    int d_enemy = sqrt(pow(ep.enemies[i].grid_x - ep.enemies[j].grid_x, 2) + 
+                                                    pow(ep.enemies[i].grid_y - ep.enemies[j].grid_y, 2));
+                                                    if (d_enemy < d_min)
+                                                    {
+                                                        ep.enemies[j].hp -= grid.cells[x][y].turret.damage[lvl];
+                                                    }
+                                                }
+                                            }
+                                            ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
+                                            int w;
+                                            int h;
+                                            get_terminal_size(&w, &h);
+                                            printf(COLOR_MORTIER_FIRING);
+                                            drawRange(w, h, d_min, ep.enemies[i].grid_x, ep.enemies[i].grid_y, false);
+                                            printf(RESET);
+                                            // msleep(400);
+                                        }
+                                        else // Tir standard
+                                        {
+#if BULLETS_ON
+                                            bp->bullets[bp->count].hit = false;
+                                            bp->bullets[bp->count].grid_x = x + 0.5 + (dx / d) / 4;
+                                            bp->bullets[bp->count].grid_y = y + 0.5 + (dy / d) / 4;
+                                            bp->bullets[bp->count].target = &(ep.enemies[i]);
+                                            bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage[lvl];
+                                            bp->count++;
+#else
+                                            // Changements des points de vie de l'ennemi touché, perdant ainsi le nombre de dégats infligés par l'attaque
+                                            ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
+#endif
+                                        }
+                                        // Fonctionnement du nombre d'ennemi pouvant être touché
+                                        enemies_hit++;
+                                        if (enemies_hit >= grid.cells[x][y].turret.nb_ennemi[lvl])
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                        if (enemies_hit == 0)
+                        {
+                            grid.cells[x][y].turret.in_range = false;
+                        }
+                        else
+                        {
+                            grid.cells[x][y].turret.in_range = true;
+                        }
+                        grid.cells[x][y].turret.compteur = 0;
                     }
-                    if (enemies_hit == 0)
-                    {
-                        grid.cells[x][y].turret.in_range = false;
-                    }
-                    else
-                    {
-                        grid.cells[x][y].turret.in_range = true;
-                    }
-                    grid.cells[x][y].turret.compteur = 0;
                 }
             }
         }
@@ -335,6 +374,7 @@ struct Turret getTurretStruct(enum TurretType type)
 {   
     struct Turret tur;
     tur.in_range = false;
+    tur.sub_effect = false;
     if (type == Sniper)
     {
         tur.type = Sniper;

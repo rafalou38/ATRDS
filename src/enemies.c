@@ -138,6 +138,24 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.next_cell = grid.cells[start_x][start_y];
         enemy.on_last_cell = false;
     }
+    else if (type == ENEMY_BOSS_STUN)
+    {
+        enemy.type = ENEMY_BOSS_STUN;
+        enemy.hp = 100;
+        enemy.maxHP = 100;
+        enemy.speed = 0.5f;
+        enemy.damage = 10;
+        enemy.money = 20;
+        enemy.state = ENEMY_STATE_ALIVE;
+        enemy.has_effect = true;
+        enemy.effet = BOSS_STUN;
+        enemy.puissance_effet = 2.5;
+        enemy.grid_x = (float)start_x;
+        enemy.grid_y = (float)start_y;
+        enemy.previous_cell = grid.cells[start_x][start_y];
+        enemy.next_cell = grid.cells[start_x][start_y];
+        enemy.on_last_cell = false;
+    }
     return enemy;
 }
 
@@ -217,13 +235,65 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
         printf(COLOR_STANDARD_BG); // Sprites des ennemis
         if (enemy->type == ENEMY_TUX)
         {
-            int sprite_anim;
-            char *sprite_ennemy[2][2] = {
-                {"X O",
-                 "-⎶-"},
-                {"X O",
-                 "<=>"}};
-            if ((px % 3 == 0 && py % 3 == 0) || ((px % 3 == 1 && py % 3 == 1)))
+            int sprite_anim=0;
+            char *sprite_ennemy[4][3] =
+                {{
+                     COLOR_TUX_BASE "▞▀▀▚",
+                     "▌" COLOR_TUX_EYES "▚ ▞" COLOR_TUX_BASE,
+                     "▚▄▄▞",
+                 },
+                 {
+                     COLOR_TUX_BASE "▞▀▀▚",
+                     "▌" COLOR_TUX_EYES "▀ ▀" COLOR_TUX_BASE,
+                     "▚▄▄▞",
+                 },
+                 {
+                     COLOR_TUX_BASE "▞▀▀▚",
+                     COLOR_TUX_EYES "▚ ▞" COLOR_TUX_BASE "▐",
+                     "▚▄▄▞",
+                 },
+                 {
+                     COLOR_TUX_BASE "▞▀▀▚",
+                     "▌" COLOR_TUX_EYES "▄ ▄" COLOR_TUX_BASE,
+                     "▚▄▄▞",
+                 }};
+            if (enemy->next_cell.x * (CELL_WIDTH + GAP) + 3 > px)
+            {
+                sprite_anim = 0;
+            }
+            else if (enemy->next_cell.y * (CELL_HEIGHT + GAP / 2) + 2 < py)
+            {
+                sprite_anim = 1;
+            }
+            else if (enemy->next_cell.x * (CELL_HEIGHT + GAP / 2) + 2 > py)
+            {
+                sprite_anim = 3;
+            }
+            else if (enemy->next_cell.x * (CELL_WIDTH + GAP) + 3 < px)
+            {
+                sprite_anim = 2;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                move_to(px - 1, i + py);
+                printf(sprite_ennemy[sprite_anim][i]);
+            }
+        }
+        else if (enemy->type == ENEMY_SPEED)
+        {
+            int sprite_anim=0;
+            char *sprite_ennemy[2][3] =
+                {{
+                     COLOR_SPEED_BASE "▞▄▄▚",
+                     "▐" COLOR_SPEED_EYES "▐▌" COLOR_SPEED_BASE "▌",
+                     "▚▀▀▞",
+                 },
+                 {
+                     COLOR_SPEED_BASE "▞▀▀▚",
+                     "▐" COLOR_SPEED_EYES "▐▌" COLOR_SPEED_BASE "▌",
+                     "▚▄▄▞",
+                 }};
+            if ((int)enemy->grid_x % 2 == 1 && (int)enemy->grid_y % 2 == 1)
             {
                 sprite_anim = 0;
             }
@@ -231,18 +301,11 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
             {
                 sprite_anim = 1;
             }
-            for (int i = py; i < py + 2; i++)
+            for (int i = 0; i < 3; i++)
             {
-                move_to(px, i);
-                printf(sprite_ennemy[sprite_anim][i - py]);
+                move_to(px - 1, i + py);
+                printf(sprite_ennemy[sprite_anim][i]);
             }
-        }
-        else if (enemy->type == ENEMY_SPEED)
-        {
-            move_to(px, py);
-            printf("∑ ∑");
-            move_to(px, py + 1);
-            printf("/▔\\");
         }
         else if (enemy->type == ENEMY_BOSS)
         {
@@ -268,6 +331,11 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
         {
             move_to(px, py);
             printf("SLB");
+        }
+        else if (enemy->type == ENEMY_BOSS_STUN)
+        {
+            move_to(px, py);
+            printf("bss");
         }
 
         // move_to((enemy->next_cell.x * (CELL_WIDTH + GAP) + 3), (enemy->next_cell.y * (CELL_HEIGHT + GAP / 2) + 2));
@@ -436,16 +504,9 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
             drawCell(enemy->previous_cell, grid);
             defragNeeded = true;
             gs->cash += enemy->money;
-            char *label = (char *)malloc(sizeof(char) * 30);
-            if (label == NULL)
-            {
-                printCritical("Failed to allocate label");
-                exit(EXIT_FAILURE);
-            }
-            sprintf(label, COLOR_STANDARD_BG COLOR_YELLOW "%d" RESET, enemy->money);
             labels->labels[labels->count].counter = 0;
             labels->labels[labels->count].duration = 2;
-            labels->labels[labels->count].text = label;
+            labels->labels[labels->count].text = enemy->money;
             labels->labels[labels->count].x = (enemy->grid_x * (CELL_WIDTH + GAP) + 3);
             labels->labels[labels->count].y = (enemy->grid_y * (CELL_HEIGHT + GAP / 2) + 2);
             labels->count++;
@@ -645,7 +706,7 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
 
         printf("\tDurée de la vague:" COLOR_FREEZER_BASE " %.1fs " RESET ", %d ennemis %d", t, cnt, argent_cumul);
         // wave,hp,hpps,duration,ennemiesSpawned
-        fprintf(fptr, "%d,%d,%d,%.1f,%d,%d,%d,%d,%d\n", i, ws.current_wave_pattern.target_HP, ws.current_wave_pattern.target_HPPS, t, argent_cumul, cnt,tux,speed,boss);
+        fprintf(fptr, "%d,%d,%d,%.1f,%d,%d,%d,%d,%d\n", i, ws.current_wave_pattern.target_HP, ws.current_wave_pattern.target_HPPS, t, argent_cumul, cnt, tux, speed, boss);
         fflush(fptr);
 
         fflush(stdout);
