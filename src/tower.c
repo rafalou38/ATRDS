@@ -165,7 +165,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                                     pow(ep.enemies[i].grid_y - ep.enemies[j].grid_y, 2));
                                                     if (d_enemy < d_min)
                                                     {
-                                                        ep.enemies[j].hp -= grid.cells[x][y].turret.damage[lvl];
+                                                        ep.enemies[j].hp -= grid.cells[x][y].turret.damage[lvl]/2;
                                                     }
                                                 }
                                             }
