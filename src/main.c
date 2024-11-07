@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
     checkTerminalSize(&width, &height);
     clear_screen();
 
-    if (!(argc > 1 && strcmp(argv[1], "--play") == 0))
+    if (!(argc > 1 && (strcmp(argv[1], "--play") == 0 || strcmp(argv[1], "--sim-wave") == 0)))
     {
         anim_debut(width, height);
     }

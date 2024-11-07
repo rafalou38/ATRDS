@@ -58,7 +58,7 @@ void drawLabels(Labels labels) // affiche tous les labels
     for (int i = 0; i < labels.count; i++)
     {
         move_to(labels.labels[i].x, labels.labels[i].y);
-        printf(COLOR_STANDARD_BG COLOR_YELLOW "%d" RESET,labels.labels[i].text);
+        printf(COLOR_STANDARD_BG COLOR_YELLOW "%d" RESET, labels.labels[i].text);
         // printf("%.2f", labels.labels[i].counter);
     }
 };
@@ -220,7 +220,7 @@ void anim_debut(int term_width, int term_height)
         x_wanted += 2;
         y_wanted += 1;
         fflush(stdout);
-        msleep(5);
+        msleep(2);
     }
     x_wanted = term_height * 2;
     y_wanted = term_height / 2;
@@ -246,7 +246,7 @@ void anim_debut(int term_width, int term_height)
         x_wanted += 2;
         y_wanted += 1;
         fflush(stdout);
-        msleep(5);
+        msleep(2);
     }
     x_wanted = term_height * 2;
     y_wanted = term_height / 2;
@@ -272,7 +272,7 @@ void anim_debut(int term_width, int term_height)
         x_wanted += 2;
         y_wanted += 1;
         fflush(stdout);
-        msleep(5);
+        msleep(2);
     }
 
     x_wanted = term_height * 2;
@@ -312,7 +312,7 @@ void anim_debut(int term_width, int term_height)
         x_wanted3 = x_wanted - 32;
         y_wanted3 = y_wanted - 16;
         fflush(stdout);
-        msleep(5);
+        msleep(2);
     }
     int ecart_term_y = 5;
     int ecart_AT = 7;
@@ -341,7 +341,7 @@ void anim_debut(int term_width, int term_height)
             printf(spriteAT[1][i]);
             fflush(stdout);
         }
-        msleep(10);
+        msleep(15);
     }
     int ecart_Abs = 5;
     char *spriteAbs[4] =
@@ -359,7 +359,7 @@ void anim_debut(int term_width, int term_height)
             printf(spriteAbs[i]);
             fflush(stdout);
         }
-        msleep(10);
+        msleep(15);
     }
 
     char *spriteRou[4] =
@@ -377,7 +377,7 @@ void anim_debut(int term_width, int term_height)
             printf(spriteRou[i]);
             fflush(stdout);
         }
-        msleep(10);
+        msleep(15);
     }
 
     char *spriteDef[4] =
@@ -395,7 +395,7 @@ void anim_debut(int term_width, int term_height)
             printf(spriteDef[i]);
             fflush(stdout);
         }
-        msleep(10);
+        msleep(15);
     }
 
     char *spriteEpi[4] =
@@ -413,7 +413,7 @@ void anim_debut(int term_width, int term_height)
             printf(spriteEpi[i]);
             fflush(stdout);
         }
-        msleep(10);
+        msleep(15);
     }
 
     char *spriteSim[4] =
@@ -431,9 +431,9 @@ void anim_debut(int term_width, int term_height)
             printf(spriteSim[i]);
             fflush(stdout);
         }
-        msleep(10);
+        msleep(15);
     }
-    msleep(500);
+    msleep(1000);
     clear_screen();
     char *spriteATARDES[2][9] = {
         {
@@ -501,6 +501,10 @@ void anim_debut(int term_width, int term_height)
             printf(spriteTuto[tutorial_variable][i]);
             fflush(stdout);
         }
+        if (c == 'q')
+        {
+            exit(0);
+        }
         if (c == 10 && tutorial_variable == 0)
         {
             break;
@@ -531,8 +535,8 @@ void anim_debut(int term_width, int term_height)
                         }
                     }
                 }
-                move_to(term_width-26,term_height-7);
-                printf("%d/10",tutorial_page);
+                move_to(term_width - 26, term_height - 7);
+                printf("%d/10", tutorial_page);
                 if (c == 10)
                 {
                     tutorial_page++;
