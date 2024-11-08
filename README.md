@@ -41,7 +41,7 @@ Antique Terminal : Absolute Routing Defense Epic Simulator
 
 ## Démarage
 
-Si tu rencontre un quelconque souci avec le projet, tu peux contacter Rafael (@rafalou38) Rémi (@diotduvin) ou Philémon (@nomélip) on sera contents de t'aider.
+Si tu rencontre un quelconque souci avec le projet, tu peux contacter Rafael (@rafalou38) Rémi (@diotduvin) ou Philémon (@nomelip) on sera contents de t'aider.
 
 ### Récupérer le code
 
