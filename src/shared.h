@@ -121,11 +121,11 @@ struct Cell
 
 typedef struct Grid
 {
-    int width;
-    int height;
-    int start_x;
+    int width; // Largeur en cases
+    int height; // hauteur en cases
+    int start_x; // position de la première case du chemin
     int start_y;
-    int end_x;
+    int end_x; // position de la dernière case du chemin
     int end_y;
     struct Cell **cells;
 } Grid;
