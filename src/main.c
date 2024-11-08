@@ -1,8 +1,6 @@
 #include "shared.h"
 
 #include "grid.h"
-#include "enemies.h"
-#include "tower.h"
 
 #include <string.h>
 

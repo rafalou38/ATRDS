@@ -1,5 +1,4 @@
 #include "grid.h"
-#include "enemies.h"
 
 void allocateGridCells(Grid *grid)
 {
