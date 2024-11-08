@@ -262,8 +262,66 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
             if (cell.turret.type == Sniper) // Sniper, 8 sprites pour les 8 directions
             {
                 printf(COLOR_SNIPER_BASE);
-                char *sprite[2][8][7] = {
-                    {
+                char *sprite[3][8][7] = {
+                    {// Sniper de niveau 1 (niveau 0 pour le programme)
+                        {"              ",
+                         "   ▄██████▄   ",
+                         "  ████▀▀████  ",
+                         COLOR_SNIPER_HEAD "<" COLOR_SNIPER_CANNON "===" COLOR_SNIPER_BASE "█ " COLOR_SNIPER_CANNON "[]" COLOR_SNIPER_BASE " ███  ",
+                         "  ████▄▄████  ",
+                         "   ▀██████▀   ",
+                         "              "},
+                        {"              ",
+                         "   ▄██████▄   ",
+                         "  ████▀▀████  ",
+                         "  ███ " COLOR_SNIPER_CANNON "[]" COLOR_SNIPER_BASE " ███  ",
+                         "  ██" COLOR_SNIPER_CANNON "//" COLOR_SNIPER_BASE "▄▄████  ",
+                         COLOR_SNIPER_HEAD "  ▕▁▁" COLOR_SNIPER_BASE "█████▀   ",
+                         "              "},
+                        {"              ",
+                         "   ▄██████▄   ",
+                         "  ████▀▀████  ",
+                         "  ███ " COLOR_SNIPER_CANNON "[]" COLOR_SNIPER_BASE " ███  ",
+                         "  ████▄▄████  ",
+                         "   ▀██" COLOR_SNIPER_CANNON "||" COLOR_SNIPER_BASE "██▀   ",
+                         "      " COLOR_SNIPER_HEAD "\\/"  COLOR_SNIPER_BASE "      "},
+                        {"              ",
+                         "   ▄██████▄   ",
+                         "  ████▀▀████  ",
+                         "  ███ " COLOR_SNIPER_CANNON "[]" COLOR_SNIPER_BASE " ███  ",
+                         "  ████▄▄" COLOR_SNIPER_CANNON "\\\\" COLOR_SNIPER_BASE "██  ",
+                         "   ▀█████" COLOR_SNIPER_HEAD "▁▁▏  " COLOR_SNIPER_BASE,
+                         "              "},
+                        {"              ",
+                         "   ▄██████▄   ",
+                         "  ████▀▀████  ",
+                         "  ███ " COLOR_SNIPER_CANNON "[]" COLOR_SNIPER_BASE " █" COLOR_SNIPER_CANNON "===" COLOR_SNIPER_HEAD ">" COLOR_SNIPER_BASE,
+                         "  ████▄▄████  ",
+                         "   ▀██████▀   ",
+                         "              "},
+                        {"              ",
+                         "   ▄█████" COLOR_SNIPER_HEAD "▔▔▏  " COLOR_SNIPER_BASE,
+                         "  ████▀▀" COLOR_SNIPER_CANNON "//" COLOR_SNIPER_BASE "██  ",
+                         "  ███ " COLOR_SNIPER_CANNON "[]" COLOR_SNIPER_BASE " ███  ",
+                         "  ████▄▄████  ",
+                         "   ▀██████▀   ",
+                         "              "},
+                        {"      " COLOR_SNIPER_HEAD "/\\" COLOR_SNIPER_BASE "      ",
+                         "   ▄██" COLOR_SNIPER_CANNON "||" COLOR_SNIPER_BASE "██▄   ",
+                         "  ████▀▀████  ",
+                         "  ███ " COLOR_SNIPER_CANNON "[]" COLOR_SNIPER_BASE " ███  ",
+                         "  ████▄▄████  ",
+                         "   ▀██████▀   ",
+                         "              "},
+                        {"              ",
+                         COLOR_SNIPER_HEAD "  ▕▔▔" COLOR_SNIPER_BASE "█████▄   ",
+                         "  ██" COLOR_SNIPER_CANNON "\\\\" COLOR_SNIPER_BASE "▀▀████  ",
+                         "  ███ " COLOR_SNIPER_CANNON "[]" COLOR_SNIPER_BASE " ███  ",
+                         "  ████▄▄████  ",
+                         "   ▀██████▀   ",
+                         "              "},
+                    },
+                    { // Sniper de niveau 2 (niveau 1 et le sniper de base est de niveau 0 dans le programme)
                         {"     ▄██▄     ",
                          "   ▄██████▄   ",
                          " ▄████▀▀████▄ ",
@@ -322,7 +380,7 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
                          "     ▀██▀     "},
                     },
                     {
-                        // Sniper de niveau 2 (niveau 1 et le sniper de base est de niveau 0 dans le programme)
+                        // Sniper de niveau 3 (niveau 2 et le sniper de base est de niveau 0 dans le programme)
                         {" ▄▄  ▄██▄  ▄▄ ",
                          " ▀▀▄██▀▀██▄▀▀ ",
                          " ▄████▀▀████▄ ",
@@ -1317,17 +1375,7 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
         printf(RESET);
     }
 }
-void update_grid(){
-    // for (int x = 0; x < grid.width; x++)
-    // {
-    //     for (int y = 0; y < grid.height; y++)
-    //     {
-    //         grid.cells[x][y].has_effect = false;
-    //         grid.cells[x][y].effect = 0;
-    //         grid.cells[x][y].effect_counter = -1;
-    //     }
-    // }
-}
+
 void drawFullGrid(Grid grid) // Dessine la grille en entière
 {
 

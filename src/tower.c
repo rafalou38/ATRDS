@@ -62,7 +62,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                 for (int i = 0; i < ep.count; i++)
                                 {
                                     // Calcul du vecteur entre la tourelle et l’ennemi
-                                    float dx = ep.enemies[i].grid_x - (x + 0.5);
+                                    float dx = ep.enemies[i].grid_x - (x + 0.5); //on rajoute 0.5 afin que l'on calcule depuis le centre de la tourelle et pas depuis le coin supérieur gauche de la case.
                                     float dy = ep.enemies[i].grid_y - (y + 0.5);
 
                                     float d = sqrt(dx * dx + dy * dy);
@@ -315,7 +315,11 @@ int getTurretPrice(enum TurretType type, int level)
         }
         if (level == 1)
         {
-            return 20;
+            return 40;
+        }
+        if (level == 2)
+        {
+            return 80;
         }
     }
     if (type == Inferno)
@@ -326,7 +330,7 @@ int getTurretPrice(enum TurretType type, int level)
         }
         if (level == 1)
         {
-            return 40;
+            return 60;
         }
     }
     if (type == Mortier)
@@ -337,7 +341,7 @@ int getTurretPrice(enum TurretType type, int level)
         }
         if (level == 1)
         {
-            return 50;
+            return 80;
         }
     }
     if (type == Gatling)
@@ -348,7 +352,7 @@ int getTurretPrice(enum TurretType type, int level)
         }
         if (level == 1)
         {
-            return 50;
+            return 100;
         }
     }
     if (type == Freezer)
@@ -359,7 +363,7 @@ int getTurretPrice(enum TurretType type, int level)
         }
         if (level == 1)
         {
-            return 50;
+            return 70;
         }
     }
     if (type == Petrificateur)
@@ -370,18 +374,18 @@ int getTurretPrice(enum TurretType type, int level)
         }
         if (level == 1)
         {
-            return 20;
+            return 40;
         }
     }
     if (type == Banque)
     {
         if (level == 0)
         {
-            return 50;
+            return 100;
         }
         if (level == 1)
         {
-            return 150;
+            return 200;
         }
     }
 
@@ -402,16 +406,22 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.compteur = 0;
         tur.range_min[0] = 0;
         tur.range_min[1] = 0;
-        tur.range_max[0] = 100;
-        tur.range_max[1] = 100;
+        tur.range_min[2] = 0;
+        tur.range_max[0] = 2.5;
+        tur.range_max[1] = 4.5;
+        tur.range_max[2] = 100;
         tur.damage[0] = 1;
-        tur.damage[1] = 1.5;
+        tur.damage[1] = 1.3;
+        tur.damage[2] = 1.6;
         tur.reload_delay[0] = 1;
         tur.reload_delay[1] = 0.75;
+        tur.reload_delay[2] = 0.75;
         tur.splash[0] = 0.0;
         tur.splash[1] = 0.0;
+        tur.splash[2] = 0.0;
         tur.nb_ennemi[0] = 1;
-        tur.nb_ennemi[1] = 2;
+        tur.nb_ennemi[1] = 1;
+        tur.nb_ennemi[2] = 1;
         tur.has_effect = false;
     }
     else if (type == Inferno)

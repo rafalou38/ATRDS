@@ -537,6 +537,10 @@ void anim_debut(int term_width, int term_height)
                         }
                     }
                 }
+                if (tutorial_page == 0){
+                    move_to(term_width/2-7,term_height/2);
+                    printf("Yooo Easter Egg");
+                }
                 if (tutorial_page == 1)
                 {
                     char *spriteWelcome[4] =
@@ -651,7 +655,7 @@ void anim_debut(int term_width, int term_height)
                     printf("Très bien, si c'est le cas, j'ai le devoir de vous guider : Je vais vous expliquer");
                     move_to(indentation2, ecarty + ecart_en_plus_pour_aligner_txt);
                     ecart_en_plus_pour_aligner_txt += 2;
-                    printf("les utilités des différentes tourelles.");
+                    printf("les utilités des différentes tourelles. Vous pouvez aussi remonter dans le tuto avec \"Supprimer\".");
                     char *spriteSniper[7] = {COLOR_SNIPER_BASE "     ▄██▄     ",
                                              "   ▄██████▄   ",
                                              " ▄████▀▀████▄ ",
@@ -669,10 +673,14 @@ void anim_debut(int term_width, int term_height)
                     printf("Le Sniper" RESET " : La tourelle la plus basique, néanmoins si puissante, elle est dotée d'une");
                     move_to(indentation2, ecarty + ecart_en_plus_pour_aligner_txt);
                     ecart_en_plus_pour_aligner_txt += 2;
-                    printf("portée infinie et fait de gros dégats sur les ennemis malgré son temps de recharge assez long.");
+                    printf("grande portée et fait de gros dégats sur un ennemi malgré son temps de recharge assez long.");
                     move_to(indentation2, ecarty + ecart_en_plus_pour_aligner_txt);
-                    ecart_en_plus_pour_aligner_txt += 4;
-                    printf("Ses tirs sont d'une précision redoutable, et il sera sûrement un de vos meilleurs alliés");
+                    ecart_en_plus_pour_aligner_txt += 2;
+                    printf("Ses tirs sont d'une précision redoutable, et il sera sûrement un de vos meilleurs alliés.");
+                    move_to(indentation2, ecarty + ecart_en_plus_pour_aligner_txt);
+                    ecart_en_plus_pour_aligner_txt += 2;
+                    printf("Vous pouvez même améliorer ces tourelles en les re-sélectionnant et celle-ci peut être améliorée 2 fois !");
+
 
                     char *spriteInferno[7] = {COLOR_INFERNO_BASE "     ▄██▄     ",
                                               "  ▄▀█▀▀▀▀█▀▄  ",
@@ -866,6 +874,14 @@ void anim_debut(int term_width, int term_height)
                 if (c == 10)
                 {
                     tutorial_page++;
+                    clear_screen();
+                }
+                if (c == 8 || c== 127)
+                {
+                    tutorial_page--;
+                    if (tutorial_page<0){
+                        tutorial_page=0;
+                    }
                     clear_screen();
                 }
             }

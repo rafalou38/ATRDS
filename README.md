@@ -1,5 +1,5 @@
-# ATRDS
-Antique Terminal Route Defense Simulator
+# ATARDES
+Antique Terminal : Absolute Routing Defense Epic Simulator
 
 - [ATRDS](#atrds)
   - [Resources utiles](#resources-utiles)
@@ -47,7 +47,7 @@ Ou de télécharger ce zip manuellement: https://github.com/rafalou38/ATRDS/arch
 
 #### Depuis caséine
 Le code est également disponible dans les téléchargements caséine, mais vous n'aurez pas toute l'architecture du projet ni le script de compilation.
-> ⚠️ Les scripts sont combinés sur caséine, pour avoir des fichiers plus simples, passez par git.
+> ⚠️ Les scripts sont combinés sur caséine, pour avoir des fichiers plus simples. Il est conseillé de passer par git.
 > 
 > Il y manque également toute la partie simulation ainsi que les scripts.
 
@@ -117,7 +117,7 @@ Si tu est dans vscode, tu dois pouvoir ctrl+click sur les liens pour aller direc
     - Un chemin aléatoire est généré automatiquement `grid.c/genBasicPath`
     - Les ennemis arrivent progressivement selon un système de vagues précis
     - Le jeu se termine lorsque la vie de l'utilisateur atteint 0
-        - Il ses PV quand un ennemi atteint la fin du chemin
+        - Il pert ses PV quand un ennemi atteint la fin du chemin
     - Un curseur, déplacé avec les fleches du clavier, permet de sélectionner une case.
         - `espace` affiche son menu
             - Sélection de l'option avec les fleches du clavier
@@ -165,6 +165,7 @@ void fillBG(int xmin, int ymin, int xmax, int ymax)
 ```
 
 **Liste de tous les struct, enum et fonctions:**
+Toutes les fonctions qui n'ont pas un nom explicite sont expliquée lors de leur définition et chaque fonctions possède differents commentaires expliquant comment elle fonctionne et ce que fait les lignes de code compliquées
 - enemies.c
     - AllocEnemyPool 
     - freeEnemyPool
@@ -179,7 +180,7 @@ void fillBG(int xmin, int ymin, int xmax, int ymax)
     - testWaveSystem: *voir [Simulation](#simulation)*
 - enemies.h
     - enum EnemyType
-    - enum EnemyState: *Vivant mort, arrivé*
+    - enum EnemyState: *Vivant, mort, arrivé*
     - struct Enemy
     - struct WavePattern
     - struct WaveSystem
@@ -282,13 +283,13 @@ struct Enemy enemy;
 
 **macro**
 Une macro (par exemple MAX et MIN) permet d'écrire une fonction sans pour autant avoir à spécifier les types.
-Cependant, il faut faire attention a ne pas oublier les parentaises car une macro ne fait que remplacer la macro par
-ce par quoi on l'a définie (c'est a dire comme les défine). Donc en oubliant les parentaises, on risque de changer completement la valeur retenue par le programme.
+Cependant, il faut faire attention a ne pas oublier les parenthèses car une macro ne fait que remplacer la macro par
+ce par quoi on l'a définie (c'est a dire comme les #define). Donc en oubliant les parenthèses, on risque de changer completement la valeur retenue par le programme.
 **ternaire**
-Le ternaire est le ? des macro.
-Le ? permet de savoir si la condition précédente est vraie ou non puis les : permetent de determiner quoi faire en fonction de la véracité de la condition.
-Si la condition est vrai, la macro renvera ce qui se trouve entre le ? et les :.
-Sinon, la macro renvera ce qui se trouve apres les :. 
+Le ternaire est le "?" des macro.
+Le "?" permet de savoir si la condition précédente est vraie ou non puis les ":" permetent de determiner quoi faire en fonction de la véracité de la condition.
+Si la condition est vrai, la macro renvera ce qui se trouve entre le "?" et les ":".
+Sinon, la macro renvera ce qui se trouve apres les ":". 
 
 #### Algorithmes originaux
 **Génération du chemin**: genBasicPath [./src/grid.c](./src/grid.c#L57)
@@ -364,13 +365,52 @@ void defragEnemyPool(EnemyPool *ep)
 #### Allocations dynamiques
 De nombreuses allocations dynamiques sont utilisées dans le jeu.
 - Tableau des ennemis: `AllocEnemyPool` [./src/enemies.c](./src/enemies.c#L3)
+- Tableau de la grille: [./src/grid.c](./src/enemies.c#L7)
+- Tableau des labels:   [./src/main.c](./src/main.c#L331)
 - Historique du chemin: [./src/grid.c](./src/grid.c#L88)
+- Labels: [./src/main.c](./src/main.c#L332)
+- Grille: [./src/grid.c](./src/grid.c#L12) et [./src/grid.c](./src/grid.c#L21)
+
 ##### Sécurité
+Le programme libère automatiquement les tableaux à la fin du programme (Soit si on perd, soit si on quitte avec 'q')
+Dans main.c ligne 535 : [./src/main.c](./src/main.c#L535)
+```c
+/*
+    ################
+    FIN DE LA PARTIE
+    ################
+    */
 
+    printf("\n");
+    clear_screen();
+    move_to(0, 0);
+    freeGrid(grid);           // Libère les allocations dynamiques liées à la grille
+    freeEnemyPool(enemyPool); // Libère les allocations dynamiques liées aux ennemis
+    freeLabels(labels);       // Libère les allocations dynamiques liées aux labels
+
+```
+Pour ce qui est de l'historique du chemin, le tableau est libéré à la fin de la fonction qui génère le chemin.
+Dans grid.c ligne 177 : [./src/grid.c](./src/main.c#L177)
+```c
+for (size_t i = 0; i < HISTORY_SIZE; i++) // Libération de l'historique à la fin de la création de chemin
+    {
+        free(historique[i]);
+    }
+    free(historique);
+```
 ##### Grille
-
+La grille est un tableau dynamique trouvée dans la structure grid.
+Ce tableau en deux dimentions: la première gére la ligne de la case
+tandit que la seconde gère sa collonne.
+Le tableau de pointeur grid.cells gère cette grille et permet de savoir le type(c'est a dire savoir si c'est un terrain ou un chemin), ainsi que ce que contient la case.
 #### Affichage
-
+L'affiche fonctionne de manière différente que la grille:
+La fonction drawFullGrid [./src/grid.c](./src/grid.c#L1322) permet d'afficher toute la grille en parcours grid.cells et appelle la fonction drawCell[./src/grid.c](./src/grid.c#L195) pour chaque cellule
+La fonction drawCell distingue le type de case a afficher puis détermine si elle doit afficher une tourelle ou non, si oui, laquelle elle doit afficher.
+La fonction drawEnemies affiche les énnemis dans le chemin et determine quel ennemi afficher et donc quel sprite afficher et a quel endroit  
 #### Le problème des missiles
-
+Lorsqu'on active les bullet, les bullet réecrive sur les cells ce qui fait que tant qu'on ne redraw pas la grille, les balles resteront sur la grille mêmesi elles ont changer de position.
+Cependant, si on redraw toute la grille, le terminal commence a laguer et a avoir du mal a afficher correctement toute la grille.
+Vous pouvez donc choisir si on active ou non les bullet, mais le jeu aura des problèmes d'affichage.
 ### Simulation
+La similation est un bonus que nous avous rajouté qui permet de creer une simulation pour voir comment le jeu crée les vagues d'ennemis.
