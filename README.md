@@ -117,7 +117,7 @@ Si tu est dans vscode, tu dois pouvoir ctrl+click sur les liens pour aller direc
     - Un chemin aléatoire est généré automatiquement `grid.c/genBasicPath`
     - Les ennemis arrivent progressivement selon un système de vagues précis
     - Le jeu se termine lorsque la vie de l'utilisateur atteint 0
-        - Il ses PV quand un ennemi atteint la fin du chemin
+        - Il pert ses PV quand un ennemi atteint la fin du chemin
     - Un curseur, déplacé avec les fleches du clavier, permet de sélectionner une case.
         - `espace` affiche son menu
             - Sélection de l'option avec les fleches du clavier
@@ -365,12 +365,31 @@ void defragEnemyPool(EnemyPool *ep)
 De nombreuses allocations dynamiques sont utilisées dans le jeu.
 - Tableau des ennemis: `AllocEnemyPool` [./src/enemies.c](./src/enemies.c#L3)
 - Historique du chemin: [./src/grid.c](./src/grid.c#L88)
+- Labels: [./src/main.c](./src/main.c#L332)
+- Grille: [./src/grid.c](./src/grid.c#L12) et [./src/grid.c](./src/grid.c#L21)
+
 ##### Sécurité
-
+A chaque malloc que nous avons utilisé, nous avons pensé à:
+-verifier que le malloc ne renvoie pas NULL
+-free les malocs plus utilisé.
+On free
+- Le tableau des ennemis lors de la fin du jeu [./src/main.c](./src/main.c#L545)
+- L'historique du chemin après la génération du chemin [./src/grid.c](./src/grid.c#L179)
+- Les labels lors de la fin du jeu [./src/main.c](./src/main.c#L546)
+- La grid lors de la fin du jeu [./src/main.c](./src/main.c#L544) 
 ##### Grille
-
+La grille est un tableau dynamique trouvée dans la structure grid.
+Ce tableau en deux dimentions: la première gére la ligne de la case
+tandit que la seconde gère sa collonne.
+Le tableau de pointeur grid.cells gère cette grille et permet de savoir le type(c'est a dire savoir si c'est un terrain ou un chemin), ainsi que ce que contient la case.
 #### Affichage
-
+L'affiche fonctionne de manière différente que la grille:
+La fonction drawFullGrid [./src/grid.c](./src/grid.c#L1322) permet d'afficher toute la grille en parcours grid.cells et appelle la fonction drawCell[./src/grid.c](./src/grid.c#L195) pour chaque cellule
+La fonction drawCell distingue le type de case a afficher puis détermine si elle doit afficher une tourelle ou non, si oui, laquelle elle doit afficher.
+La fonction drawEnemies affiche les énnemis dans le chemin et determine quel ennemi afficher et donc quel sprite afficher et a quel endroit  
 #### Le problème des missiles
-
+Lorsqu'on active les bullet, les bullet réecrive sur les cells ce qui fait que tant qu'on ne redraw pas la grille, les balles resteront sur la grille mêmesi elles ont changer de position.
+Cependant, si on redraw toute la grille, le terminal commence a laguer et a avoir du mal a afficher correctement toute la grille.
+Vous pouvez donc choisir si on active ou non les bullet, mais le jeu aura des problèmes d'affichage.
 ### Simulation
+La similation est un bonus que nous avous rajouté qui permet de creer une simulation pour voir comment le jeu crée les vagues d'ennemis.

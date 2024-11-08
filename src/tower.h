@@ -2,7 +2,7 @@
 
 #include "shared.h"
 #include "enemies.h"
-// false: les balles tirées par les tourelles seront affichées
+// true: les balles tirées par les tourelles seront affichées
 #define BULLETS_ON false
 
 #if BULLETS_ON

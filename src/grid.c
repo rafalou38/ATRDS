@@ -1318,17 +1318,7 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
         printf(RESET);
     }
 }
-void update_grid(){
-    // for (int x = 0; x < grid.width; x++)
-    // {
-    //     for (int y = 0; y < grid.height; y++)
-    //     {
-    //         grid.cells[x][y].has_effect = false;
-    //         grid.cells[x][y].effect = 0;
-    //         grid.cells[x][y].effect_counter = -1;
-    //     }
-    // }
-}
+
 void drawFullGrid(Grid grid) // Dessine la grille en entière
 {
 
