@@ -62,7 +62,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                 for (int i = 0; i < ep.count; i++)
                                 {
                                     // Calcul du vecteur entre la tourelle et l’ennemi
-                                    float dx = ep.enemies[i].grid_x - (x + 0.5);
+                                    float dx = ep.enemies[i].grid_x - (x + 0.5); //on rajoute 0.5 afin que l'on calcule depuis le centre de la tourelle et pas depuis le coin supérieur gauche de la case.
                                     float dy = ep.enemies[i].grid_y - (y + 0.5);
 
                                     float d = sqrt(dx * dx + dy * dy);
