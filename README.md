@@ -1,6 +1,8 @@
 # ATARDES
 Antique Terminal : Absolute Routing Defense Epic Simulator
 
+> 🛑 Ne t'embette pas a lire cette documentation sur caséine, elle est disponible sous une forme beaucoup plus agréable ici: https://github.com/rafalou38/atrds
+
 - [ATARDES](#atardes)
   - [Resources utiles](#resources-utiles)
   - [Démarage](#démarage)
@@ -12,6 +14,7 @@ Antique Terminal : Absolute Routing Defense Epic Simulator
       - [Manuelle](#manuelle)
     - [Lancer le jeu](#lancer-le-jeu)
       - [Paramètres de démarrage](#paramètres-de-démarrage)
+      - [Comment jouer](#comment-jouer)
   - [Documentation](#documentation)
     - [Aide a la correction:](#aide-a-la-correction)
     - [Liste des fonctionnalités](#liste-des-fonctionnalités)
@@ -19,12 +22,15 @@ Antique Terminal : Absolute Routing Defense Epic Simulator
       - [Division du code](#division-du-code)
       - [Éléments nouveaux](#éléments-nouveaux)
       - [Algorithmes originaux](#algorithmes-originaux)
+        - [**Génération du chemin**:](#génération-du-chemin)
+        - [**Tableau comme liste**](#tableau-comme-liste)
       - [Allocations dynamiques](#allocations-dynamiques)
         - [Sécurité](#sécurité)
         - [Grille](#grille)
       - [Affichage](#affichage)
       - [Le problème des missiles](#le-problème-des-missiles)
-    - [Simulation](#simulation)
+    - [Système de vagues](#système-de-vagues)
+      - [Simulation](#simulation)
 
 ## Resources utiles
 - Documentation C: [cppreference](https://en.cppreference.com/w/c)
@@ -44,16 +50,21 @@ Avec la commande suivante qui doit etre disponible sur windows linux et mac.
 ```
 ssh projet-info@rf38.ddns.net
 ``` 
+pour le mot de passe, contactez un de nous.
 Mot de passe: 
 
+Pour lire le code tu peux aussi te rendre sur cette url tout simplement: https://github.com/rafalou38/atrds
 
 #### Depuis github
-Le plus simple et l'option recommandée pour avoir l’**intégralité du code**, c'est d'utiliser l'outil **git** disponible via [apt](https://git-scm.com/book/fr/v2/D%C3%A9marrage-rapide-Installation-de-Git) et [pacman](https://wiki.archlinux.org/title/Git), [git-scm](https://git-scm.com/downloads/win) sur windows.
+
+Le plus simple et l'option recommandée pour avoir l’**intégralité du code en local**, c'est d'utiliser l'outil **git** disponible via [apt](https://git-scm.com/book/fr/v2/D%C3%A9marrage-rapide-Installation-de-Git) et [pacman](https://wiki.archlinux.org/title/Git), [git-scm](https://git-scm.com/downloads/win) sur windows.
 ```bash
 git clone https://github.com/rafalou38/ATRDS.git
 ```
+> C'est ce qui a été fait sur le serveur.
 
 Ou de télécharger ce zip manuellement: https://github.com/rafalou38/ATRDS/archive/refs/heads/master.zip
+
 
 #### Depuis caséine
 Le code est également disponible dans les téléchargements caséine, mais vous n'aurez pas toute l'architecture du projet ni le script de compilation.
@@ -62,6 +73,9 @@ Le code est également disponible dans les téléchargements caséine, mais vous
 > Il y manque également toute la partie simulation ainsi que les scripts.
 
 ### Compilation
+N’essayez pas de le compiler sur caséine, vous pourrez le compiler mais l’exécution dans le navigateur semble ne pas fonctionner.
+
+Privilégiez une execution locale ou l'usage du serveur public fourni.
 
 #### Automatique
 Si vous avez utilisé git, il suffit d'éxecuter le fichier `run.sh`
@@ -70,9 +84,9 @@ Si vous avez utilisé git, il suffit d'éxecuter le fichier `run.sh`
 ```
 
 #### Manuelle
-Si vous ne l'avez pas, placez les fichiers code dans le dossier courant puis compilez les de la sorte:
+Si vous ne l'avez pas fait, placez tous les fichiers code dans le dossier courant puis compilez les de la sorte:
 ```bash
-gcc -o atrds.out -std=c99 src/main.c src/grid.c src/shared.c src/enemies.c src/tower.c -lm
+gcc -o atrds.out -std=c99 main.c grid.c shared.c enemies.c tower.c -lm
 ```
 
 ### Lancer le jeu
@@ -89,12 +103,29 @@ Si sur la version git les scripts `run.sh` et `build.sh` sont disponibles.
 
 | paramètre  | description                                    |
 | ---------- | ---------------------------------------------- |
-| -h         | affiche le tutoriel                            |
 | --play     | lance le jeu directement                       |
 | --sim-wave | Bonus: voir [l’annexe simulation](#simulation) |
 
 Si aucun paramètre n'est défini, le jeu se lancera sur le menu standard.
 
+Exemple:
+```bash
+./run.sh --play
+# qui équivaut à
+./build.sh
+./atrds.out --play 
+```
+
+#### Comment jouer
+Le jeu vous présente tout d'abord un menu avec deux options: tutoriel et jouer.
+Commencez par lire le tutoriel qui vous présentera le lore du jeu ainsi que les types de tourelles.
+
+Vous êtes ensuite lancées dans le jeu avec 20HP et 30€:
+- déplacez le curseur sur une case avec les flèches du clavier puis pressez la touche `espace` pour ouvrir le magasin
+- Sélectionnez la tourelle de votre choix avec les fleches `haut`/`bas` puis `entrer` pour valider
+- Vous pouvez re-sélectionner une tourelle pour l'améliorer ou la vendre.
+- Pour quitter le jeu: touche `q`
+- Vous découvrirez les ennemis et leurs particularités en jouant :wink:  
 
 ## Documentation
 
@@ -102,14 +133,14 @@ Si aucun paramètre n'est défini, le jeu se lancera sur le menu standard.
 Nous sommes conscient que c'est un gros projet, pour te faciliter la tache voila une liste d'elements que tu peux facilement évaluer.
 Si tu est dans vscode, tu dois pouvoir ctrl+click sur les liens pour aller directement au fichier et a la ligne correspondante.
 - **Critère 1**: 
-    - Disponible en version condensée sur caséine 
+    - Disponible en version condensée sur caséine ( on aurait pu tout mettre dans un fichier de 4.000 Lignes mais c'est moin pratique pour se retrouver).
     - Sur github, plusieurs fichiers pour améliorer la lisibilité: `enemies.c`  `enemies.h`  `grid.c`  `grid.h`  `main.c`  `shared.c`  `shared.h`  `tower.c`  `tower.h`
 - **Critère 2**: voir [Compilation](#compilation) et [Lancer le jeu](#lancer-le-jeu)
-- **Critère 3**: Un tutoriel est intégré au jeu.
+- **Critère 3**: Un tutoriel est intégré au jeu. [Comment jouer](#comment-jouer)
 - **Critère 4**: [liste des fonctionnalités](#liste-des-fonctionnalités)
 - **Critère 5**: A vous de tester :wink:.
 - **Critère 6**: On a des variables et des fonctions dans tous les fichiers, a toi de naviguer :boat:.
-- **Critère 7**: Les entrées sorties sont gérés via [main.c / gestion des entrees clavier (ligne 300)](./src/main.c#l300)
+- **Critère 7**: Les entrées sorties sont gérés via [main.c / gestion des entrees clavier (ligne 507)](./src/main.c#l507)
 - **Critère 8**: Allocation de la grille: voir [Architecture du projet/Allocations dynamiques/grille](#grille)
 - **Critère 9**: Gestion de l'affichage voir [Architecture du projet/affichage](#affichage)
 - **Critère 10**: Verification du retour des mallocs: voir [Architecture du projet/Allocations dynamiques/sécurité](#sécurité)
@@ -125,7 +156,7 @@ Si tu est dans vscode, tu dois pouvoir ctrl+click sur les liens pour aller direc
         - Affiche un petit tutoriel sur comment fonctionne le jeu
 - Jeu
     - Un chemin aléatoire est généré automatiquement `grid.c/genBasicPath`
-    - Les ennemis arrivent progressivement selon un système de vagues précis
+    - Les ennemis arrivent progressivement selon un système de vagues précis [Système de vagues](#système-de-vagues)
     - Le jeu se termine lorsque la vie de l'utilisateur atteint 0
         - Il pert ses PV quand un ennemi atteint la fin du chemin
     - Un curseur, déplacé avec les fleches du clavier, permet de sélectionner une case.
@@ -175,7 +206,7 @@ void fillBG(int xmin, int ymin, int xmax, int ymax)
 ```
 
 **Liste de tous les struct, enum et fonctions:**
-Toutes les fonctions qui n'ont pas un nom explicite sont expliquée lors de leur définition et chaque fonctions possède differents commentaires expliquant comment elle fonctionne et ce que fait les lignes de code compliquées
+Toutes les fonctions qui n'ont pas un nom explicite sont expliquée lors de leur définition et chaque fonctions possède differents commentaires expliquant comment elle fonctionne et ce que fait les lignes de code compliquées directement dans le code.
 - enemies.c
     - AllocEnemyPool 
     - freeEnemyPool
@@ -184,7 +215,7 @@ Toutes les fonctions qui n'ont pas un nom explicite sont expliquée lors de leur
     - defragEnemyPool: *voir [tableau comme liste](#algorithmes-originaux)*
     - drawEnemies
     - updateEnemies
-    - switchToWave
+    - switchToWave *voir [Système de vagues](#système-de-vagues)*
     - getWaveByIndex: *renvoie le struct wavePattern d'une vague initialisé*
     - updateWaveSystem
     - testWaveSystem: *voir [Simulation](#simulation)*
@@ -291,18 +322,35 @@ EnemyPool enemyPool;
 struct Enemy enemy;
 ```
 
+
+**Opérateur ternaire**
+L'opérateur termnaire "?" permet de faire des IF de la même façon qu'en ocaml.
+
+Si la condition précédant le "?" est vraie la valeur qui suit le "?" sera retournée sinon celle qui suit les ":" sera retournée a la place.
+
+```ocaml
+let x = if n>4 then 5 else -1;;
+```
+équivaut a 
+```ocaml
+int x =  n>4 ? 5 : -1;
+```
 **macro**
-Une macro (par exemple MAX et MIN) permet d'écrire une fonction sans pour autant avoir à spécifier les types.
-Cependant, il faut faire attention a ne pas oublier les parenthèses car une macro ne fait que remplacer la macro par
-ce par quoi on l'a définie (c'est a dire comme les #define). Donc en oubliant les parenthèses, on risque de changer completement la valeur retenue par le programme.
-**ternaire**
-Le ternaire est le "?" des macro.
-Le "?" permet de savoir si la condition précédente est vraie ou non puis les ":" permetent de determiner quoi faire en fonction de la véracité de la condition.
-Si la condition est vrai, la macro renvera ce qui se trouve entre le "?" et les ":".
-Sinon, la macro renvera ce qui se trouve apres les ":". 
+Une macro (par exemple MAX et MIN) permet d'écrire une fonction sans pour autant avoir à spécifier les types. Elle sera directement insérée dans le code au moment de la compilation.
+Cependant, il faut faire attention a ne pas oublier les parenthèses car étant donné qu'elle est simplement insérée dans le code, l’ordre des opérations peut ne pas ètre celui voulu.
+
+Exemple:
+```c
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+int x = 4;
+x = MAX(x/2.0f, 3.0f);
+// Sera remplacé a la compilation par
+x = ((x/2.0f) > (3.0f) ? (x/2.0f) : (3.0f));
+```
 
 #### Algorithmes originaux
-**Génération du chemin**: genBasicPath [./src/grid.c](./src/grid.c#L57)
+##### **Génération du chemin**: 
+genBasicPath [./src/grid.c](./src/grid.c#L57)
 Cet algorithme crée un chemin continu dans une grille en suivant des règles pour éviter les collisions et en utilisant un historique pour revenir en arrière en cas de blocage.
 
 1. On choisit une position aléatoire sur le côté gauche de la grille (x = 0).
@@ -314,7 +362,7 @@ Chaque direction doit respecter certaines conditions pour éviter que le chemin 
 Si aucune direction n'est possible, on recule en revenant à la dernière position valable grace a l'historique.
 5. On choisit aléatoirement parmi les directions disponibles avec une plus haute probabilité vers la gauche et on y avance.
 
-**Tableau comme liste**
+##### **Tableau comme liste**
 Les listes ne sont pas disponibles, il faut donc se débrouiller avec les tableaux. Pour ça, on a opté pour la solution suivante dans le cas de:
 - Liste des ennemis
 - Liste des labels
@@ -375,11 +423,9 @@ void defragEnemyPool(EnemyPool *ep)
 #### Allocations dynamiques
 De nombreuses allocations dynamiques sont utilisées dans le jeu.
 - Tableau des ennemis: `AllocEnemyPool` [./src/enemies.c](./src/enemies.c#L3)
-- Tableau de la grille: [./src/grid.c](./src/enemies.c#L7)
+- Tableau de la grille: [./src/grid.c](./src/grid.c#L4)
 - Tableau des labels:   [./src/main.c](./src/main.c#L331)
 - Historique du chemin: [./src/grid.c](./src/grid.c#L88)
-- Labels: [./src/main.c](./src/main.c#L332)
-- Grille: [./src/grid.c](./src/grid.c#L12) et [./src/grid.c](./src/grid.c#L21)
 
 ##### Sécurité
 Le programme libère automatiquement les tableaux à la fin du programme (Soit si on perd, soit si on quitte avec 'q')
@@ -409,18 +455,47 @@ for (size_t i = 0; i < HISTORY_SIZE; i++) // Libération de l'historique à la f
     free(historique);
 ```
 ##### Grille
-La grille est un tableau dynamique trouvée dans la structure grid.
-Ce tableau en deux dimentions: la première gére la ligne de la case
-tandit que la seconde gère sa collonne.
-Le tableau de pointeur grid.cells gère cette grille et permet de savoir le type(c'est a dire savoir si c'est un terrain ou un chemin), ainsi que ce que contient la case.
+La grille est un tableau a deux dimensions ([allocation](./src/grid.c#L4)) de type `struct Cell **`.
+Sa taille est définie par la taille du terminal et des cases.
+Elle est consérvée dans le struct `Grid`:
+```c
+typedef struct Grid
+{
+    int width; // Largeur en cases
+    int height; // hauteur en cases
+    int start_x; // position de la première case du chemin
+    int start_y;
+    int end_x; // position de la dernière case du chemin
+    int end_y;
+    struct Cell **cells;
+} Grid;
+```
+
 #### Affichage
-L'affiche fonctionne de manière différente que la grille:
-La fonction drawFullGrid [./src/grid.c](./src/grid.c#L1322) permet d'afficher toute la grille en parcours grid.cells et appelle la fonction drawCell[./src/grid.c](./src/grid.c#L195) pour chaque cellule
-La fonction drawCell distingue le type de case a afficher puis détermine si elle doit afficher une tourelle ou non, si oui, laquelle elle doit afficher.
-La fonction drawEnemies affiche les énnemis dans le chemin et determine quel ennemi afficher et donc quel sprite afficher et a quel endroit  
+Pour l'afficage de la grille, plusieurs systèmes entrent en jeu:
+- drawCell affiche une case inividuelle; elle distingue le type de la case 
+    - Si c'est une tourelle on affiche son prite avec les animations
+    - si c'est une case de chemin, on efface son centre ét on affiche la bordure en fonction des cases alentour.
+    - Si c'est un case sans tourelle et sans chemin, on affiche un carré 
+    - On affihce aussi un bordure de couleur si la case est séléctionée 
+- drawFullGrid appele drawCell sur tooutes les cases
+- drawUsedPath affiche drawCell seulement sur les cases qui ont besoin d'etre réaffichées
+La fonction drawEnemies parcours les enemis et les afiches un a un avec leurs animations.
+
+
 #### Le problème des missiles
-Lorsqu'on active les bullet, les bullet réecrive sur les cells ce qui fait que tant qu'on ne redraw pas la grille, les balles resteront sur la grille mêmesi elles ont changer de position.
-Cependant, si on redraw toute la grille, le terminal commence a laguer et a avoir du mal a afficher correctement toute la grille.
-Vous pouvez donc choisir si on active ou non les bullet, mais le jeu aura des problèmes d'affichage.
-### Simulation
+Un des plus gros probèmes auquels nous avons été confrontès avec le términal est la latence.
+En effet, les écritures sont très lentes et il n'est donc pass possible de réafficher 'intégralité des caractères du terminal a chaque frame (~60x par seconde). Le clignotement rendrait le jeu injuable.
+
+On doit donc faire des compromis et réafficher seulement des zones réduites du terminal. C'est ce qui justifie la présence d’artefacts (charactères qui sont réstées affichès et qui ne devraient pas exister).
+
+Nous avions implémenté un système de missiles (charactères tirées par les tourelles qui volent en direction de l’ennemi). Le problème c'est qu'on affiche donc des caractères sur tout l'écran et qu'un fois qu'un caractère est affiché, on ne peut pas réstoaurer celui qui se trouvait a sa place. On est donc forcé de laisser les traces des missiles ou de nettoyer tout l'écran régulièrement.
+
+
+On a donc décidé de désactiver les missiles.Vous pouvez cependant tout de mème les avoir en définissant `#define BULLETS_ON true` en [tower.h:6](./src/tower.h#L6) 
+
+:warning: ce n'est pas prévu et c'est donc normal que ça ne fonctionne  pas bien.
+
+### Système de vagues
+#### Simulation
 La similation est un bonus que nous avous rajouté qui permet de creer une simulation pour voir comment le jeu crée les vagues d'ennemis.
