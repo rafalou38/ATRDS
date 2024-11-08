@@ -1,7 +1,7 @@
 # ATARDES
 Antique Terminal : Absolute Routing Defense Epic Simulator
 
-- [ATRDS](#atrds)
+- [ATARDES](#atardes)
   - [Resources utiles](#resources-utiles)
   - [Démarage](#démarage)
     - [Récupérer le code](#récupérer-le-code)
@@ -35,7 +35,17 @@ Antique Terminal : Absolute Routing Defense Epic Simulator
 
 ## Démarage
 
+Si tu rencontre un quelconque souci avec le projet, tu peux contacter Rafael (@rafalou38) Rémi (@diotduvin) ou Philémon (@nomélip) on sera contents de t'aider.
+
 ### Récupérer le code
+
+Si tu n'as pas accès a un environment de code fonctionnel pour tester le jeu tu peux te connecter a ce serveur ou tout prêt pour compiler.
+Avec la commande suivante qui doit etre disponible sur windows linux et mac.
+```
+ssh projet-info@rf38.ddns.net
+``` 
+Mot de passe: 
+
 
 #### Depuis github
 Le plus simple et l'option recommandée pour avoir l’**intégralité du code**, c'est d'utiliser l'outil **git** disponible via [apt](https://git-scm.com/book/fr/v2/D%C3%A9marrage-rapide-Installation-de-Git) et [pacman](https://wiki.archlinux.org/title/Git), [git-scm](https://git-scm.com/downloads/win) sur windows.
