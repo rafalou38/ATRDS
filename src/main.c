@@ -541,9 +541,8 @@ int main(int argc, char *argv[])
     printf("\n");
     clear_screen();
     move_to(0, 0);
-    freeGrid(grid);
-    freeEnemyPool(enemyPool);
-    freeLabels(labels);
-
+    freeGrid(grid);           // Libère les allocations dynamiques liées à la grille
+    freeEnemyPool(enemyPool); // Libère les allocations dynamiques liées aux ennemis
+    freeLabels(labels);       // Libère les allocations dynamiques liées aux labels
     return 0;
 }
