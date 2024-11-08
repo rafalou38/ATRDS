@@ -264,7 +264,7 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
             {
                 printf(COLOR_SNIPER_BASE);
                 char *sprite[3][8][7] = {
-                    {
+                    {// Sniper de niveau 1 (niveau 0 pour le programme)
                         {"              ",
                          "   ▄██████▄   ",
                          "  ████▀▀████  ",
@@ -322,7 +322,7 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
                          "   ▀██████▀   ",
                          "              "},
                     },
-                    {
+                    { // Sniper de niveau 2 (niveau 1 et le sniper de base est de niveau 0 dans le programme)
                         {"     ▄██▄     ",
                          "   ▄██████▄   ",
                          " ▄████▀▀████▄ ",
@@ -381,7 +381,7 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
                          "     ▀██▀     "},
                     },
                     {
-                        // Sniper de niveau 2 (niveau 1 et le sniper de base est de niveau 0 dans le programme)
+                        // Sniper de niveau 3 (niveau 2 et le sniper de base est de niveau 0 dans le programme)
                         {" ▄▄  ▄██▄  ▄▄ ",
                          " ▀▀▄██▀▀██▄▀▀ ",
                          " ▄████▀▀████▄ ",
@@ -448,7 +448,7 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
                 for (int i = 0; i < 7; i++)
                 {
                     move_to(x_current_turret, y_current_turret + i);
-                    printf(sprite[MIN(1, cell.turret.lvl)][index][i]);
+                    printf(sprite[cell.turret.lvl][index][i]);
                 }
             }
             else if (cell.turret.type == Inferno) // Sprites de l'inferno, la plus simple des tourelles, seulement 2 sprites pour le niveau 1 et 2

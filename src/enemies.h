@@ -118,7 +118,7 @@ WavePattern getWaveByIndex(int waveIndex);
  *      ici on utilisera next_spawn_timer et prev_spawn=E, ainsi, le prochain spawn arrivera après un certain nombre de frames.
  * fin tant que
  */
-int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt);
+int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt, GameStats *gs);
 
 // Réalise et affiche un simulation sur plusieurs vagues
-void testWaveSystem(Grid grid, EnemyPool *ep, int n);
+void testWaveSystem(Grid grid, EnemyPool *ep, int n, GameStats *gs);

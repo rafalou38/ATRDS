@@ -363,7 +363,7 @@ int main(int argc, char *argv[])
             int n = 0;
             if (argc == 3)
                 n = atoi(argv[2]);
-            testWaveSystem(grid, &enemyPool, n);
+            testWaveSystem(grid, &enemyPool, n, &gameStats);
             return 0;
         }
     }
@@ -441,7 +441,7 @@ int main(int argc, char *argv[])
             updateLabels(&labels, delta_t);
             drawLabels(labels);
 
-            int wave_status = updateWaveSystem(&waveSystem, grid, &enemyPool, delta_t);
+            int wave_status = updateWaveSystem(&waveSystem, grid, &enemyPool, delta_t, &gameStats);
             if (wave_status == -2)
             {
                 fillBG(1, 1, width + 1, height + 1);

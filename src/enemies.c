@@ -747,10 +747,10 @@ WavePattern getWaveByIndex(int waveIndex)
         .min_spawns = {0}};
 
     wp.random_coeffs[ENEMY_TUX] = 1;
-    wp.random_coeffs[ENEMY_SPEED] = CLAMP(-0.1f + 1.0f * waveIndex / 16, 0.0f, 1.0f);
-    wp.random_coeffs[ENEMY_SPIDER] = CLAMP(-0.1f + 1.0f * waveIndex / 16, 0.0f, 1.0f); // 1 a vague 16
-    wp.random_coeffs[ENEMY_HIGHTUX] = CLAMP(-0.1f + 1.0f * waveIndex / 20, 0.0f, 1.0f);      // 1 a vague 20
-    wp.random_coeffs[ENEMY_HYPERSPEED] = CLAMP(-0.1f + 1.0f * waveIndex / 25, 0.0f, 1.0f);   // 1 a vague 25
+    wp.random_coeffs[ENEMY_SPEED] = CLAMP(-0.1f + 1.0f * waveIndex / 8, 0.0f, 1.0f);
+    wp.random_coeffs[ENEMY_SPIDER] = CLAMP(-0.1f + 1.0f * waveIndex / 15, 0.0f, 1.0f); // 1 a vague 15
+    wp.random_coeffs[ENEMY_HIGHTUX] = CLAMP(-0.1f + 1.0f * waveIndex / 10, 0.0f, 1.0f);      // 1 a vague 10
+    wp.random_coeffs[ENEMY_HYPERSPEED] = CLAMP(-0.1f + 1.0f * waveIndex / 15, 0.0f, 1.0f);   // 1 a vague 15
 
     wp.random_coeffs[ENEMY_SLIME_BOSS] = CLAMP(-0.1f + 0.2f * waveIndex / 20, 0.0f, 0.2f);
     wp.random_coeffs[ENEMY_BOSS_STUN] = CLAMP(-0.15f + 0.2f * waveIndex / 30, 0.0f, 0.2f);
@@ -817,7 +817,7 @@ void switchToWave(WaveSystem *ws, int waveIndex)
  *  -1 = pas de spawn
  *  n  = id du mob spawné
  */
-int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
+int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt, GameStats *gs)
 {
     ws->next_spawn_timer -= dt;
     if (ws->next_spawn_timer > 0)
@@ -856,6 +856,7 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
             else if (ws->wave_timer == 0)
             {
                 switchToWave(ws, ws->current_wave_index + 1);
+                gs->cash+=5;
             }
             else
             {
@@ -905,7 +906,7 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt)
     return ennemi_choisi_id;
 }
 
-void testWaveSystem(Grid grid, EnemyPool *ep, int n)
+void testWaveSystem(Grid grid, EnemyPool *ep, int n, GameStats *gs)
 {
 
     printf("SIMULATEUR\n");
@@ -964,7 +965,7 @@ void testWaveSystem(Grid grid, EnemyPool *ep, int n)
             // msleep(dt * 1000);
             t += (dt);
 
-            result = updateWaveSystem(&ws, grid, ep, dt);
+            result = updateWaveSystem(&ws, grid, ep, dt, gs);
             if (result >= 0)
             {
                 cnt++;
