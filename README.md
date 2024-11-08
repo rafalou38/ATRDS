@@ -165,6 +165,7 @@ void fillBG(int xmin, int ymin, int xmax, int ymax)
 ```
 
 **Liste de tous les struct, enum et fonctions:**
+Toutes les fonctions qui n'ont pas un nom explicite sont expliquée lors de leur définition et chaque fonctions possède differents commentaires expliquant comment elle fonctionne et ce que fait les lignes de code compliquées
 - enemies.c
     - AllocEnemyPool 
     - freeEnemyPool
@@ -179,7 +180,7 @@ void fillBG(int xmin, int ymin, int xmax, int ymax)
     - testWaveSystem: *voir [Simulation](#simulation)*
 - enemies.h
     - enum EnemyType
-    - enum EnemyState: *Vivant mort, arrivé*
+    - enum EnemyState: *Vivant, mort, arrivé*
     - struct Enemy
     - struct WavePattern
     - struct WaveSystem
