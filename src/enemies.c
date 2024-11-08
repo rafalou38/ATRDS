@@ -856,7 +856,7 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt, GameSta
             else if (ws->wave_timer == 0)
             {
                 switchToWave(ws, ws->current_wave_index + 1);
-                gs->cash+=5;
+                gs->cash+=10;
             }
             else
             {
