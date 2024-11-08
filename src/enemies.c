@@ -56,7 +56,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.maxHP = 5;
         enemy.speed = 1.5f;
         enemy.damage = 1;
-        enemy.money = 2;
+        enemy.money = 1;
         enemy.state = ENEMY_STATE_ALIVE;
         enemy.grid_x = (float)start_x;
         enemy.grid_y = (float)start_y;
@@ -72,7 +72,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.maxHP = 50;
         enemy.speed = 0.5f;
         enemy.damage = 5;
-        enemy.money = 5;
+        enemy.money = 2;
         enemy.state = ENEMY_STATE_ALIVE;
         enemy.grid_x = (float)start_x;
         enemy.grid_y = (float)start_y;
@@ -102,7 +102,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.maxHP = 10;
         enemy.speed = 2.0f;
         enemy.damage = 2;
-        enemy.money = 2;
+        enemy.money = 1;
         enemy.state = ENEMY_STATE_ALIVE;
         enemy.grid_x = (float)start_x;
         enemy.grid_y = (float)start_y;
@@ -117,7 +117,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.maxHP = 15;
         enemy.speed = 1.0f;
         enemy.damage = 2;
-        enemy.money = 2;
+        enemy.money = 1;
         enemy.state = ENEMY_STATE_ALIVE;
         enemy.grid_x = (float)start_x;
         enemy.grid_y = (float)start_y;
@@ -133,7 +133,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.maxHP = 1000;
         enemy.speed = 0.2f;
         enemy.damage = 20;
-        enemy.money = 30;
+        enemy.money = 10;
         enemy.state = ENEMY_STATE_ALIVE;
         enemy.grid_x = (float)start_x;
         enemy.grid_y = (float)start_y;
@@ -149,7 +149,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.maxHP = 100;
         enemy.speed = 0.5f;
         enemy.damage = 10;
-        enemy.money = 20;
+        enemy.money = 5;
         enemy.state = ENEMY_STATE_ALIVE;
         enemy.has_effect = true;
         enemy.effet = BOSS_STUN;
@@ -747,10 +747,10 @@ WavePattern getWaveByIndex(int waveIndex)
         .min_spawns = {0}};
 
     wp.random_coeffs[ENEMY_TUX] = 1;
-    wp.random_coeffs[ENEMY_SPEED] = 1;
-    wp.random_coeffs[ENEMY_SPIDER] = MIN(1, 0.5 + 0.5f * waveIndex / 16);   // 1 a vague 16
-    wp.random_coeffs[ENEMY_HIGHTUX] = MIN(1, 0 + 1.0f * waveIndex / 20);    // 1 a vague 20
-    wp.random_coeffs[ENEMY_HYPERSPEED] = MIN(1, 0 + 1.0f * waveIndex / 25); // 1 a vague 25
+    wp.random_coeffs[ENEMY_SPEED] = CLAMP(-0.1f + 1.0f * waveIndex / 16, 0.0f, 1.0f);
+    wp.random_coeffs[ENEMY_SPIDER] = CLAMP(-0.1f + 1.0f * waveIndex / 16, 0.0f, 1.0f); // 1 a vague 16
+    wp.random_coeffs[ENEMY_HIGHTUX] = CLAMP(-0.1f + 1.0f * waveIndex / 20, 0.0f, 1.0f);      // 1 a vague 20
+    wp.random_coeffs[ENEMY_HYPERSPEED] = CLAMP(-0.1f + 1.0f * waveIndex / 25, 0.0f, 1.0f);   // 1 a vague 25
 
     wp.random_coeffs[ENEMY_SLIME_BOSS] = CLAMP(-0.1f + 0.2f * waveIndex / 20, 0.0f, 0.2f);
     wp.random_coeffs[ENEMY_BOSS_STUN] = CLAMP(-0.15f + 0.2f * waveIndex / 30, 0.0f, 0.2f);

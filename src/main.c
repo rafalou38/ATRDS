@@ -37,27 +37,27 @@ int ligne = 1;
 int width = 0;
 int height = 0;
 
-//Cette fonction permet de savoir que faire si la touche entrée a été préssée
+// Cette fonction permet de savoir que faire si la touche entrée a été préssée
 void handle_enter_key()
 {
-    if (grid.cells[selected_cell_x][selected_cell_y].hasTurret)     //permet de savoir si la cell selctionnée a déja une tourelle (cas de l'upgrade et de la vente)
+    if (grid.cells[selected_cell_x][selected_cell_y].hasTurret) // permet de savoir si la cell selctionnée a déja une tourelle (cas de l'upgrade et de la vente)
     {
         int upgrade_price = getTurretPrice(grid.cells[selected_cell_x][selected_cell_y].turret.type, grid.cells[selected_cell_x][selected_cell_y].turret.lvl + 1);
-        if (ligne == 1 && upgrade_price > 0 && gameStats.cash >= upgrade_price)     //permet de verifier que l'on veut et peux upgrade
+        if (ligne == 1 && upgrade_price > 0 && gameStats.cash >= upgrade_price) // permet de verifier que l'on veut et peux upgrade
         {
             // Upgrade
             gameStats.cash -= upgrade_price;
-            grid.cells[selected_cell_x][selected_cell_y].turret.lvl = 1;
+            grid.cells[selected_cell_x][selected_cell_y].turret.lvl++;
         }
-        else if (ligne == 2) //revente
+        else if (ligne == 2) // revente
         {
-            gameStats.cash += (int)(0.8*getTurretPrice(grid.cells[selected_cell_x][selected_cell_y].turret.type, grid.cells[selected_cell_x][selected_cell_y].turret.lvl));
+            gameStats.cash += (int)(0.8 * getTurretPrice(grid.cells[selected_cell_x][selected_cell_y].turret.type, grid.cells[selected_cell_x][selected_cell_y].turret.lvl));
             grid.cells[selected_cell_x][selected_cell_y].hasTurret = false;
         }
     }
-    else //Donc il faut implémenter une nouvelle tourelle
+    else // Donc il faut implémenter une nouvelle tourelle
     {
-        if (ligne == 1 && gameStats.cash >= getTurretPrice(Sniper, 0))//cette serie de if else permet de determiner le type de la tourrelle a placer dans la cell et de l'implémenter.
+        if (ligne == 1 && gameStats.cash >= getTurretPrice(Sniper, 0)) // cette serie de if else permet de determiner le type de la tourrelle a placer dans la cell et de l'implémenter.
         {
             gameStats.cash -= getTurretPrice(Sniper, 0);
             grid.cells[selected_cell_x][selected_cell_y].turret = getTurretStruct(Sniper);
@@ -228,7 +228,7 @@ void handle_arrow_keys()
         if (selection_active)
         { // le shop est ouvert
             // 7 tourelles => 7 lignes sélectionnables
-            ligne = CLAMP(ligne, 1, 7); //CLAMP(val,x,y): permet de faire en sorte que si val<x, val = x et si val>y, val = y
+            ligne = CLAMP(ligne, 1, 7); // CLAMP(val,x,y): permet de faire en sorte que si val<x, val = x et si val>y, val = y
         }
         else
         {
@@ -541,9 +541,8 @@ int main(int argc, char *argv[])
     printf("\n");
     clear_screen();
     move_to(0, 0);
-    freeGrid(grid);
-    freeEnemyPool(enemyPool);
-    freeLabels(labels);
-
+    freeGrid(grid);           // Libère les allocations dynamiques liées à la grille
+    freeEnemyPool(enemyPool); // Libère les allocations dynamiques liées aux ennemis
+    freeLabels(labels);       // Libère les allocations dynamiques liées aux labels
     return 0;
 }

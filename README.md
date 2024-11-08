@@ -1,5 +1,5 @@
-# ATRDS
-Antique Terminal Route Defense Simulator
+# ATARDES
+Antique Terminal : Absolute Routing Defense Epic Simulator
 
 - [ATRDS](#atrds)
   - [Resources utiles](#resources-utiles)
@@ -47,7 +47,7 @@ Ou de télécharger ce zip manuellement: https://github.com/rafalou38/ATRDS/arch
 
 #### Depuis caséine
 Le code est également disponible dans les téléchargements caséine, mais vous n'aurez pas toute l'architecture du projet ni le script de compilation.
-> ⚠️ Les scripts sont combinés sur caséine, pour avoir des fichiers plus simples, passez par git.
+> ⚠️ Les scripts sont combinés sur caséine, pour avoir des fichiers plus simples. Il est conseillé de passer par git.
 > 
 > Il y manque également toute la partie simulation ainsi que les scripts.
 
@@ -282,13 +282,13 @@ struct Enemy enemy;
 
 **macro**
 Une macro (par exemple MAX et MIN) permet d'écrire une fonction sans pour autant avoir à spécifier les types.
-Cependant, il faut faire attention a ne pas oublier les parentaises car une macro ne fait que remplacer la macro par
-ce par quoi on l'a définie (c'est a dire comme les défine). Donc en oubliant les parentaises, on risque de changer completement la valeur retenue par le programme.
+Cependant, il faut faire attention a ne pas oublier les parenthèses car une macro ne fait que remplacer la macro par
+ce par quoi on l'a définie (c'est a dire comme les #define). Donc en oubliant les parenthèses, on risque de changer completement la valeur retenue par le programme.
 **ternaire**
-Le ternaire est le ? des macro.
-Le ? permet de savoir si la condition précédente est vraie ou non puis les : permetent de determiner quoi faire en fonction de la véracité de la condition.
-Si la condition est vrai, la macro renvera ce qui se trouve entre le ? et les :.
-Sinon, la macro renvera ce qui se trouve apres les :. 
+Le ternaire est le "?" des macro.
+Le "?" permet de savoir si la condition précédente est vraie ou non puis les ":" permetent de determiner quoi faire en fonction de la véracité de la condition.
+Si la condition est vrai, la macro renvera ce qui se trouve entre le "?" et les ":".
+Sinon, la macro renvera ce qui se trouve apres les ":". 
 
 #### Algorithmes originaux
 **Génération du chemin**: genBasicPath [./src/grid.c](./src/grid.c#L57)
@@ -364,19 +364,39 @@ void defragEnemyPool(EnemyPool *ep)
 #### Allocations dynamiques
 De nombreuses allocations dynamiques sont utilisées dans le jeu.
 - Tableau des ennemis: `AllocEnemyPool` [./src/enemies.c](./src/enemies.c#L3)
+- Tableau de la grille: [./src/grid.c](./src/enemies.c#L7)
+- Tableau des labels:   [./src/main.c](./src/main.c#L331)
 - Historique du chemin: [./src/grid.c](./src/grid.c#L88)
 - Labels: [./src/main.c](./src/main.c#L332)
 - Grille: [./src/grid.c](./src/grid.c#L12) et [./src/grid.c](./src/grid.c#L21)
 
 ##### Sécurité
-A chaque malloc que nous avons utilisé, nous avons pensé à:
--verifier que le malloc ne renvoie pas NULL
--free les malocs plus utilisé.
-On free
-- Le tableau des ennemis lors de la fin du jeu [./src/main.c](./src/main.c#L545)
-- L'historique du chemin après la génération du chemin [./src/grid.c](./src/grid.c#L179)
-- Les labels lors de la fin du jeu [./src/main.c](./src/main.c#L546)
-- La grid lors de la fin du jeu [./src/main.c](./src/main.c#L544) 
+Le programme libère automatiquement les tableaux à la fin du programme (Soit si on perd, soit si on quitte avec 'q')
+Dans main.c ligne 535 : [./src/main.c](./src/main.c#L535)
+```c
+/*
+    ################
+    FIN DE LA PARTIE
+    ################
+    */
+
+    printf("\n");
+    clear_screen();
+    move_to(0, 0);
+    freeGrid(grid);           // Libère les allocations dynamiques liées à la grille
+    freeEnemyPool(enemyPool); // Libère les allocations dynamiques liées aux ennemis
+    freeLabels(labels);       // Libère les allocations dynamiques liées aux labels
+
+```
+Pour ce qui est de l'historique du chemin, le tableau est libéré à la fin de la fonction qui génère le chemin.
+Dans grid.c ligne 177 : [./src/grid.c](./src/main.c#L177)
+```c
+for (size_t i = 0; i < HISTORY_SIZE; i++) // Libération de l'historique à la fin de la création de chemin
+    {
+        free(historique[i]);
+    }
+    free(historique);
+```
 ##### Grille
 La grille est un tableau dynamique trouvée dans la structure grid.
 Ce tableau en deux dimentions: la première gére la ligne de la case
