@@ -69,4 +69,5 @@ for i, (title, ylabel, col) in enumerate(zip(titles, y_labels, columns)):
 axes[1, 2].set_visible(False)
 # Adjust layout to prevent overlap
 plt.tight_layout(rect=[0, 0, 1, 0.96])
+plt.savefig("testing/fig.png", dpi=400)
 plt.show()

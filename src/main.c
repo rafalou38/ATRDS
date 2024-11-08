@@ -26,6 +26,8 @@ BulletPool bulletPool;
 bool selection_active = false;
 // vraie quand la range d'une tourelle est affichée (sur la quelle est placée le curseur), pour pouvoir effacer la range une fois qu'elle ne l'est plus
 bool was_range_visible = false;
+int prev_selected_x = 0; // permet de détecter un changement de sélection et de nettoyer la grille
+int prev_selected_y = 0;
 // Position de la selection sur la grille
 int selected_cell_x = 0;
 int selected_cell_y = 0;
@@ -405,11 +407,7 @@ int main(int argc, char *argv[])
         ###############################
         */
 
-        if (selection_active) // MENU DE SELECTION
-        {
-            showTowerSelection(ligne, grid.cells[selected_cell_x][selected_cell_y].hasTurret, grid.cells[selected_cell_x][selected_cell_y].turret);
-        }
-        else // JEU NORMAL
+        if (!selection_active) // si la sélection est active, le jeu est en pause, on exécute pas le code de la frame
         {
 #if BULLETS_ON
             // Cas ou les misilles sont activées
@@ -454,6 +452,16 @@ int main(int argc, char *argv[])
             drawEnemies(enemyPool, grid);
 
             // Affichage de la portée des tourelles
+            if ((was_range_visible)                    //
+                && (prev_selected_x != selected_cell_x //
+                    || prev_selected_y != selected_cell_y))
+            {
+                fillBG(1, 1, width + 1, height + 1);
+                drawFullGrid(grid);
+                was_range_visible = false;
+                prev_selected_x = selected_cell_x;
+                prev_selected_y = selected_cell_y;
+            }
             if (grid.cells[selected_cell_x][selected_cell_y].hasTurret)
             {
                 float range_min = grid.cells[selected_cell_x][selected_cell_y].turret.range_min[grid.cells[selected_cell_x][selected_cell_y].turret.lvl];
@@ -464,12 +472,8 @@ int main(int argc, char *argv[])
                     drawRange(width, height, range_max, selected_cell_x + 0.5, selected_cell_y + 0.5, false);
 
                 was_range_visible = true;
-            }
-            else if (was_range_visible)
-            {
-                fillBG(1, 1, width + 1, height + 1);
-                drawFullGrid(grid);
-                was_range_visible = false;
+                prev_selected_x = selected_cell_x;
+                prev_selected_y = selected_cell_y;
             }
         }
 
@@ -524,11 +528,15 @@ int main(int argc, char *argv[])
                 selection_active = !selection_active;
             }
             else if (c == 27) // Touches directionnelles commencent par le char (\033)
-
                 handle_arrow_keys();
 
             else if (c == 10 && selection_active) // ENTER
                 handle_enter_key();
+
+            if (selection_active)
+            {
+                showTowerSelection(ligne, grid.cells[selected_cell_x][selected_cell_y].hasTurret, grid.cells[selected_cell_x][selected_cell_y].turret);
+            }
         }
     }
 
