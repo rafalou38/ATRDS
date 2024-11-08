@@ -74,15 +74,15 @@ struct Turret
     float compteur;            // Compteur pour savoir quand la tourelle doit tirer
     float compteur_mortier;    // Compteur pour clear les tirs de mortier
     bool in_range;             // sert a savoir si un ennemi est a portée de la tourrelle
-    float range_min[2];        // détermine la portée minimale de la tourelle
-    float range_max[2];        // détermine la portée maximale de la tourelle
-    float damage[2];           // détermine les dégats de la tourelle
-    float reload_delay[2];     // détermine la fréquence de tir de la tourelle
-    float splash[2];           // détermine la taille des dégats de zone de la tourelle
-    int nb_ennemi[2];          // détermine le nombre d'ennemi que la tourelle peut toucher lors de son attaque
+    float range_min[3];        // détermine la portée minimale de la tourelle
+    float range_max[3];        // détermine la portée maximale de la tourelle
+    float damage[3];           // détermine les dégats de la tourelle
+    float reload_delay[3];     // détermine la fréquence de tir de la tourelle
+    float splash[3];           // détermine la taille des dégats de zone de la tourelle
+    int nb_ennemi[3];          // détermine le nombre d'ennemi que la tourelle peut toucher lors de son attaque
     bool has_effect;           // determine si la tourelle possède un effet particulier
     enum EffectType effet;     // Type de l'effet
-    float puissance_effet[2];  // determine la puissance de l'effet (a un role different selon les effets)
+    float puissance_effet[3];  // determine la puissance de l'effet (a un role different selon les effets)
     bool has_malus;           // determine si la tourelle subbit un effet particulier
     enum EffectType malus; // Type de l'effet subbit
     float puissance_malus; // Puissance de l'effet subbit
