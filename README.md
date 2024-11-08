@@ -497,5 +497,25 @@ On a donc décidé de désactiver les missiles.Vous pouvez cependant tout de mè
 :warning: ce n'est pas prévu et c'est donc normal que ça ne fonctionne  pas bien.
 
 ### Système de vagues
+Pour le système de vague, un ensemble de fonctions définissemnt:
+- Les HP par vague (une vague de 100HP spawnera 1à ennemis de 10Hp)
+- Les HPPS par vague (10HPPS -> cette meme vague durrera 10s avec un ecart de 1s enctre chaque spawn)
+- Les random_factor: pour chaque ennemi, ça correspond a la probabilité de le spawner 
+- min spawn permet de forcer le spawn des boss a certaines vagues.
+
+Voir [getWaveByIndex enemies.c:741](./src/enemies.c#L741) pour les fonctions matématiques de spawn
+
+La fonction suivante (updateWaveSystem) décide a chaque frame si le délai est écoulé de quel ennemi spawn.
+
+> Voir les commentaires dans le code pour plus de details.
+
+
 #### Simulation
-La similation est un bonus que nous avous rajouté qui permet de creer une simulation pour voir comment le jeu crée les vagues d'ennemis.
+Pour aider dans l'équilibrage, nous avons crée un outil de simulation qui génère des vagues et enregistre le résultat dans un fichier .csv puis affiche le tout dans des graphiques.
+
+Pour l'utiliser, installez matplotlib, pandas et executez:
+```bash
+./testing/test.sh nombre_de_vagues
+```
+
+> cet outil ne rentre pas en compte dans l'évaluation.
