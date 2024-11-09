@@ -477,7 +477,7 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.damage[0] = 0.2;
         tur.damage[1] = 0.3;
         tur.reload_delay[0] = 0.05;
-        tur.reload_delay[1] = 0.1;
+        tur.reload_delay[1] = 0.03;
         tur.splash[0] = 0;
         tur.splash[1] = 0;
         tur.nb_ennemi[0] = 1;
@@ -538,7 +538,7 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.has_effect = true;
         tur.effet = Money;
         tur.puissance_effet[0] = 2;
-        tur.puissance_effet[1] = 5;
+        tur.puissance_effet[1] = 6;
     }
     return tur;
 }

@@ -148,7 +148,7 @@ struct Enemy defEnemy(Grid grid, enum EnemyType type, int start_x, int start_y)
         enemy.hp = 100;
         enemy.maxHP = 100;
         enemy.speed = 0.5f;
-        enemy.damage = 10;
+        enemy.damage = 5;
         enemy.money = 5;
         enemy.state = ENEMY_STATE_ALIVE;
         enemy.has_effect = true;
