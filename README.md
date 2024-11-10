@@ -498,7 +498,7 @@ On a donc décidé de désactiver les missiles.Vous pouvez cependant tout de mè
 
 ### Système de vagues
 Pour le système de vague, un ensemble de fonctions définissemnt:
-- Les HP par vague (une vague de 100HP spawnera 1à ennemis de 10Hp)
+- Les HP par vague (une vague de 100HP spawnera 10 ennemis de 10Hp)
 - Les HPPS par vague (10HPPS -> cette meme vague durrera 10s avec un ecart de 1s enctre chaque spawn)
 - Les random_factor: pour chaque ennemi, ça correspond a la probabilité de le spawner 
 - min spawn permet de forcer le spawn des boss a certaines vagues.
