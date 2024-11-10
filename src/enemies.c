@@ -660,7 +660,7 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
         dy *= enemy->speed * dt_sec;
 
         // Influence des effet des tourelles comme le stun (pétrification) et le slow (ralentissement) sur les mouvements des ennemis
-        if (enemy->has_effect)
+        if (enemy->has_effect && enemy->type != ENEMY_TANK)
         {
             if (enemy->effet == Stun)
             {
