@@ -58,17 +58,17 @@ void drawLabels(Labels labels) // affiche tous les labels
     for (int i = 0; i < labels.count; i++)
     {
         move_to(labels.labels[i].x, labels.labels[i].y);
-        printf(COLOR_STANDARD_BG COLOR_YELLOW "%d" RESET, labels.labels[i].text);
+        printf(COLOR_YELLOW "%d" RESET, labels.labels[i].text);
     }
 };
 
 void freeLabels(Labels labels) // nettoie le tableau des labels
 {
-    printf(COLOR_GRAY " $ " RESET "Freeing %s%d%s labels:\t", COLOR_YELLOW, labels.count, RESET);
+    fprintf(stdout, COLOR_GRAY " $ " RESET "Freeing %s%d%s labels:\t", COLOR_YELLOW, labels.count, RESET);
 
     free(labels.labels);
 
-    printf("%s Done %s\n", COLOR_GREEN, RESET);
+    fprintf(stdout, "%s Done %s\n", COLOR_GREEN, RESET);
 };
 
 /*
@@ -80,55 +80,43 @@ void freeLabels(Labels labels) // nettoie le tableau des labels
 // Lecture des inputs de l'utilisateur
 char get_key_press()
 {
-    int k = 0;
-    // Récupère le nombre de characters en attente d’être lus
-    ioctl(STDIN_FILENO, FIONREAD, &k);
-
-    if (k > 0)
-        return getchar();
-    else
-        return 0;
+    nodelay(stdscr, true);
+    return getch();
 }
 
 // Les fonctions suivantes sont claires de par leurs noms (les "\033[" indiquent des actions sur l'affichage (voir README et les codes ANSI))
 void move_to(int x, int y)
 {
-    printf("\033[%d;%dH", y, x);
+    move(y, x);
 }
 
 void clear_screen()
 {
-    printf("\033[2J");
-}
-
-void clear_line()
-{
-    printf("\033[2K");
+    erase();
 }
 
 void hide_cursor()
 {
-    printf("\033[?25l");
+    curs_set(false);
 }
 
 void show_cursor()
 {
-    printf("\033[?25h");
+    curs_set(true);
 }
 
 void printCritical(char *errorMessage)
+
 {
-    printf("%s%sCRITICAL%s: %s %s %s\n", COLOR_RED, UNDERLINE, UNDERLINE_RST, BOLD, errorMessage, RESET);
+    fprintf(stderr, "\033[91;4mCRITICAL\033[24m: %s \033[0m\n", errorMessage);
 }
 
-// Récupération de la taille du terminale
+
+
 void get_terminal_size(int *width, int *height)
 {
-    struct winsize w;
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-
-    *width = w.ws_col;
-    *height = w.ws_row;
+    *width = COLS;
+    *height = LINES;
 }
 
 // Oblige l'utilisateur à se mettre dans une bonne configuration de terminal pour jouer
@@ -158,8 +146,6 @@ void checkTerminalSize(int *width, int *height)
 // Dessine les cercles de portée des tourelles
 void drawRange(int term_width, int term_height, float range, float grid_x, float grid_y, bool fill)
 {
-    printf(COLOR_STANDARD_BG);
-
     for (int y = 0; y < term_height; y++)
     {
         for (int x = 0; x < term_width; x++)

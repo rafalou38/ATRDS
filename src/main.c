@@ -24,10 +24,6 @@ BulletPool bulletPool;
 
 // est ce q'une cellule a été activé (shop ouvert)
 bool selection_active = false;
-// vraie quand la range d'une tourelle est affichée (sur la quelle est placée le curseur), pour pouvoir effacer la range une fois qu'elle ne l'est plus
-bool was_range_visible = false;
-int prev_selected_x = 0; // permet de détecter un changement de sélection et de nettoyer la grille
-int prev_selected_y = 0;
 // Position de la selection sur la grille
 int selected_cell_x = 0;
 int selected_cell_y = 0;
@@ -103,8 +99,6 @@ void handle_enter_key()
         }
     }
     selection_active = false;
-    fillBG(1, 1, width + 1, height + 1);
-    drawFullGrid(grid);
 }
 
 void handle_arrow_keys()
@@ -212,8 +206,6 @@ void handle_arrow_keys()
                 grid.cells[selected_cell_x][selected_cell_y].selected = true;
             }
         }
-        drawFullGrid(grid);
-        fflush(stdout);
     }
     else
     {
@@ -244,34 +236,130 @@ void handle_arrow_keys()
 struct termios base_t_settings;
 void configTerminal()
 {
-    // Cette fonction si on l'active n'affichera pas le résultat des printf en direct mais tout d'un coup apres avoir appelé fflush(stdout); (meilleures performances)
-    // https://en.cppreference.com/w/c/io/setvbuf
-    setvbuf(stdout, NULL, _IOFBF, (MIN_TERMINAL_WIDTH + 5) * (MIN_TERMINAL_HEIGHT + 5) * 2);
-    setbuf(stdin, NULL);
+    setlocale(LC_ALL, "");
+    initscr();
+    start_color();
+    // use_default_colors();
+    fprintf(stderr, "%d", MAX_COLOR_PAIRS);
+    init_extended_pair(233, COLOR_WHITE, 233);
+    wbkgd(stdscr, COLOR_PAIR(233));
+
+    noecho();
+
+    // init_colors();
     hide_cursor();
-
-    // https://man7.org/linux/man-pages/man3/termios.3.html
-    tcgetattr(STDIN_FILENO, &base_t_settings);
-    struct termios t_settings = base_t_settings;
-
-    // Place le terminal en mode non canonique (entrées envoyées sans enter)
-    t_settings.c_lflag &= ~(ICANON);
-    // sans echo, les touches pressés ne sont pas affichées.
-    t_settings.c_lflag &= ~(ECHO);
-    t_settings.c_lflag &= ~(ECHOE);
-    t_settings.c_lflag &= ~(ECHOK);
-    t_settings.c_lflag &= ~(ECHONL);
-
-    tcsetattr(STDIN_FILENO, TCSANOW, &t_settings);
 }
 
 void cleanup()
 {
     show_cursor();
-    printf("Bye.\n");
+    fprintf(stdout, "Bye.\n");
     fflush(stdout);
-    tcsetattr(STDIN_FILENO, TCSANOW, &base_t_settings);
     exit(0);
+}
+
+int maind()
+{
+    setlocale(LC_ALL, "");
+    initscr();
+    start_color();
+
+    // init_colors();
+
+    // custom_printf(COLOR_BANQUE_BASE "boyo" RESET);
+    // custom_printf(COLOR_TOWER_SLOT_BG "         t            ");
+
+    // init_extended_pair(69, 7, 124);
+    // attron(COLOR_PAIR(69));
+    // printw("yoyop");
+    // custom_printf("\033[42;7;124m YOYOP");
+    // custom_printf("\033[42;7;126m YOYOP");
+    // custom_printf("\033[42;7;130m YOYOP");
+    // int sprite_anim = 0;
+    // char *sprite_ennemy[4][3] =
+    //     {{
+    //          COLOR_TUX_BASE "▞▀▀▚",
+    //          "▌" COLOR_TUX_EYES "▚ ▞" COLOR_TUX_BASE,
+    //          "▚▄▄▞",
+    //      },
+    //      {
+    //          COLOR_TUX_BASE "▞▀▀▚",
+    //          "▌" COLOR_TUX_EYES "▀ ▀" COLOR_TUX_BASE,
+    //          "▚▄▄▞",
+    //      },
+    //      {
+    //          COLOR_TUX_BASE "▞▀▀▚",
+    //          COLOR_TUX_EYES "▚ ▞" COLOR_TUX_BASE "▐",
+    //          "▚▄▄▞",
+    //      },
+    //      {
+    //          COLOR_TUX_BASE "▞▀▀▚",
+    //          "▌" COLOR_TUX_EYES "▄ ▄" COLOR_TUX_BASE,
+    //          "▚▄▄▞",
+    //      }};
+    // for (int i = 0; i < 3; i++)
+    // {
+    //     move_to(1, i + 1);
+    //     custom_printf(sprite_ennemy[sprite_anim][i]);
+    // }
+
+    // move_to(0, 0);
+    // custom_printf(RESET "Enemies: %d/%d | Labels: %d/%d | (%d fps) | runtime: %lds | wave: %d",
+    //               10,  //
+    //               234, //
+    //               1,   //
+    //               321, //
+    //               60,  //
+    //               500, //
+    //               3);
+
+    // custom_printf(COLOR_TOWER_SLOT_BG);
+    // custom_printf(COLOR_SELECTED_SLOT);
+    // custom_printf("RIP BOZO");
+
+    // int terminal_x = 10;
+    // int terminal_y = 10;
+    // for (int y = 0; y < CELL_HEIGHT; y++)
+    // {
+    //     move_to(terminal_x, terminal_y + y);
+    //     custom_printf(COLOR_SELECTED_SLOT);
+    //     custom_printf(COLOR_TOWER_SLOT_BG);
+    //     for (int x = 0; x < CELL_WIDTH; x++)
+    //     {
+
+    //         if (x == 0)
+    //         {
+    //             custom_printf("█");
+    //         }
+    //         if (x == 1 && y != 0 && y != CELL_HEIGHT - 1)
+    //         {
+    //             custom_printf(" ");
+    //         }
+    //         if (x == CELL_WIDTH - 2 && y != 0 && y != CELL_HEIGHT - 1)
+    //         {
+    //             move_to(terminal_x + x, terminal_y + y);
+    //             custom_printf(COLOR_SELECTED_SLOT);
+    //             custom_printf(COLOR_TOWER_SLOT_BG);
+    //             custom_printf(" ");
+    //         }
+    //         else if (x == CELL_WIDTH - 1)
+    //         {
+    //             move_to(terminal_x + x, terminal_y + y);
+    //             custom_printf(COLOR_SELECTED_SLOT);
+    //             custom_printf(COLOR_TOWER_SLOT_BG);
+    //             custom_printf("█");
+    //         }
+    //         else if (y == 0)
+    //             custom_printf("▀");
+    //         else if (y == CELL_HEIGHT - 1)
+    //             custom_printf("▄");
+    //     }
+    // }
+
+    refresh();
+    getch();
+    endwin();
+    return 0;
 }
 
 /**
@@ -310,8 +398,6 @@ int main(int argc, char *argv[])
         anim_debut(width, height);
     }
 
-    fillBG(1, 1, width + 1, height + 1);
-
     /**
      * ##################################
      * Initialisation des éléments du jeu
@@ -325,7 +411,7 @@ int main(int argc, char *argv[])
     genBasicPath(&grid);
 
     // Gestion des statistiques
-    gameStats.cash = 30;
+    gameStats.cash = 400;
     gameStats.health = 20;
 
     // Gestion labels
@@ -361,7 +447,6 @@ int main(int argc, char *argv[])
         {
             clear_screen();
             move_to(1, 1);
-            printf(RESET);
             int n = 0;
             if (argc == 3)
                 n = atoi(argv[2]);
@@ -369,9 +454,6 @@ int main(int argc, char *argv[])
             return 0;
         }
     }
-
-    // Affichage intégral de la grille
-    drawFullGrid(grid);
 
     // Timers du jeu
     struct timespec prev_time;
@@ -412,15 +494,8 @@ int main(int argc, char *argv[])
 #if BULLETS_ON
             // Cas ou les misilles sont activées
 
-            if (frame_index % 50 == 0) // Toutes les 50 frames, on efface l'écran pour supprimer les artefacts restants
-            {
-                fillBG(1, 1, width + 1, height + 1);
-                drawFullGrid(grid);
-            }
-            else // Le reste du temps, on efface uniquement les cases du chemin qui ont été mises a jour
-            {
-                clearUsedPath(grid, enemyPool);
-            }
+            fillBG();
+            drawFullGrid(grid);
 
             // Update towers gère l'affichage et les animations des tourelles, il s'occupe aussi de tirer sur les ennemis a portée le moment venu pour chacune des tourelles
             updateTowers(grid, enemyPool, &bulletPool, delta_t, &gameStats);
@@ -439,12 +514,7 @@ int main(int argc, char *argv[])
             updateLabels(&labels, delta_t);
             drawLabels(labels);
 
-            int wave_status = updateWaveSystem(&waveSystem, grid, &enemyPool, delta_t, &gameStats);
-            if (wave_status == -2)
-            {
-                fillBG(1, 1, width + 1, height + 1);
-                drawFullGrid(grid);
-            }
+            updateWaveSystem(&waveSystem, grid, &enemyPool, delta_t, &gameStats);
 
             // Mise à jour des ennemis existants
             updateEnemies(&enemyPool, grid, &gameStats, &labels, delta_t);
@@ -452,16 +522,6 @@ int main(int argc, char *argv[])
             drawEnemies(enemyPool, grid);
 
             // Affichage de la portée des tourelles
-            if ((was_range_visible)                    //
-                && (prev_selected_x != selected_cell_x //
-                    || prev_selected_y != selected_cell_y))
-            {
-                fillBG(1, 1, width + 1, height + 1);
-                drawFullGrid(grid);
-                was_range_visible = false;
-                prev_selected_x = selected_cell_x;
-                prev_selected_y = selected_cell_y;
-            }
             if (grid.cells[selected_cell_x][selected_cell_y].hasTurret)
             {
                 float range_min = grid.cells[selected_cell_x][selected_cell_y].turret.range_min[grid.cells[selected_cell_x][selected_cell_y].turret.lvl];
@@ -470,15 +530,12 @@ int main(int argc, char *argv[])
                     drawRange(width, height, range_min, selected_cell_x + 0.5, selected_cell_y + 0.5, false);
                 if (range_max > 0)
                     drawRange(width, height, range_max, selected_cell_x + 0.5, selected_cell_y + 0.5, false);
-
-                was_range_visible = true;
-                prev_selected_x = selected_cell_x;
-                prev_selected_y = selected_cell_y;
             }
         }
-
-        // Mise a jour de l'affichage
-        fflush(stdout);
+        else
+        {
+            showTowerSelection(ligne, grid.cells[selected_cell_x][selected_cell_y].hasTurret, grid.cells[selected_cell_x][selected_cell_y].turret);
+        }
 
         /*
         ##############################
@@ -486,8 +543,8 @@ int main(int argc, char *argv[])
         ##############################
         */
         move_to(0, 0);
-        printf(COLOR_STANDARD_BG);
-        printf(ERASE_LINE "Enemies: %d/%d | Labels: %d/%d | (%d fps) | runtime: %lds | wave: %d",
+        printf(RESET);
+        printf("Enemies: %d/%d | Labels: %d/%d | (%d fps) | runtime: %lds | wave: %d",
                enemyPool.count,                  //
                enemyPool.length,                 //
                labels.count,                     //
@@ -503,6 +560,9 @@ int main(int argc, char *argv[])
         move_to(width - (7 + 10), 1);
         printf(COLOR_RED "%02d ❤" RESET COLOR_STANDARD_BG " | " COLOR_YELLOW " % 4d €" RESET, gameStats.health, gameStats.cash);
 
+        // Mise a jour de l'affichage
+        refresh();
+
         /*
         ###########################
         GESTION DES ENTREES CLAVIER
@@ -517,13 +577,6 @@ int main(int argc, char *argv[])
             }
             else if (c == ' ') // Touche espace pressée
             {
-                // Nettoyage
-                if (selection_active)
-                {
-                    fillBG(1, 1, width + 1, height + 1);
-                    drawFullGrid(grid);
-                    ligne = 1;
-                }
                 ligne = 1;
                 selection_active = !selection_active;
             }
@@ -532,11 +585,6 @@ int main(int argc, char *argv[])
 
             else if (c == 10 && selection_active) // ENTER
                 handle_enter_key();
-
-            if (selection_active)
-            {
-                showTowerSelection(ligne, grid.cells[selected_cell_x][selected_cell_y].hasTurret, grid.cells[selected_cell_x][selected_cell_y].turret);
-            }
         }
     }
 
@@ -546,9 +594,6 @@ int main(int argc, char *argv[])
     ################
     */
 
-    printf("\n");
-    clear_screen();
-    move_to(0, 0);
     freeGrid(grid);           // Libère les allocations dynamiques liées à la grille
     freeEnemyPool(enemyPool); // Libère les allocations dynamiques liées aux ennemis
     freeLabels(labels);       // Libère les allocations dynamiques liées aux labels

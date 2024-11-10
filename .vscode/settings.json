@@ -57,7 +57,10 @@
     "streambuf": "c",
     "system_error": "c",
     "tuple": "c",
-    "typeinfo": "c"
+    "typeinfo": "c",
+    "cstdio": "c",
+    "stdio.h": "c",
+    "ncurseswrapper.h": "c"
   },
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {

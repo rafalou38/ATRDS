@@ -32,16 +32,11 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                 {
                     if (grid.cells[x][y].turret.compteur_mortier <= 0 && grid.cells[x][y].turret.compteur_mortier != -1)
                     {
-                        int w;
-                        int h;
-                        get_terminal_size(&w, &h);
-                        fillBG(1, 1, w + 1, h + 1);
-                        drawFullGrid(grid);
-                        grid.cells[x][y].turret.compteur_mortier = -1;
+                        
                     }
                     else if (grid.cells[x][y].turret.compteur_mortier > 0)
                     {
-                        grid.cells[x][y].turret.compteur_mortier -= dt;
+                        // TODO: REDRAW SHOT RANGE
                     }
                 }
                 if (!grid.cells[x][y].turret.has_malus)
@@ -558,8 +553,6 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
     int y0 = terminal_height / 2.0f - height / 2.0f + 1;
 
     printf(RESET);
-    printf(COLOR_STANDARD_BG);
-
     // Bordures et coeur de la fenêtre
     for (int y = 0; y < height; y++)
     {
@@ -593,14 +586,14 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
             printf(" 🛠️ Upgrade");
 
             move_to(x0 + 1 + width - 8, y0 + 1);
-            printf(COLOR_YELLOW "-% 3d €" RESET, next_price);
+            printf(COLOR_YELLOW "-% 4d €" RESET, next_price);
         }
 
         move_to(x0 + 1, y0 + 2);
         printf(" 💰 Sell");
 
         move_to(x0 + 1 + width - 8, y0 + 2);
-        printf(COLOR_GREEN "+% 3d €" RESET, (int)(getTurretPrice(selectedTurret.type, selectedTurret.lvl)*0.8));
+        printf(COLOR_GREEN "+% 4d €" RESET, (int)(getTurretPrice(selectedTurret.type, selectedTurret.lvl)*0.8));
     }
     // Sinon, proposer la construction des autres tourelles
     else
@@ -608,37 +601,37 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
         move_to(x0 + 1, y0 + 1);
         printf(" 🔫 Sniper");
         move_to(x0 + 1 + width - 10, y0 + 1);
-        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Sniper, 0));
+        printf(COLOR_YELLOW "-% 4d €" RESET, getTurretPrice(Sniper, 0));
 
         move_to(x0 + 1, y0 + 2);
         printf(" 🔥 Inferno");
         move_to(x0 + 1 + width - 10, y0 + 2);
-        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Inferno, 0));
+        printf(COLOR_YELLOW "-% 4d €" RESET, getTurretPrice(Inferno, 0));
 
         move_to(x0 + 1, y0 + 3);
-        printf(" 🔬 Mortier ");
+        printf(" 💣 Mortier ");
         move_to(x0 + 1 + width - 10, y0 + 3);
-        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Mortier, 0));
+        printf(COLOR_YELLOW "-% 4d €" RESET, getTurretPrice(Mortier, 0));
 
         move_to(x0 + 1, y0 + 4);
-        printf(" ⚙️  Gatling ");
+        printf(" 🔩 Gatling ");
         move_to(x0 + 1 + width - 10, y0 + 4);
-        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Gatling, 0));
+        printf(COLOR_YELLOW "-% 4d €" RESET, getTurretPrice(Gatling, 0));
 
         move_to(x0 + 1, y0 + 5);
-        printf(" ⏳ Petrificateur ");
+        printf(" 🪨 Petrificateur ");
         move_to(x0 + 1 + width - 10, y0 + 5);
-        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Petrificateur, 0));
+        printf(COLOR_YELLOW "-% 4d €" RESET, getTurretPrice(Petrificateur, 0));
 
         move_to(x0 + 1, y0 + 6);
-        printf(" ❄️  Freezer ");
+        printf(" 💧  Freezer ");
         move_to(x0 + 1 + width - 10, y0 + 6);
-        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Freezer, 0));
+        printf(COLOR_YELLOW "-% 4d €" RESET, getTurretPrice(Freezer, 0));
 
         move_to(x0 + 1, y0 + 7);
         printf(" 💲 Banque ");
         move_to(x0 + 1 + width - 10, y0 + 7);
-        printf(COLOR_YELLOW "-% 3d €" RESET, getTurretPrice(Banque, 0));
+        printf(COLOR_YELLOW "-% 4d €" RESET, getTurretPrice(Banque, 0));
     }
     printf(RESET);
 }

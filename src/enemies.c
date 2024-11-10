@@ -19,13 +19,13 @@ EnemyPool AllocEnemyPool() // pré-Alloue le tableau d’ennemis avec une taille
 
 void freeEnemyPool(EnemyPool ep) // On libère le tableau des enemies.
 {
-    printf(COLOR_GRAY);
-    printf(" $ ");
-    printf(RESET);
-    printf("Freeing %s%d%s enemies:\t", COLOR_YELLOW, ep.count, RESET);
+    fprintf(stdout, COLOR_GRAY);
+    fprintf(stdout, " $ ");
+    fprintf(stdout, RESET);
+    fprintf(stdout, "Freeing %s%d%s enemies:\t", COLOR_YELLOW, ep.count, RESET);
 
     free(ep.enemies);
-    printf("%s Done %s\n", COLOR_GREEN, RESET);
+    fprintf(stdout, "%s Done %s\n", COLOR_GREEN, RESET);
 }
 
 // Definitions des différents types d'ennemis et de leurs caractéristiques
@@ -236,7 +236,7 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
         int px = terminal_x + (CELL_WIDTH + GAP) * (enemy->grid_x - (int)enemy->grid_x);
         int py = terminal_y + (CELL_HEIGHT + GAP / 2) * (enemy->grid_y - (int)enemy->grid_y);
 
-        printf(COLOR_STANDARD_BG); // Sprites des ennemis
+        // Sprites des ennemis
         if (enemy->type == ENEMY_TUX)
         {
             int sprite_anim = 0;
@@ -554,7 +554,7 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
         {
             move_to(px - 1, py - 1);
         }
-        printf(COLOR_HEALTH_BG); // Sprites de la barre de vie des ennemis
+        // printf(COLOR_HEALTH_BG); // Sprites de la barre de vie des ennemis
         float ratio_tot = enemy->hp / (float)enemy->maxHP;
         if (ratio_tot >= 0.75)
             printf(COLOR_HEALTH_75);
@@ -708,7 +708,7 @@ void updateEnemies(EnemyPool *ep, Grid grid, GameStats *gs, Labels *labels, floa
             for (size_t i = 0; i < CELL_HEIGHT; i++)
             {
                 move_to((int)enemy->grid_x * (CELL_WIDTH + GAP) + 2, (int)enemy->grid_y * (CELL_HEIGHT + GAP / 2) + 2 + i);
-                printf(COLOR_STANDARD_BG "       ");
+                printf(RESET "       ");
             }
         }
 

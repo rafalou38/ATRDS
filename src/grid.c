@@ -40,10 +40,10 @@ void allocateGridCells(Grid *grid)
 
 void freeGrid(Grid grid)
 {
-    printf(COLOR_GRAY);
-    printf(" $ ");
-    printf(RESET);
-    printf("Freeing %s%dx%d%s grid:\t", COLOR_YELLOW, grid.width, grid.height, RESET);
+    fprintf(stdout, COLOR_GRAY);
+    fprintf(stdout, " $ ");
+    fprintf(stdout, RESET);
+    fprintf(stdout, "Freeing %s%dx%d%s grid:\t", COLOR_YELLOW, grid.width, grid.height, RESET);
 
     for (int x = 0; x < grid.width; x++)
     {
@@ -51,7 +51,7 @@ void freeGrid(Grid grid)
     }
     free(grid.cells);
 
-    printf("%s Done %s\n", COLOR_GREEN, RESET);
+    fprintf(stdout, "%s Done %s\n", COLOR_GREEN, RESET);
 }
 
 void genBasicPath(Grid *grid) // Génération du terrain par rapport a la seed (rand())
@@ -180,17 +180,9 @@ void genBasicPath(Grid *grid) // Génération du terrain par rapport a la seed (
     }
     free(historique);
 }
-void fillBG(int xmin, int ymin, int xmax, int ymax) // Efface tout
+void fillBG() // Efface tout
 {
-    printf(COLOR_STANDARD_BG);
-    for (int x = xmin; x < xmax; x++)
-    {
-        for (int y = ymin; y < ymax; y++)
-        {
-            move_to(x, y);
-            printf(" ");
-        }
-    }
+    erase();
 }
 void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur status
 {
@@ -220,8 +212,8 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
         {
             int terminal_x = cell.x * (CELL_WIDTH + GAP) + 3;
             int terminal_y = cell.y * (CELL_HEIGHT + GAP / 2) + 2;
-            printf(COLOR_SELECTED_SLOT);
-            printf(COLOR_TOWER_SLOT_BG);
+            printf(COLOR_SELECTED_SLOT_PLUS_BG);
+            // printf(COLOR_TOWER_SLOT_BG);
             for (int y = 0; y < CELL_HEIGHT; y++)
             {
                 move_to(terminal_x, terminal_y + y);
@@ -1311,7 +1303,7 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
         bool chemin_vers_bas_droit = cell.x + 1 < grid.width && cell.y + 1 < grid.height && grid.cells[cell.x + 1][cell.y + 1].type == CHEMIN;
         bool chemin_vers_bas_gauche = cell.x - 1 >= 0 && cell.y + 1 < grid.height && grid.cells[cell.x - 1][cell.y + 1].type == CHEMIN;
 
-        printf(COLOR_STANDARD_BG);
+        printf(RESET);
         printf(COLOR_PATH_BORDER);
         for (int y = 0; y < CELL_HEIGHT + 2; y++)
         {
