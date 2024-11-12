@@ -24,8 +24,8 @@ CONFIGURATION
 #define MIN_TERMINAL_WIDTH 232
 #define MIN_TERMINAL_HEIGHT 74
 
-#define MAX_TERMINAL_WIDTH 510
-#define MAX_TERMINAL_HEIGHT 150
+#define MAX_TERMINAL_WIDTH 350
+#define MAX_TERMINAL_HEIGHT 100
 
 #define TARGET_FPS 144
 #define WAVE_DELAY 0.5 // (secondes)
@@ -258,6 +258,12 @@ int msleep(long ms);
 #define COLOR_HEALTH_25 "\033[38;5;166m"
 #define COLOR_HEALTH_50 "\033[38;5;178m"
 #define COLOR_HEALTH_75 "\033[38;5;82m"
+// Speed controller colors
+#define SPEED_CONTROL "\033[38;5;172m"
+#define SPEED_CONTROL_2 "\033[38;5;32m"
+#define SPEED_CONTROL_3 "\033[38;5;46m"
+#define SPEED_CONTROL_4 "\033[38;5;91m"
+#define SPEED_CONTROL_PAUSE "\033[38;5;222m"
 
 char get_key_press();
 void move_to(int x, int y);
@@ -270,3 +276,4 @@ void get_terminal_size(int *width, int *height);
 void checkTerminalSize(int *width, int *height);
 void drawRange(int term_width, int term_height, float range, float grid_x, float grid_y, bool fill);
 void anim_debut(int term_width, int term_height);
+void drawGameSpeed(int game_speed_control, int term_width, int game_speed_anim_pause);

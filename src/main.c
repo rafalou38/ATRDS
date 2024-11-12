@@ -381,6 +381,11 @@ int main(int argc, char *argv[])
     // size_t est un int de capacité plus élevée.
     size_t frame_index;
     int fps = 0;
+    
+    // entiers qui gèrent la vitesse du jeu
+    int game_speed_control = 1;
+    int compteur_animation_game_speed = 10;
+    int game_speed_anim_pause = 0;
 
     // Le jeu tourne tant que la vie n'atteint pas 0
     while (gameStats.health > 0)
@@ -390,6 +395,9 @@ int main(int argc, char *argv[])
         clock_gettime(CLOCK_MONOTONIC, &current_time);
         // Ici on calcule dt (écart de temps entre cette frame et la précédente)
         float delta_t = (current_time.tv_nsec - prev_time.tv_nsec) / 1000000000.0 + (current_time.tv_sec - prev_time.tv_sec);
+
+        delta_t *= game_speed_control;
+
         prev_time = current_time;
         // On attends le temps restant pour avoir un FPS fixe
         if (delta_t < 1.0 / TARGET_FPS)
@@ -477,6 +485,15 @@ int main(int argc, char *argv[])
             }
         }
 
+        if(compteur_animation_game_speed<delta_t||selection_active){
+            if(selection_active){
+                game_speed_anim_pause=1;
+            }
+            drawGameSpeed(game_speed_control,width,game_speed_anim_pause);
+            compteur_animation_game_speed+=10;
+        }
+
+
         // Mise a jour de l'affichage
         fflush(stdout);
 
@@ -487,14 +504,15 @@ int main(int argc, char *argv[])
         */
         move_to(0, 0);
         printf(COLOR_STANDARD_BG);
-        printf(ERASE_LINE "Enemies: %d/%d | Labels: %d/%d | (%d fps) | runtime: %lds | wave: %d",
+        printf(ERASE_LINE "Enemies: %d/%d | Labels: %d/%d | (%d fps) | runtime: %lds | wave: %d | speed: %d",
                enemyPool.count,                  //
                enemyPool.length,                 //
                labels.count,                     //
                labels.size,                      //
                (int)fps,                         //
                current_time.tv_sec - time_start, //
-               waveSystem.current_wave_index);
+               waveSystem.current_wave_index,    //
+               game_speed_control);
 
         if (waveSystem.wave_timer > 0)
             printf(" | Prochaine vague: %.1fs", waveSystem.wave_timer);
@@ -515,6 +533,18 @@ int main(int argc, char *argv[])
             {
                 break;
             }
+            else if (c == 'o' || c == 'O')
+            {
+                compteur_animation_game_speed = 0;
+                if (game_speed_control > 4)
+                {
+                    game_speed_control = 1;
+                }
+                else
+                {
+                    game_speed_control *= 2;
+                }
+            }
             else if (c == ' ') // Touche espace pressée
             {
                 // Nettoyage
@@ -523,6 +553,7 @@ int main(int argc, char *argv[])
                     fillBG(1, 1, width + 1, height + 1);
                     drawFullGrid(grid);
                     ligne = 1;
+                    game_speed_anim_pause=0;
                 }
                 ligne = 1;
                 selection_active = !selection_active;

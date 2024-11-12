@@ -136,7 +136,7 @@ void checkTerminalSize(int *width, int *height)
 {
     get_terminal_size(width, height);
 
-    while (*width < MIN_TERMINAL_WIDTH || *height < MIN_TERMINAL_HEIGHT)
+    while ((*width < MIN_TERMINAL_WIDTH || *height < MIN_TERMINAL_HEIGHT) || (*width > MAX_TERMINAL_WIDTH || *height > MAX_TERMINAL_HEIGHT))
     {
         clear_screen();
 
@@ -181,6 +181,62 @@ void drawRange(int term_width, int term_height, float range, float grid_x, float
                     printf("•");
                 }
             }
+        }
+    }
+}
+
+// Petit dessin du changement de vitesse dans le coin en haut à droite
+void drawGameSpeed(int game_speed_anim, int term_width, int game_speed_anim_pause)
+{
+    char *sprite[5][7] = {{SPEED_CONTROL COLOR_TOWER_SLOT_BG"         ▄█   ",
+                           "       ▄███   ",
+                           "     ▄█████   ",
+                           "    ███████   ",
+                           "     ▀█████   ",
+                           "       ▀███   ",
+                           "         ▀█   "},
+                          {SPEED_CONTROL_2 COLOR_TOWER_SLOT_BG"   █▄         ",
+                           "   ███▄       ",
+                           "   █████▄     ",
+                           "   ███████    ",
+                           "   █████▀     ",
+                           "   ███▀       ",
+                           "   █▀         "},
+                          {SPEED_CONTROL_3 COLOR_TOWER_SLOT_BG"  █▄  █▄      ",
+                           "  ███▄▀██▄    ",
+                           "  █████▄▀██▄  ",
+                           "  ███████ ███ ",
+                           "  █████▀▄██▀  ",
+                           "  ███▀▄██▀    ",
+                           "  █▀  █▀      "},
+                          {SPEED_CONTROL_4 COLOR_TOWER_SLOT_BG"  ▄▄▄▀▀█▄     ",
+                           "▄▄▄▀██▄▀██▄   ",
+                           " ▀██▄▀██▄▀██▄ ",
+                           "   ███ ███ ███",
+                           " ▄██▀▄██▀▄██▀ ",
+                           "▀▀▀▄██▀▄██▀   ",
+                           "  ▀▀▀▄▄█▀     "},
+                          {SPEED_CONTROL_PAUSE COLOR_TOWER_SLOT_BG"  ▄▄▄    ▄▄▄  ",
+                           "  ███    ███  ",
+                           "  ███    ███  ",
+                           "  ███    ███  ",
+                           "  ███    ███  ",
+                           "  ███    ███  ",
+                           "  ▀▀▀    ▀▀▀  "}};
+    if (game_speed_anim_pause == 1)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            move_to(term_width - (CELL_WIDTH * 2) + 7, 3 + i);
+            printf(sprite[4][i]);
+        }
+    }
+    else
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            move_to(term_width - (CELL_WIDTH * 2) + 7, 3 + i);
+            printf(sprite[(int)log2(game_speed_anim)][i]);
         }
     }
 }
@@ -537,8 +593,9 @@ void anim_debut(int term_width, int term_height)
                         }
                     }
                 }
-                if (tutorial_page == 0){
-                    move_to(term_width/2-7,term_height/2);
+                if (tutorial_page == 0)
+                {
+                    move_to(term_width / 2 - 7, term_height / 2);
                     printf("Yooo Easter Egg");
                 }
                 if (tutorial_page == 1)
@@ -681,7 +738,6 @@ void anim_debut(int term_width, int term_height)
                     ecart_en_plus_pour_aligner_txt += 2;
                     printf("Vous pouvez même améliorer ces tourelles en les re-sélectionnant et celle-ci peut être améliorée 2 fois !");
 
-
                     char *spriteInferno[7] = {COLOR_INFERNO_BASE "     ▄██▄     ",
                                               "  ▄▀█▀▀▀▀█▀▄  ",
                                               " ▄█▀ " COLOR_INFERNO_FIRE1 "▄" COLOR_INFERNO_FIRE2 "▀ ▄" COLOR_INFERNO_BASE " ▀█▄ ",
@@ -694,7 +750,7 @@ void anim_debut(int term_width, int term_height)
                         move_to(term_width / 2 - 56, ecarty + ecart_en_plus_pour_aligner_txt + i);
                         printf(spriteInferno[i]);
                     }
-                    
+
                     move_to(indentation2, ecarty + ecart_en_plus_pour_aligner_txt);
                     ecart_en_plus_pour_aligner_txt += 2;
                     printf("L'Inferno" RESET " : Une tourelle venue tout droit du 4ème cercle des enfers dans le but de vous aider");
@@ -717,7 +773,7 @@ void anim_debut(int term_width, int term_height)
                         move_to(term_width / 2 - 56, ecarty + ecart_en_plus_pour_aligner_txt + i);
                         printf(spriteMortier[i]);
                     }
-                    
+
                     move_to(indentation2, ecarty + ecart_en_plus_pour_aligner_txt);
                     ecart_en_plus_pour_aligner_txt += 2;
                     printf("Le Mortier" RESET " : Une tourelle d'artillerie lourde utilisée pour envoyer d'énormes Terminal Shells");
@@ -743,7 +799,7 @@ void anim_debut(int term_width, int term_height)
                         move_to(term_width / 2 - 56, ecarty + ecart_en_plus_pour_aligner_txt + i);
                         printf(spriteGatling[i]);
                     }
-                    
+
                     move_to(indentation2, ecarty + ecart_en_plus_pour_aligner_txt);
                     ecart_en_plus_pour_aligner_txt += 2;
                     printf("La Gatling" RESET " : Une arme dignement importée d'un état inter-dimensionnel nommé \"USA\"");
@@ -778,7 +834,7 @@ void anim_debut(int term_width, int term_height)
                     int indentation2 = term_width / 2 - 40;
                     int ecart_en_plus_pour_aligner_txt = 9;
 
-                    char *spriteFreezer[7] = {COLOR_FREEZER_BASE"      ██      ",
+                    char *spriteFreezer[7] = {COLOR_FREEZER_BASE "      ██      ",
                                               " ▄  ██▀▀██  ▄ ",
                                               "  ██▀  " COLOR_FREEZER_FIRING_CENTER "▄" COLOR_FREEZER_BASE " ▀██  ",
                                               "███  " COLOR_FREEZER_FIRING_CENTER "▀  ▄" COLOR_FREEZER_BASE "  ███",
@@ -803,7 +859,7 @@ void anim_debut(int term_width, int term_height)
                     ecart_en_plus_pour_aligner_txt += 2;
                     printf("à gagner votre guerre FROIDE d'une manière FRISSONANTE ! HAH, Vous GLISSEZ avec moi ? (Aled)");
 
-                    char *spritePetrificateur[7] = {COLOR_PETRIFICATEUR_BASE"   ▄▄    ▄▄   ",
+                    char *spritePetrificateur[7] = {COLOR_PETRIFICATEUR_BASE "   ▄▄    ▄▄   ",
                                                     " ▄▀  █▄▄█  ▀▄ ",
                                                     " ▀▄▄" COLOR_PETRIFICATEUR_FIRING "▄█  █▄" COLOR_PETRIFICATEUR_BASE "▄▄▀ ",
                                                     "   █  " COLOR_PETRIFICATEUR_SORON "██" COLOR_PETRIFICATEUR_BASE "  █   ",
@@ -815,7 +871,7 @@ void anim_debut(int term_width, int term_height)
                         move_to(term_width / 2 - 56, ecarty + ecart_en_plus_pour_aligner_txt + i);
                         printf(spritePetrificateur[i]);
                     }
-                    
+
                     move_to(indentation2, ecarty + ecart_en_plus_pour_aligner_txt);
                     ecart_en_plus_pour_aligner_txt += 2;
                     printf("Le Pétrificateur" RESET " : Une tourelle mystique qui, d'après la légende, aurait rendu fou son créateur");
@@ -829,19 +885,19 @@ void anim_debut(int term_width, int term_height)
                     ecart_en_plus_pour_aligner_txt += 2;
                     printf("plutôt rapproché. Une voix mystérieuse vous susurre :\"20 Pu-Diantre de Frame d'animations, Corneguidouille\"");
 
-                    char *spriteBanque[7] = {COLOR_BANQUE_BASE"    ▄▄▄▄▄▄    ",
-                      " ▄███▄▄▄▄███▄ ",
-                      " ███" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_BASE "██▄▄█ ",
-                      " ███" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_BASE "██▄▄█ ",
-                      " ██▀▀▀▀▀██▀▀█ ",
-                      " ████████████ ",
-                      "              "};
+                    char *spriteBanque[7] = {COLOR_BANQUE_BASE "    ▄▄▄▄▄▄    ",
+                                             " ▄███▄▄▄▄███▄ ",
+                                             " ███" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_BASE "██▄▄█ ",
+                                             " ███" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_MONEY "$" COLOR_BANQUE_GENERATION "$" COLOR_BANQUE_BASE "██▄▄█ ",
+                                             " ██▀▀▀▀▀██▀▀█ ",
+                                             " ████████████ ",
+                                             "              "};
                     for (int i = 0; i < 7; i++)
                     {
                         move_to(term_width / 2 - 56, ecarty + ecart_en_plus_pour_aligner_txt + i);
                         printf(spriteBanque[i]);
                     }
-                    
+
                     move_to(indentation2, ecarty + ecart_en_plus_pour_aligner_txt);
                     ecart_en_plus_pour_aligner_txt += 2;
                     printf("La Banque" RESET " : L'arrivé du capitalisme dans le monde Terminalogique, qui distribue l'EURO à la populasse.");
@@ -870,17 +926,18 @@ void anim_debut(int term_width, int term_height)
 
                 move_to(term_width - 6 - ecartx, term_height - 2 - ecarty);
                 printf("%d/3", tutorial_page);
-                
+
                 if (c == 10)
                 {
                     tutorial_page++;
                     clear_screen();
                 }
-                if (c == 8 || c== 127)
+                if (c == 8 || c == 127)
                 {
                     tutorial_page--;
-                    if (tutorial_page<0){
-                        tutorial_page=0;
+                    if (tutorial_page < 0)
+                    {
+                        tutorial_page = 0;
                     }
                     clear_screen();
                 }
