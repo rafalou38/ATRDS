@@ -11,6 +11,7 @@ EnemyPool AllocEnemyPool() // pré-Alloue le tableau d’ennemis avec une taille
     if (ep.enemies == NULL)
     {
         printCritical("Failed to allocate enemy pool");
+        // free de tout automatique dans main.c/void cleanup()
         exit(EXIT_FAILURE);
     }
 
@@ -24,7 +25,8 @@ void freeEnemyPool(EnemyPool ep) // On libère le tableau des enemies.
     printf(RESET);
     printf("Freeing %s%d%s enemies:\t", COLOR_YELLOW, ep.count, RESET);
 
-    free(ep.enemies);
+    if (ep.enemies != NULL)
+        free(ep.enemies);
     printf("%s Done %s\n", COLOR_GREEN, RESET);
 }
 
@@ -175,6 +177,7 @@ struct Enemy *addEnemy(Grid grid, EnemyPool *ep, enum EnemyType type, int start_
     {
         // Dans le cas ou le nombre d’ennemis dépasse la capacité du tableau
         printCritical("Overflow not yet implemented\n");
+        // free de tout automatique dans main.c/void cleanup()
         exit(EXIT_FAILURE);
 
         return NULL;
@@ -748,9 +751,9 @@ WavePattern getWaveByIndex(int waveIndex)
 
     wp.random_coeffs[ENEMY_TUX] = 1;
     wp.random_coeffs[ENEMY_SPEED] = CLAMP(-0.1f + 1.0f * waveIndex / 8, 0.0f, 1.0f);
-    wp.random_coeffs[ENEMY_SPIDER] = CLAMP(-0.1f + 1.0f * waveIndex / 15, 0.0f, 1.0f); // 1 a vague 15
-    wp.random_coeffs[ENEMY_HIGHTUX] = CLAMP(-0.1f + 1.0f * waveIndex / 10, 0.0f, 1.0f);      // 1 a vague 10
-    wp.random_coeffs[ENEMY_HYPERSPEED] = CLAMP(-0.1f + 1.0f * waveIndex / 15, 0.0f, 1.0f);   // 1 a vague 15
+    wp.random_coeffs[ENEMY_SPIDER] = CLAMP(-0.1f + 1.0f * waveIndex / 15, 0.0f, 1.0f);     // 1 a vague 15
+    wp.random_coeffs[ENEMY_HIGHTUX] = CLAMP(-0.1f + 1.0f * waveIndex / 10, 0.0f, 1.0f);    // 1 a vague 10
+    wp.random_coeffs[ENEMY_HYPERSPEED] = CLAMP(-0.1f + 1.0f * waveIndex / 15, 0.0f, 1.0f); // 1 a vague 15
 
     wp.random_coeffs[ENEMY_SLIME_BOSS] = CLAMP(-0.1f + 0.2f * waveIndex / 20, 0.0f, 0.2f);
     wp.random_coeffs[ENEMY_BOSS_STUN] = CLAMP(-0.15f + 0.2f * waveIndex / 30, 0.0f, 0.2f);
@@ -856,7 +859,7 @@ int updateWaveSystem(WaveSystem *ws, Grid grid, EnemyPool *ep, float dt, GameSta
             else if (ws->wave_timer == 0)
             {
                 switchToWave(ws, ws->current_wave_index + 1);
-                gs->cash+=10;
+                gs->cash += 10;
             }
             else
             {

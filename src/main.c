@@ -265,13 +265,25 @@ void configTerminal()
     tcsetattr(STDIN_FILENO, TCSANOW, &t_settings);
 }
 
+// Cette fonction est exécutée automatiquement: a la fin du programme (fin normale, appel a exit(), interruption: CTRL+C)
+bool freed = false;
 void cleanup()
 {
-    show_cursor();
-    printf("Bye.\n");
-    fflush(stdout);
-    tcsetattr(STDIN_FILENO, TCSANOW, &base_t_settings);
-    exit(0);
+    if (!freed)
+    {
+        show_cursor();
+        printf(RESET "\nBye.\n");
+        fflush(stdout);
+        tcsetattr(STDIN_FILENO, TCSANOW, &base_t_settings);
+
+
+        freeGrid(grid);           // Libère les allocations dynamiques liées à la grille
+        freeEnemyPool(enemyPool); // Libère les allocations dynamiques liées aux ennemis
+        freeLabels(labels);       // Libère les allocations dynamiques liées aux labels
+        freed = true;
+    }
+
+    exit(EXIT_SUCCESS);
 }
 
 /**
@@ -334,6 +346,7 @@ int main(int argc, char *argv[])
     if (labels.labels == NULL)
     {
         printCritical("Failed to allocate label");
+        // free de tout automatique dans main.c/void cleanup()
         exit(EXIT_FAILURE);
     }
 
@@ -549,8 +562,11 @@ int main(int argc, char *argv[])
     printf("\n");
     clear_screen();
     move_to(0, 0);
-    freeGrid(grid);           // Libère les allocations dynamiques liées à la grille
-    freeEnemyPool(enemyPool); // Libère les allocations dynamiques liées aux ennemis
-    freeLabels(labels);       // Libère les allocations dynamiques liées aux labels
+    // freeGrid(grid);           // Libère les allocations dynamiques liées à la grille
+    // freeEnemyPool(enemyPool); // Libère les allocations dynamiques liées aux ennemis
+    // freeLabels(labels);       // Libère les allocations dynamiques liées aux labels
+    // Les free se trouvent au niveau de la fonction cleanup (juste avant main)
+
+    cleanup();
     return 0;
 }

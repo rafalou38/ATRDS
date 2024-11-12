@@ -1,5 +1,6 @@
 #include "grid.h"
 #include "enemies.h"
+#include <string.h>
 
 void allocateGridCells(Grid *grid)
 {
@@ -10,7 +11,12 @@ void allocateGridCells(Grid *grid)
     if (cells == NULL)
     {
         printCritical("Failed to allocate grid");
+        // free de tout automatique dans main.c/void cleanup()
         exit(EXIT_FAILURE);
+    }
+    else
+    {
+        memset(cells, 0, sizeof(struct Cell *) * grid->width);
     }
     for (int x = 0; x < grid->width; x++)
     {
@@ -19,6 +25,7 @@ void allocateGridCells(Grid *grid)
         if (cells[x] == NULL)
         {
             printCritical("Failed to allocate grid col");
+            // free de tout automatique dans main.c/void cleanup()
             exit(EXIT_FAILURE);
         }
 
@@ -45,11 +52,16 @@ void freeGrid(Grid grid)
     printf(RESET);
     printf("Freeing %s%dx%d%s grid:\t", COLOR_YELLOW, grid.width, grid.height, RESET);
 
-    for (int x = 0; x < grid.width; x++)
+    if (grid.cells != NULL)
     {
-        free(grid.cells[x]);
+        for (int x = 0; x < grid.width; x++)
+        {
+            if (grid.cells[x] != NULL)
+                free(grid.cells[x]);
+        }
+
+        free(grid.cells);
     }
-    free(grid.cells);
 
     printf("%s Done %s\n", COLOR_GREEN, RESET);
 }
@@ -78,14 +90,21 @@ void genBasicPath(Grid *grid) // Génération du terrain par rapport a la seed (
     if (historique == NULL)
     {
         printCritical("Failed to allocate historique");
+        // free de tout automatique dans main.c/void cleanup()
         exit(EXIT_FAILURE);
     }
+
+    memset(historique, 0, HISTORY_SIZE * (sizeof(int *)));
     for (size_t i = 0; i < HISTORY_SIZE; i++)
     {
         historique[i] = (int *)malloc(2 * sizeof(int));
         if (historique[i] == NULL)
         {
             printCritical("Failed to allocate an indice of historique");
+            for (size_t j = 0; j <= i; j++)
+                free(historique[j]);
+
+            // free de tout automatique dans main.c/void cleanup()
             exit(EXIT_FAILURE);
         }
     }
@@ -264,7 +283,8 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
             {
                 printf(COLOR_SNIPER_BASE);
                 char *sprite[3][8][7] = {
-                    {// Sniper de niveau 1 (niveau 0 pour le programme)
+                    {
+                        // Sniper de niveau 1 (niveau 0 pour le programme)
                         {"              ",
                          "   ▄██████▄   ",
                          "  ████▀▀████  ",
@@ -285,7 +305,7 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
                          "  ███ " COLOR_SNIPER_CANNON "[]" COLOR_SNIPER_BASE " ███  ",
                          "  ████▄▄████  ",
                          "   ▀██" COLOR_SNIPER_CANNON "||" COLOR_SNIPER_BASE "██▀   ",
-                         "      " COLOR_SNIPER_HEAD "\\/"  COLOR_SNIPER_BASE "      "},
+                         "      " COLOR_SNIPER_HEAD "\\/" COLOR_SNIPER_BASE "      "},
                         {"              ",
                          "   ▄██████▄   ",
                          "  ████▀▀████  ",
@@ -322,7 +342,8 @@ void drawCell(struct Cell cell, Grid grid) // Dessine les cellules selon leur st
                          "   ▀██████▀   ",
                          "              "},
                     },
-                    { // Sniper de niveau 2 (niveau 1 et le sniper de base est de niveau 0 dans le programme)
+                    {
+                        // Sniper de niveau 2 (niveau 1 et le sniper de base est de niveau 0 dans le programme)
                         {"     ▄██▄     ",
                          "   ▄██████▄   ",
                          " ▄████▀▀████▄ ",
