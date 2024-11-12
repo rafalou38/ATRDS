@@ -558,7 +558,8 @@ void anim_debut(int term_width, int term_height)
         }
         if (c == 'q')
         {
-            exit(0);
+            // free de tout automatique dans main.c/void cleanup()
+            exit(EXIT_SUCCESS);
         }
         if (c == 10 && tutorial_variable == 0)
         {
