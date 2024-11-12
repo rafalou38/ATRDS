@@ -35,6 +35,9 @@ int ligne = 1;
 int width = 0;
 int height = 0;
 
+// Compteur début jeu
+time_t time_start = 0;
+
 // Cette fonction permet de savoir que faire si la touche entrée a été préssée
 void handle_enter_key()
 {
@@ -233,7 +236,6 @@ void handle_arrow_keys()
     }
 }
 
-struct termios base_t_settings;
 void configTerminal()
 {
     setlocale(LC_ALL, "");
@@ -250,12 +252,25 @@ void configTerminal()
     hide_cursor();
 }
 
+// Cette fonction est exécutée automatiquement: a la fin du programme (fin normale, appel a exit(), interruption: CTRL+C)
+bool freed = false;
 void cleanup()
 {
-    show_cursor();
-    fprintf(stdout, "Bye.\n");
-    fflush(stdout);
-    exit(0);
+    if (!freed)
+    {
+        show_cursor();
+        struct timespec current_time;
+        clock_gettime(CLOCK_MONOTONIC, &current_time);
+        fprintf(stdout, RESET "\nBye.\n Tu as tenu: %d vagues\n Pendant: %d min\n", waveSystem.current_wave_index, (current_time.tv_sec - time_start) / 60);
+        fflush(stdout);
+
+        freeGrid(grid);           // Libère les allocations dynamiques liées à la grille
+        freeEnemyPool(enemyPool); // Libère les allocations dynamiques liées aux ennemis
+        freeLabels(labels);       // Libère les allocations dynamiques liées aux labels
+        freed = true;
+    }
+
+    exit(EXIT_SUCCESS);
 }
 
 /**
@@ -276,6 +291,11 @@ int main(int argc, char *argv[])
     unsigned int seed = time(NULL);
     printf("seed: %d\n", seed);
     srand(seed);
+
+    // Timers du jeu
+    struct timespec prev_time;
+    clock_gettime(CLOCK_MONOTONIC, &prev_time);
+    time_start = prev_time.tv_sec;
 
     /**
      * ##########################
@@ -316,6 +336,7 @@ int main(int argc, char *argv[])
     if (labels.labels == NULL)
     {
         printCritical("Failed to allocate label");
+        // free de tout automatique dans main.c/void cleanup()
         exit(EXIT_FAILURE);
     }
 
@@ -351,10 +372,9 @@ int main(int argc, char *argv[])
         }
     }
 
-    // Timers du jeu
-    struct timespec prev_time;
-    clock_gettime(CLOCK_MONOTONIC, &prev_time);
-    time_t time_start = prev_time.tv_sec;
+    // Affichage intégral de la grille
+    drawFullGrid(grid);
+
 
     // size_t est un int de capacité plus élevée.
     size_t frame_index;
@@ -490,8 +510,13 @@ int main(int argc, char *argv[])
     ################
     */
 
-    freeGrid(grid);           // Libère les allocations dynamiques liées à la grille
-    freeEnemyPool(enemyPool); // Libère les allocations dynamiques liées aux ennemis
-    freeLabels(labels);       // Libère les allocations dynamiques liées aux labels
+    clear_screen();
+    move_to(0, 0);
+    // freeGrid(grid);           // Libère les allocations dynamiques liées à la grille
+    // freeEnemyPool(enemyPool); // Libère les allocations dynamiques liées aux ennemis
+    // freeLabels(labels);       // Libère les allocations dynamiques liées aux labels
+    // Les free se trouvent au niveau de la fonction cleanup (juste avant main)
+
+    cleanup();
     return 0;
 }
