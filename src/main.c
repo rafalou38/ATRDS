@@ -39,6 +39,9 @@ int ligne = 1;
 int width = 0;
 int height = 0;
 
+// Compteur début jeu
+time_t time_start = 0;
+
 // Cette fonction permet de savoir que faire si la touche entrée a été préssée
 void handle_enter_key()
 {
@@ -272,10 +275,11 @@ void cleanup()
     if (!freed)
     {
         show_cursor();
-        printf(RESET "\nBye.\n");
+        struct timespec current_time;
+        clock_gettime(CLOCK_MONOTONIC, &current_time);
+        printf(RESET "\nBye.\n Tu as tenu: %d vagues\n Pendant: %d min\n", waveSystem.current_wave_index, (current_time.tv_sec - time_start) / 60);
         fflush(stdout);
         tcsetattr(STDIN_FILENO, TCSANOW, &base_t_settings);
-
 
         freeGrid(grid);           // Libère les allocations dynamiques liées à la grille
         freeEnemyPool(enemyPool); // Libère les allocations dynamiques liées aux ennemis
@@ -304,6 +308,11 @@ int main(int argc, char *argv[])
     unsigned int seed = time(NULL);
     printf("seed: %d\n", seed);
     srand(seed);
+
+    // Timers du jeu
+    struct timespec prev_time;
+    clock_gettime(CLOCK_MONOTONIC, &prev_time);
+    time_start = prev_time.tv_sec;
 
     /**
      * ##########################
@@ -386,10 +395,6 @@ int main(int argc, char *argv[])
     // Affichage intégral de la grille
     drawFullGrid(grid);
 
-    // Timers du jeu
-    struct timespec prev_time;
-    clock_gettime(CLOCK_MONOTONIC, &prev_time);
-    time_t time_start = prev_time.tv_sec;
 
     // size_t est un int de capacité plus élevée.
     size_t frame_index;
