@@ -2,12 +2,10 @@
 
 const char *save_path = "./save/";
 
-bool saveProgress(Grid grid, GameStats gameStats, int waveIndex)
+bool saveProgress(Grid grid, GameStats gameStats, int waveIndex, int save_index)
 {
-
-    int save_index = 0;
     char save_name[64];
-    sprintf(save_name, "save_%d_%d-%d_%d.bin", save_index, grid.width, grid.height, waveIndex);
+    sprintf(save_name, "save_%d.bin", save_index);
 
     struct stat folder_stats;
     if (stat(save_path, &folder_stats) != 0)

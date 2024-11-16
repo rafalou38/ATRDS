@@ -308,6 +308,7 @@ int main(int argc, char *argv[])
         free(saves[i]);
     }
     free(saves);
+    msleep(1000);
     
     // return 0;
 
@@ -561,12 +562,12 @@ int main(int argc, char *argv[])
         {
             if (c == 'q' || c == 'Q')
             {
-                saveProgress(grid, gameStats, waveSystem.current_wave_index);
+                saveProgress(grid, gameStats, waveSystem.current_wave_index, 0);
                 break;
             }
             if (c == 'l')
             {
-                loadProgress("save_0_13-7_12", &grid, &gameStats, &waveSystem, &enemyPool, &labels);
+                loadProgress("save_0", &grid, &gameStats, &waveSystem, &enemyPool, &labels);
                 fillBG(1, 1, width + 1, height + 1);
                 drawFullGrid(grid);
             }
