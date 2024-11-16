@@ -5,6 +5,7 @@
 #include "alloca.h"
 
 #include "sys/stat.h"
+#include <dirent.h>
 
 struct SerializedGameData
 {
@@ -15,3 +16,4 @@ struct SerializedGameData
 
 bool saveProgress(Grid grid, GameStats gameStats, int waveIndex);
 bool loadProgress(const char *save_name, Grid *grid, GameStats *gameStats, WaveSystem *waveSystem, EnemyPool *enemyPool, Labels *labels);
+char **listSaves(int *cnt);

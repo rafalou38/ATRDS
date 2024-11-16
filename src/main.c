@@ -300,6 +300,17 @@ void cleanup()
  */
 int main(int argc, char *argv[])
 {
+    int cnt;
+    char **saves = listSaves(&cnt);
+    for (size_t i = 0; i < cnt; i++)
+    {
+        printf("%s\n", saves[i]);
+        free(saves[i]);
+    }
+    free(saves);
+    
+    // return 0;
+
     // Enregistre la fonction cleanup pour qu'elle soit exécutée lors la terminaison du programme.
     atexit(cleanup);
     struct sigaction act;

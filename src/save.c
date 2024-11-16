@@ -6,7 +6,7 @@ bool saveProgress(Grid grid, GameStats gameStats, int waveIndex)
 {
 
     int save_index = 0;
-    const char save_name[64];
+    char save_name[64];
     sprintf(save_name, "save_%d_%d-%d_%d.bin", save_index, grid.width, grid.height, waveIndex);
 
     struct stat folder_stats;
@@ -100,4 +100,33 @@ bool loadProgress(const char *save_name, Grid *grid, GameStats *gameStats, WaveS
     labels->count = 0;
 
     return 1;
+}
+
+char **listSaves(int *cnt)
+{
+    // struct dirent *dir;
+    DIR *dir = opendir(save_path);
+    if (dir == NULL)
+    {
+        return NULL;
+    }
+    struct dirent *file_info;
+    // char saves[100][256];
+    char **saves = calloc(sizeof(char *), 100);
+    // memset(saves, 0, sizeof(saves));
+
+    *cnt = 0;
+    while ((file_info = readdir(dir)) != NULL)
+    {
+        if (strncmp(file_info->d_name, ".", 1) == 0 || strncmp(file_info->d_name, "..", 2) == 0)
+            continue;
+        int n = strlen(file_info->d_name) + 1;
+        saves[*cnt] = malloc(n);
+        memset(saves[*cnt], 0, n);
+        strcpy(saves[*cnt], file_info->d_name);
+        (*cnt)++;
+    }
+    free(dir);
+
+    return saves;
 }
