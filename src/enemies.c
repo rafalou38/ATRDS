@@ -812,8 +812,6 @@ void switchToWave(WaveSystem *ws, int waveIndex)
  * - ajoute l'ennemi a l'EnemyPool
  * - wave_HP_left -= E.hp
  * - Attendre T = E.hp / target_HPPS (période avant le prochain spawn)
- *      ici on utilisera next_spawn_timer et prev_spawn=E, ainsi, le prochain spawn arrivera après un certain nombre de frames.
- * fin tant que
  *
  * Renvoie:
  *  -2 = fin de la vague
