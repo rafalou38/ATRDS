@@ -91,8 +91,7 @@ typedef struct WaveSystem
     float wave_HP_left;
     float next_spawn_timer;
     float wave_timer;
-
-    struct Enemy prev_spawn;
+    
 } WaveSystem;
 
 

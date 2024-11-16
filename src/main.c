@@ -3,6 +3,7 @@
 #include "grid.h"
 #include "enemies.h"
 #include "tower.h"
+#include "save.h"
 
 #include <string.h>
 
@@ -395,11 +396,10 @@ int main(int argc, char *argv[])
     // Affichage intégral de la grille
     drawFullGrid(grid);
 
-
     // size_t est un int de capacité plus élevée.
     size_t frame_index;
     int fps = 0;
-    
+
     // entiers qui gèrent la vitesse du jeu
     int game_speed_control = 1;
     int compteur_animation_game_speed = 10;
@@ -503,14 +503,15 @@ int main(int argc, char *argv[])
             }
         }
 
-        if(compteur_animation_game_speed<delta_t||selection_active){
-            if(selection_active){
-                game_speed_anim_pause=1;
+        if (compteur_animation_game_speed < delta_t || selection_active)
+        {
+            if (selection_active)
+            {
+                game_speed_anim_pause = 1;
             }
-            drawGameSpeed(game_speed_control,width,game_speed_anim_pause);
-            compteur_animation_game_speed+=10;
+            drawGameSpeed(game_speed_control, width, game_speed_anim_pause);
+            compteur_animation_game_speed += 10;
         }
-
 
         // Mise a jour de l'affichage
         fflush(stdout);
@@ -549,7 +550,14 @@ int main(int argc, char *argv[])
         {
             if (c == 'q' || c == 'Q')
             {
+                saveProgress(grid, gameStats, waveSystem.current_wave_index);
                 break;
+            }
+            if (c == 'l')
+            {
+                loadProgress("save_0_13-7_12", &grid, &gameStats, &waveSystem, &enemyPool, &labels);
+                fillBG(1, 1, width + 1, height + 1);
+                drawFullGrid(grid);
             }
             else if (c == 'o' || c == 'O')
             {
@@ -583,7 +591,7 @@ int main(int argc, char *argv[])
                     fillBG(1, 1, width + 1, height + 1);
                     drawFullGrid(grid);
                     ligne = 1;
-                    game_speed_anim_pause=0;
+                    game_speed_anim_pause = 0;
                 }
                 ligne = 1;
                 selection_active = !selection_active;
