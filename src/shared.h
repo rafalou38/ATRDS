@@ -263,6 +263,7 @@ int msleep(long ms);
 #define SPEED_CONTROL_2 "\033[38;5;32m"
 #define SPEED_CONTROL_3 "\033[38;5;46m"
 #define SPEED_CONTROL_4 "\033[38;5;91m"
+#define SPEED_CONTROL_5 "\033[38;5;196m"
 #define SPEED_CONTROL_PAUSE "\033[38;5;222m"
 
 char get_key_press();

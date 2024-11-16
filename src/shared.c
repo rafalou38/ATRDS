@@ -188,47 +188,59 @@ void drawRange(int term_width, int term_height, float range, float grid_x, float
 // Petit dessin du changement de vitesse dans le coin en haut à droite
 void drawGameSpeed(int game_speed_anim, int term_width, int game_speed_anim_pause)
 {
-    char *sprite[5][7] = {{SPEED_CONTROL COLOR_TOWER_SLOT_BG"         ▄█   ",
+    char *sprite[6][7] = {{SPEED_CONTROL COLOR_TOWER_SLOT_BG "         ▄█   ",
                            "       ▄███   ",
                            "     ▄█████   ",
                            "    ███████   ",
                            "     ▀█████   ",
                            "       ▀███   ",
                            "         ▀█   "},
-                          {SPEED_CONTROL_2 COLOR_TOWER_SLOT_BG"   █▄         ",
+                          {SPEED_CONTROL_2 COLOR_TOWER_SLOT_BG "   █▄         ",
                            "   ███▄       ",
                            "   █████▄     ",
                            "   ███████    ",
                            "   █████▀     ",
                            "   ███▀       ",
                            "   █▀         "},
-                          {SPEED_CONTROL_3 COLOR_TOWER_SLOT_BG"  █▄  █▄      ",
+                          {SPEED_CONTROL_3 COLOR_TOWER_SLOT_BG "  █▄  █▄      ",
                            "  ███▄▀██▄    ",
                            "  █████▄▀██▄  ",
                            "  ███████ ███ ",
                            "  █████▀▄██▀  ",
                            "  ███▀▄██▀    ",
                            "  █▀  █▀      "},
-                          {SPEED_CONTROL_4 COLOR_TOWER_SLOT_BG"  ▄▄▄▀▀█▄     ",
+                          {SPEED_CONTROL_4 COLOR_TOWER_SLOT_BG "  ▄▄▄▀▀█▄     ",
                            "▄▄▄▀██▄▀██▄   ",
                            " ▀██▄▀██▄▀██▄ ",
                            "   ███ ███ ███",
                            " ▄██▀▄██▀▄██▀ ",
                            "▀▀▀▄██▀▄██▀   ",
                            "  ▀▀▀▄▄█▀     "},
-                          {SPEED_CONTROL_PAUSE COLOR_TOWER_SLOT_BG"  ▄▄▄    ▄▄▄  ",
+                          {SPEED_CONTROL_5 COLOR_TOWER_SLOT_BG "    ▄▄ ▀▀▄▄   ",
+                           " ▀▀▄▄ ▀█▄ ▀█▄ ",
+                           "▀█▄ ▀█▄ ▀█▄ █▄",
+                           "  ██  ██  ██ █",
+                           "▄█▀ ▄█▀ ▄█▀ █▀",
+                           " ▄▄▀▀ ▄█▀ ▄█▀ ",
+                           "    ▀▀ ▄▄▀▀   "},
+                          {SPEED_CONTROL_PAUSE COLOR_TOWER_SLOT_BG "  ▄▄▄    ▄▄▄  ",
                            "  ███    ███  ",
                            "  ███    ███  ",
                            "  ███    ███  ",
                            "  ███    ███  ",
                            "  ███    ███  ",
                            "  ▀▀▀    ▀▀▀  "}};
+    if (game_speed_anim > 8)
+    {
+        game_speed_anim = 16;
+    }
+
     if (game_speed_anim_pause == 1)
     {
         for (int i = 0; i < 7; i++)
         {
             move_to(term_width - (CELL_WIDTH * 2) + 7, 3 + i);
-            printf(sprite[4][i]);
+            printf(sprite[5][i]);
         }
     }
     else
@@ -569,7 +581,7 @@ void anim_debut(int term_width, int term_height)
         {
             clear_screen();
             int tutorial_page = 1;
-            while (tutorial_page < 4)
+            while (tutorial_page < 5)
             {
                 int c = get_key_press();
                 int ecartx = 40;
@@ -924,9 +936,78 @@ void anim_debut(int term_width, int term_height)
 
                     fflush(stdout);
                 }
+                if (tutorial_page == 4)
+                {
+                    char *spriteRappels[4] =
+                        {
+                            "▗▄▄▖  ▗▄▖ ▗▄▄▖ ▗▄▄▖ ▗▄▄▄▖▗▖    ▗▄▄▖",
+                            "▐▌ ▐▌▐▌ ▐▌▐▌ ▐▌▐▌ ▐▌▐▌   ▐▌   ▐▌   ",
+                            "▐▛▀▚▖▐▛▀▜▌▐▛▀▘ ▐▛▀▘ ▐▛▀▀▘▐▌    ▝▀▚▖",
+                            "▐▌ ▐▌▐▌ ▐▌▐▌   ▐▌   ▐▙▄▄▖▐▙▄▄▖▗▄▄▞▘",
+                        };
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        move_to(term_width / 2 - 18, ecarty + 2 + i);
+                        printf(spriteRappels[i]);
+                    }
+
+                    char *spriteSpeed[5][7] = {{SPEED_CONTROL COLOR_TOWER_SLOT_BG "         ▄█   ",
+                                                "       ▄███   ",
+                                                "     ▄█████   ",
+                                                "    ███████   ",
+                                                "     ▀█████   ",
+                                                "       ▀███   ",
+                                                "         ▀█   "},
+                                               {SPEED_CONTROL_2 COLOR_TOWER_SLOT_BG "   █▄         ",
+                                                "   ███▄       ",
+                                                "   █████▄     ",
+                                                "   ███████    ",
+                                                "   █████▀     ",
+                                                "   ███▀       ",
+                                                "   █▀         "},
+                                               {SPEED_CONTROL_3 COLOR_TOWER_SLOT_BG "  █▄  █▄      ",
+                                                "  ███▄▀██▄    ",
+                                                "  █████▄▀██▄  ",
+                                                "  ███████ ███ ",
+                                                "  █████▀▄██▀  ",
+                                                "  ███▀▄██▀    ",
+                                                "  █▀  █▀      "},
+                                               {SPEED_CONTROL_4 COLOR_TOWER_SLOT_BG "  ▄▄▄▀▀█▄     ",
+                                                "▄▄▄▀██▄▀██▄   ",
+                                                " ▀██▄▀██▄▀██▄ ",
+                                                "   ███ ███ ███",
+                                                " ▄██▀▄██▀▄██▀ ",
+                                                "▀▀▀▄██▀▄██▀   ",
+                                                "  ▀▀▀▄▄█▀     "},
+                                               {SPEED_CONTROL_5 COLOR_TOWER_SLOT_BG "    ▄▄ ▀▀▄▄   ",
+                                                " ▀▀▄▄ ▀█▄ ▀█▄ ",
+                                                "▀█▄ ▀█▄ ▀█▄ █▄",
+                                                "  ██  ██  ██ █",
+                                                "▄█▀ ▄█▀ ▄█▀ █▀",
+                                                " ▄▄▀▀ ▄█▀ ▄█▀ ",
+                                                "    ▀▀ ▄▄▀▀   "}};
+
+                    for (int nb_sprites = 0; nb_sprites < 5; nb_sprites++)
+                    {
+                        
+                        for (int i = 0; i < 7; i++)
+                        {
+                            move_to(term_width / 2 - 50 + nb_sprites * 20, ecarty + 10 + i);
+                            printf(spriteSpeed[nb_sprites][i]);
+                        }
+                        move_to(term_width / 2 - 50 + nb_sprites * 20 + 6, ecarty + 8);
+                        printf("x%d", (int)pow(2, nb_sprites));
+                    }
+
+                    move_to(term_width / 2 - 25, ecarty + 20);
+                    printf(RESET "\"O\"/\"o\" pour accélérer, \"L\"/\"l\" pour ralentir");
+
+                    fflush(stdout);
+                }
 
                 move_to(term_width - 6 - ecartx, term_height - 2 - ecarty);
-                printf("%d/3", tutorial_page);
+                printf("%d/4", tutorial_page);
 
                 if (c == 10)
                 {

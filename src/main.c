@@ -554,13 +554,25 @@ int main(int argc, char *argv[])
             else if (c == 'o' || c == 'O')
             {
                 compteur_animation_game_speed = 0;
-                if (game_speed_control > 4)
+                if (game_speed_control > 8)
+                {
+                    game_speed_control = 16;
+                }
+                else
+                {
+                    game_speed_control *= 2;
+                }
+            }
+            else if (c == 'l' || c == 'L')
+            {
+                compteur_animation_game_speed = 0;
+                if (game_speed_control < 2)
                 {
                     game_speed_control = 1;
                 }
                 else
                 {
-                    game_speed_control *= 2;
+                    game_speed_control /= 2;
                 }
             }
             else if (c == ' ') // Touche espace pressée
