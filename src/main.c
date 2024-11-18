@@ -565,7 +565,7 @@ int main(int argc, char *argv[])
                 saveProgress(grid, gameStats, waveSystem.current_wave_index, 0);
                 break;
             }
-            if (c == 'l')
+            if (c == 's')
             {
                 loadProgress("save_0", &grid, &gameStats, &waveSystem, &enemyPool, &labels);
                 fillBG(1, 1, width + 1, height + 1);
