@@ -171,7 +171,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
 
                                         grid.cells[x][y].turret.last_shot_dx = dx / d;
                                         grid.cells[x][y].turret.last_shot_dy = dy / d;
-
+                                        int rapport_speed_damage= grid.cells[x][y].turret.compteur / grid.cells[x][y].turret.reload_delay[lvl];
                                         // Fonctionnement du splash damage (dégats de zone)
                                         if (grid.cells[x][y].turret.splash[lvl] != 0.0)
                                         {
@@ -188,7 +188,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                                     }
                                                 }
                                             }
-                                            ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
+                                            ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl]*rapport_speed_damage;
                                             int w;
                                             int h;
                                             get_terminal_size(&w, &h);
@@ -204,11 +204,11 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                             bp->bullets[bp->count].grid_x = x + 0.5 + (dx / d) / 4;
                                             bp->bullets[bp->count].grid_y = y + 0.5 + (dy / d) / 4;
                                             bp->bullets[bp->count].target = &(ep.enemies[i]);
-                                            bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage[lvl];
+                                            bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage[lvl]*rapport_speed_damage;
                                             bp->count++;
 #else
                                             // Changements des points de vie de l'ennemi touché, perdant ainsi le nombre de dégats infligés par l'attaque
-                                            ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl];
+                                            ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl]*rapport_speed_damage;
 #endif
                                         }
                                         // Fonctionnement du nombre d'ennemi pouvant être touché
