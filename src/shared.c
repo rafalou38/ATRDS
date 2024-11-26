@@ -990,7 +990,7 @@ void anim_debut(int term_width, int term_height)
 
                     for (int nb_sprites = 0; nb_sprites < 5; nb_sprites++)
                     {
-                        
+
                         for (int i = 0; i < 7; i++)
                         {
                             move_to(term_width / 2 - 50 + nb_sprites * 20, ecarty + 10 + i);
@@ -1002,6 +1002,13 @@ void anim_debut(int term_width, int term_height)
 
                     move_to(term_width / 2 - 25, ecarty + 20);
                     printf(RESET "\"O\"/\"o\" pour accélérer, \"L\"/\"l\" pour ralentir");
+
+                    move_to(term_width / 2 - 25, ecarty + 22);
+                    printf(RESET "\"S\" pour ouvrir le menu des sauvegardes ; ATTENTION !");
+                    move_to(term_width / 2 - 25, ecarty + 24);
+                    printf(RESET "Il n'y a pas de demande de confirmation pour load/save");
+                    move_to(term_width / 2 - 25, ecarty + 24);
+                    printf(RESET "(Load : \"Enter\"       Save : \"Space\"     Close : \"S\")");
 
                     fflush(stdout);
                 }

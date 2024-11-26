@@ -62,7 +62,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                 for (int i = 0; i < ep.count; i++)
                                 {
                                     // Calcul du vecteur entre la tourelle et l’ennemi
-                                    float dx = ep.enemies[i].grid_x - (x + 0.5); //on rajoute 0.5 afin que l'on calcule depuis le centre de la tourelle et pas depuis le coin supérieur gauche de la case.
+                                    float dx = ep.enemies[i].grid_x - (x + 0.5); // on rajoute 0.5 afin que l'on calcule depuis le centre de la tourelle et pas depuis le coin supérieur gauche de la case.
                                     float dy = ep.enemies[i].grid_y - (y + 0.5);
 
                                     float d = sqrt(dx * dx + dy * dy);
@@ -128,7 +128,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                     {
                                         if (ep.enemies[i].type == ENEMY_BOSS_STUN && d <= ep.enemies[i].puissance_effet)
                                         {
-                                            grid.cells[x][y].turret.has_malus= true;
+                                            grid.cells[x][y].turret.has_malus = true;
                                             grid.cells[x][y].turret.puissance_malus = ep.enemies[i].puissance_effet;
                                         }
                                         else
@@ -171,7 +171,7 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
 
                                         grid.cells[x][y].turret.last_shot_dx = dx / d;
                                         grid.cells[x][y].turret.last_shot_dy = dy / d;
-                                        int rapport_speed_damage= grid.cells[x][y].turret.compteur / grid.cells[x][y].turret.reload_delay[lvl];
+                                        int rapport_speed_damage = grid.cells[x][y].turret.compteur / grid.cells[x][y].turret.reload_delay[lvl];
                                         // Fonctionnement du splash damage (dégats de zone)
                                         if (grid.cells[x][y].turret.splash[lvl] != 0.0)
                                         {
@@ -184,11 +184,11 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                                                        pow(ep.enemies[i].grid_y - ep.enemies[j].grid_y, 2));
                                                     if (d_enemy < d_min)
                                                     {
-                                                        ep.enemies[j].hp -= grid.cells[x][y].turret.damage[lvl]/2;
+                                                        ep.enemies[j].hp -= grid.cells[x][y].turret.damage[lvl] / 2;
                                                     }
                                                 }
                                             }
-                                            ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl]*rapport_speed_damage;
+                                            ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl] * rapport_speed_damage;
                                             int w;
                                             int h;
                                             get_terminal_size(&w, &h);
@@ -204,11 +204,11 @@ void updateTowers(Grid grid, EnemyPool ep, float dt, GameStats *gs)
                                             bp->bullets[bp->count].grid_x = x + 0.5 + (dx / d) / 4;
                                             bp->bullets[bp->count].grid_y = y + 0.5 + (dy / d) / 4;
                                             bp->bullets[bp->count].target = &(ep.enemies[i]);
-                                            bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage[lvl]*rapport_speed_damage;
+                                            bp->bullets[bp->count].damage = grid.cells[x][y].turret.damage[lvl] * rapport_speed_damage;
                                             bp->count++;
 #else
                                             // Changements des points de vie de l'ennemi touché, perdant ainsi le nombre de dégats infligés par l'attaque
-                                            ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl]*rapport_speed_damage;
+                                            ep.enemies[i].hp -= grid.cells[x][y].turret.damage[lvl] * rapport_speed_damage;
 #endif
                                         }
                                         // Fonctionnement du nombre d'ennemi pouvant être touché
@@ -455,7 +455,7 @@ struct Turret getTurretStruct(enum TurretType type)
         tur.range_min[1] = 2.5;
         tur.range_max[0] = 5.5;
         tur.range_max[1] = 6.5;
-        tur.damage[0] = 2; // 4/4 -> 1dps
+        tur.damage[0] = 2;   // 4/4 -> 1dps
         tur.damage[1] = 2.5; // 5/3 -> 1.42dps
         tur.reload_delay[0] = 4;
         tur.reload_delay[1] = 3.5;
@@ -543,6 +543,54 @@ struct Turret getTurretStruct(enum TurretType type)
     return tur;
 }
 
+void showSaveScreen(int ligne)
+{
+    int terminal_width, terminal_height;
+    get_terminal_size(&terminal_width, &terminal_height);
+
+    int width = 80;  // terminal_width/2;
+    int height = 30; // terminal_height/2;
+    assert(width < terminal_width);
+    assert(height < terminal_height);
+
+    int x0 = terminal_width / 2.0f - width / 2.0f;
+    int y0 = terminal_height / 2.0f - height / 2.0f + 1;
+
+    printf(RESET);
+    printf(COLOR_STANDARD_BG);
+
+    // Bordures et coeur de la fenêtre
+    for (int y = 0; y < height; y++)
+    {
+        move_to(x0, y0 + y);
+
+        for (int x = 0; x < width; x++)
+        {
+            printf(RESET);
+            if (y == ligne)
+                printf("\033[38;5;221m");
+            if (x == 0 || x == width - 1)
+                printf("█");
+            else if (y == 0)
+
+                printf("▀");
+            else if (y == height - 1)
+                printf("▄");
+            else
+                printf(" ");
+        }
+    }
+    move_to(x0 + 1, y0 + 1);
+    printf("\"Enter\" pour load, \"Espace\" pour save, \"S\" pour fermer");
+    move_to(x0 + 1, y0 + 2);
+    printf("Si vous quittez avec \"Q\", votre partie sera sauvegardé en 0");
+    for (int y = 3; y < 10; y++)
+    {
+        move_to(x0 + 1, y0 + y);
+        printf("save_%d", y - 3);
+    }
+}
+
 // Fonction qui pause le jeu et ouvre le panneau de séléction
 void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
 {
@@ -600,7 +648,7 @@ void showTowerSelection(int ligne, bool hasTurret, struct Turret selectedTurret)
         printf(" 💰 Sell");
 
         move_to(x0 + 1 + width - 8, y0 + 2);
-        printf(COLOR_GREEN "+% 3d €" RESET, (int)(getTurretPrice(selectedTurret.type, selectedTurret.lvl)*0.8));
+        printf(COLOR_GREEN "+% 3d €" RESET, (int)(getTurretPrice(selectedTurret.type, selectedTurret.lvl) * 0.8));
     }
     // Sinon, proposer la construction des autres tourelles
     else

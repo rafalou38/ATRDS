@@ -25,6 +25,8 @@ BulletPool bulletPool;
 
 // est ce q'une cellule a été activé (shop ouvert)
 bool selection_active = false;
+// save screen tu connais les bails
+bool save_screen = false;
 // vraie quand la range d'une tourelle est affichée (sur la quelle est placée le curseur), pour pouvoir effacer la range une fois qu'elle ne l'est plus
 bool was_range_visible = false;
 int prev_selected_x = 0; // permet de détecter un changement de sélection et de nettoyer la grille
@@ -121,7 +123,7 @@ void handle_arrow_keys()
     bool down = c == 'B';
     bool right = c == 'C';
     bool left = c == 'D';
-    if (!selection_active)
+    if (!selection_active && !save_screen)
     {
         // Mouvement de la sélection de cellule, en prenant en compte le chemin et les bords de la grid
         if (up)
@@ -230,8 +232,12 @@ void handle_arrow_keys()
         {
             ligne -= 1;
         }
-
-        if (selection_active)
+        if (save_screen)
+        { // les saves sont ouvertes
+            // 7 save slot => 7 lignes sélectionnables
+            ligne = CLAMP(ligne, 3, 9); // CLAMP(val,x,y): permet de faire en sorte que si val<x, val = x et si val>y, val = y
+        }
+        else if (selection_active)
         { // le shop est ouvert
             // 7 tourelles => 7 lignes sélectionnables
             ligne = CLAMP(ligne, 1, 7); // CLAMP(val,x,y): permet de faire en sorte que si val<x, val = x et si val>y, val = y
@@ -309,7 +315,7 @@ int main(int argc, char *argv[])
     }
     free(saves);
     msleep(1000);
-    
+
     // return 0;
 
     // Enregistre la fonction cleanup pour qu'elle soit exécutée lors la terminaison du programme.
@@ -445,7 +451,7 @@ int main(int argc, char *argv[])
         ###############################
         */
 
-        if (!selection_active) // si la sélection est active, le jeu est en pause, on exécute pas le code de la frame
+        if (!selection_active && !save_screen) // si la sélection est active, le jeu est en pause, on exécute pas le code de la frame
         {
 #if BULLETS_ON
             // Cas ou les misilles sont activées
@@ -565,11 +571,17 @@ int main(int argc, char *argv[])
                 saveProgress(grid, gameStats, waveSystem.current_wave_index, 0);
                 break;
             }
-            if (c == 's')
+            if (c == 's' && !selection_active)
             {
-                loadProgress("save_0", &grid, &gameStats, &waveSystem, &enemyPool, &labels);
-                fillBG(1, 1, width + 1, height + 1);
-                drawFullGrid(grid);
+                if (save_screen)
+                {
+                    fillBG(1, 1, width + 1, height + 1);
+                    drawFullGrid(grid);
+                    ligne = 3;
+                    game_speed_anim_pause = 0;
+                }
+                ligne = 3;
+                save_screen = !save_screen;
             }
             else if (c == 'o' || c == 'O')
             {
@@ -595,7 +607,7 @@ int main(int argc, char *argv[])
                     game_speed_control /= 2;
                 }
             }
-            else if (c == ' ') // Touche espace pressée
+            else if (c == ' ' && !save_screen) // Touche espace pressée
             {
                 // Nettoyage
                 if (selection_active)
@@ -617,6 +629,23 @@ int main(int argc, char *argv[])
             if (selection_active)
             {
                 showTowerSelection(ligne, grid.cells[selected_cell_x][selected_cell_y].hasTurret, grid.cells[selected_cell_x][selected_cell_y].turret);
+            }
+            if (save_screen)
+            {
+                showSaveScreen(ligne);
+                if (c == 10)
+                {
+                    char* save_name;
+                    snprintf(save_name, 10, "save_%d", ligne);
+                    loadProgress(save_name, &grid, &gameStats, &waveSystem, &enemyPool, &labels);
+                    fillBG(1, 1, width + 1, height + 1);
+                    drawFullGrid(grid);
+                    save_screen = !save_screen;
+                }
+                if (c == ' ')
+                {
+                    saveProgress(grid, gameStats, waveSystem.current_wave_index, ligne-3);
+                }
             }
         }
     }

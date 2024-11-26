@@ -567,30 +567,49 @@ void drawEnemies(EnemyPool ep, Grid grid) // Dessine les ennemis sur un chemin V
             printf(COLOR_HEALTH_25);
         else
             printf(COLOR_HEALTH_0);
-        for (int i = 0; i < 4; i++)
+
+        int noel = 0;
+        if (noel == 1)
         {
-            float ratio = enemy->hp / (float)enemy->maxHP;
+            char *sprite_noel[3] =
+                {
+                    "   ▄▞▀",
+                    "▗▞▀ ▚ ",
+                    "▙▄▄▄▄▙",
+                };
+            for (int i = 0; i < 3; i++)
+            {
+                move_to(px - 2, i + py-3);
+                printf(sprite_noel[i]);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                float ratio = enemy->hp / (float)enemy->maxHP;
 
-            float rest = ratio * 4 - i;
+                float rest = ratio * 4 - i;
 
-            if (rest >= 1)
-                printf("█");
-            else if (rest >= 6.0f / 8.0f)
-                printf("▉");
-            else if (rest >= 3.0f / 4.0f)
-                printf("▊");
-            else if (rest >= 5.0f / 8.0f)
-                printf("▋");
-            else if (rest >= 1.0f / 2.0f)
-                printf("▌");
-            else if (rest >= 3.0f / 8.0f)
-                printf("▍");
-            else if (rest >= 1.0f / 4.0f)
-                printf("▎");
-            else if (rest >= 1.0f / 8.0f)
-                printf("▏");
-            else
-                printf(" ");
+                if (rest >= 1)
+                    printf("█");
+                else if (rest >= 6.0f / 8.0f)
+                    printf("▉");
+                else if (rest >= 3.0f / 4.0f)
+                    printf("▊");
+                else if (rest >= 5.0f / 8.0f)
+                    printf("▋");
+                else if (rest >= 1.0f / 2.0f)
+                    printf("▌");
+                else if (rest >= 3.0f / 8.0f)
+                    printf("▍");
+                else if (rest >= 1.0f / 4.0f)
+                    printf("▎");
+                else if (rest >= 1.0f / 8.0f)
+                    printf("▏");
+                else
+                    printf(" ");
+            }
         }
         printf(RESET);
     }
